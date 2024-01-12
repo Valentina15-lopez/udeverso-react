@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import * as THREE from "three";
-import { peers } from "../../logic/services/server";
 import { createEnvironment } from "../../logic/services/environment";
 import AulaService from "../../logic/services/AulaService";
-import { useSocket } from "../../logic/services/SocketContext";
 
 class AulaScene extends Component {
   constructor(props) {
@@ -14,6 +12,14 @@ class AulaScene extends Component {
 
     //THREE scene
     this.scene = new THREE.Scene();
+
+    // Inicializar el ref del renderer
+    this.rendererRef = React.createRef();
+
+    // Inicializar el renderer u otras configuraciones...
+    this.renderer = new THREE.WebGLRenderer({
+      antialiasing: true,
+    });
 
     //Utility
     this.width = window.innerWidth;
@@ -36,61 +42,30 @@ class AulaScene extends Component {
     this.listener = new THREE.AudioListener();
     this.camera.add(this.listener);
 
-    //THREE WebGL renderer
-    this.renderer = new THREE.WebGLRenderer({
-      antialiasing: true,
-    });
     this.renderer.setClearColor(new THREE.Color("lightblue"));
     this.renderer.setSize(this.width, this.height);
+    // add controls
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleKeyUp = this.handleKeyUp.bind(this);
+    document.addEventListener("keydown", this.handleKeyDown);
+    document.addEventListener("keyup", this.handleKeyUp);
+    // Crear el contexto de audio después de un gesto del usuario
+    this.renderer.domElement.addEventListener("click", () => {
+      this.camera.add(this.listener);
+    });
 
-    // add controls:
+    // Estado del teclado
+    this.keyState = {};
+
     // En lugar de usar FirstPersonControls, maneja la lógica de los controles de cámara manualmente
 
     // Variables para el control manual de la cámara
     var cameraRotationSpeed = 0.005;
     var cameraMoveSpeed = 2;
 
-    // Eventos para el teclado
-    document.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("keyup", handleKeyUp);
-
-    // Estado del teclado
-    var keyState = {};
-
-    function handleKeyDown(event) {
-      keyState[event.code] = true;
-    }
-
-    function handleKeyUp(event) {
-      keyState[event.code] = false;
-    }
-
-    // Función de actualización de los controles de la cámara (llamada en tu bucle de renderización)
-    function updateCameraControls() {
-      // Rotación de la cámara
-      if (keyState["ArrowLeft"]) {
-        this.camera.rotation.y += cameraRotationSpeed;
-      }
-      if (keyState["ArrowRight"]) {
-        this.camera.rotation.y -= cameraRotationSpeed;
-      }
-
-      // Movimiento hacia adelante/atrás
-      if (keyState["ArrowUp"]) {
-        this.camera.translateZ(-cameraMoveSpeed);
-      }
-      if (keyState["ArrowDown"]) {
-        this.camera.translateZ(cameraMoveSpeed);
-      }
-    }
-
     // Inicializa tus objetos Three.js (scene, camera, renderer) y comienza el bucle de renderizado
-    updateCameraControls();
-
-    this.renderer.render(this.scene, this.camera);
-    requestAnimationFrame(this.renderer.render);
-    // Attach the renderer to a React ref
-    this.rendererRef = React.createRef();
+    this.updateCameraControls = this.updateCameraControls.bind(this);
+    this.update();
 
     // Helpers
     this.scene.add(new THREE.GridHelper(500, 500));
@@ -99,14 +74,57 @@ class AulaScene extends Component {
     this.addLights();
     createEnvironment(this.scene);
   }
+  // Estado del teclado
+  handleKeyDown(event) {
+    this.keyState[event.code] = true;
+  }
+
+  handleKeyUp(event) {
+    this.keyState[event.code] = false;
+  }
+  // Función de actualización de los controles de la cámara (llamada en tu bucle de renderización)
+  updateCameraControls = () => {
+    // Usa `this` correctamente dentro de esta función para acceder a las propiedades del componente
+    if (this.keyState["ArrowLeft"]) {
+      this.camera.rotation.y += 0.005;
+    }
+    if (this.keyState["ArrowRight"]) {
+      this.camera.rotation.y -= 0.005;
+    }
+    if (this.keyState["ArrowUp"]) {
+      this.camera.translateZ(-2);
+    }
+    if (this.keyState["ArrowDown"]) {
+      this.camera.translateZ(2);
+    }
+  };
+  getPlayerPosition() {
+    // TODO: use quaternion or are euler angles fine here?
+    return [
+      [this.camera.position.x, this.camera.position.y, this.camera.position.z],
+      [
+        this.camera.quaternion._x,
+        this.camera.quaternion._y,
+        this.camera.quaternion._z,
+        this.camera.quaternion._w,
+      ],
+    ];
+  }
 
   componentDidMount() {
     // Append the renderer to the DOM after the component has mounted
-    this.rendererRef.current.appendChild(this.renderer.domElement);
+    if (this.rendererRef && this.rendererRef.current) {
+      this.rendererRef.current.appendChild(this.renderer.domElement);
+    }
 
     // Setup event listeners for events and handle the states
     window.addEventListener("resize", this.onWindowResize, false);
-
+    // Iniciar el streaming de video y audio
+    const aulaService = new AulaService();
+    aulaService.init();
+    // Eventos para el teclado
+    document.addEventListener("keydown", this.handleKeyDown);
+    document.addEventListener("keyup", this.handleKeyUp);
     // Start the loop
     this.frameCount = 0;
     this.update();
@@ -115,6 +133,8 @@ class AulaScene extends Component {
   componentWillUnmount() {
     // Clean up event listeners and any other resources when the component is unmounted
     window.removeEventListener("resize", this.onWindowResize);
+    document.removeEventListener("keydown", this.handleKeyDown);
+    document.removeEventListener("keyup", this.handleKeyUp);
   }
 
   onWindowResize = () => {
@@ -133,7 +153,7 @@ class AulaScene extends Component {
 
     // Call requestAnimationFrame to update the scene continuously
     requestAnimationFrame(this.update);
-
+    this.updateCameraControls();
     // Render the scene
     this.renderer.render(this.scene, this.camera);
   };
@@ -152,92 +172,9 @@ class AulaScene extends Component {
     });
     return videoMaterial;
   };
-  addClient = (id) => {
-    const videoMaterial = this.makeVideoMaterial(id);
-    const otherMat = new THREE.MeshNormalMaterial();
-
-    const head = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), [
-      otherMat,
-      otherMat,
-      otherMat,
-      otherMat,
-      otherMat,
-      videoMaterial,
-    ]);
-
-    // set position of head before adding to parent object
-    head.position.set(0, 0, 0);
-
-    // https://threejs.org/docs/index.html#api/en/objects/Group
-    const group = new THREE.Group();
-    group.add(head);
-
-    // add group to scene
-    this.scene.add(group);
-
-    // Actualizar el estado
-    this.setState((prevState) => ({
-      clients: [...prevState.clients, { id, group }],
-    }));
-
-    // Update local state for the current client
-    const { clients } = this.state;
-    const currentClient = clients.find((client) => client.id === id);
-    if (currentClient) {
-      peers[id] = {
-        group: currentClient.group,
-        previousPosition: new THREE.Vector3(),
-        previousRotation: new THREE.Quaternion(),
-        desiredPosition: new THREE.Vector3(),
-        desiredRotation: new THREE.Quaternion(),
-      };
-    }
-  };
-
-  removeClient = (id) => {
-    // Eliminar del estado
-    this.setState((prevState) => ({
-      clients: prevState.clients.filter((client) => client.id !== id),
-    }));
-
-    // Eliminar del local state
-    delete peers[id];
-
-    // Eliminar del escenario
-    this.scene.remove(peers[id].group);
-  };
-
-  updateClientPositions = (clientProperties) => {
-    const { mySocket, initSocket, disconnectSocket } = useSocket();
-    this.lerpValue = 0;
-    for (let id in clientProperties) {
-      if (id !== mySocket.id) {
-        const { clients } = this.state;
-        const currentClient = clients.find((client) => client.id === id);
-        if (currentClient) {
-          peers[id].previousPosition.copy(currentClient.group.position);
-          peers[id].previousRotation.copy(currentClient.group.quaternion);
-          peers[id].desiredPosition = new THREE.Vector3().fromArray(
-            clientProperties[id].position
-          );
-          peers[id].desiredRotation = new THREE.Quaternion().fromArray(
-            clientProperties[id].rotation
-          );
-        }
-      }
-    }
-  };
 
   render() {
-    return (
-      <div>
-        <AulaService
-          addClient={this.addClient}
-          removeClient={this.removeClient}
-          updateClientPositions={this.updateClientPositions}
-        />
-      </div>
-    );
+    return <div ref={this.rendererRef}></div>;
   }
 }
 
