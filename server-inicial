@@ -1,0 +1,97 @@
+const http = require("http");
+const express = require("express");
+const socketIo = require("socket.io");
+const path = require("path");
+const PORT = process.env.PORT || 5000;
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
+app.set("view engine", "ejs"); // Configura el motor de plantillas
+app.set("views", path.join(__dirname, "views")); // Configura la carpeta de vistas
+// Servir archivos estáticos desde la carpeta 'build' de React
+app.use(express.static(path.join(__dirname, "build")));
+
+// Manejar todas las demás rutas enviando el archivo HTML de React
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+export let peers = {};
+
+function main() {
+  setupSocketServer();
+
+  setInterval(function () {
+    // update all clients of positions
+    io.sockets.emit("positions", peers);
+  }, 10);
+}
+
+main();
+
+function setupSocketServer() {
+  // Set up each socket connection
+  io.on("connection", (socket) => {
+    console.log(
+      "Peer joined with ID",
+      socket.id,
+      ". There are " + io.engine.clientsCount + " peer(s) connected."
+    );
+
+    // Add a new client indexed by their socket id
+    peers[socket.id] = {
+      position: [0, 0.5, 0],
+      rotation: [0, 0, 0, 1], // stored as XYZW values of Quaternion
+    };
+
+    // Make sure to send the client their ID and a list of ICE servers for WebRTC network traversal
+    socket.emit("introduction", Object.keys(peers));
+
+    // also give the client all existing clients positions:
+    socket.emit("userPositions", peers);
+
+    // Update everyone that the number of users has changed
+    io.emit("newUserConnected", socket.id);
+
+    // whenever the client moves, update their movements in the clients object
+    socket.on("move", (data) => {
+      if (peers[socket.id]) {
+        peers[socket.id].position = data[0];
+        peers[socket.id].rotation = data[1];
+      }
+    });
+
+    // Relay simple-peer signals back and forth
+    socket.on("signal", (to, from, data) => {
+      if (to in peers) {
+        io.to(to).emit("signal", to, from, data);
+      } else {
+        console.log("Peer not found!");
+      }
+    });
+
+    // Handle the disconnection
+    socket.on("disconnect", () => {
+      // Delete this client from the object
+      delete peers[socket.id];
+      io.sockets.emit(
+        "userDisconnected",
+        io.engine.clientsCount,
+        socket.id,
+        Object.keys(peers)
+      );
+      console.log(
+        "User " +
+          socket.id +
+          " disconnected, there are " +
+          io.engine.clientsCount +
+          " clients connected"
+      );
+    });
+  });
+}
+// Iniciar el servidor en el puerto especificado
+server.listen(PORT, () => {
+  console.log(`Servidor Node.js iniciado en http://localhost:${PORT}`);
+});
