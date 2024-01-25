@@ -1,5 +1,5 @@
 import React from "react";
-import AulaScene from "../scenes/AulaScene";
+import AulaScene from "../../../logica/scenes/AulaScene";
 
 const AulaVirtual = () => {
   return (
