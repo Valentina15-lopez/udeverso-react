@@ -1,17 +1,12 @@
-import React from "react";
-import { createRoot } from "react-dom";
-import AulaVirtual from "./components/AulaVirtual.jsx";
-import { SocketProvider } from "../logic/services/SocketContext.js";
+import routes from "./routes/routes";
+import { BrowserRouter, useRoutes } from "react-router-dom";
+function App() {
+  const element = useRoutes(routes);
+  return element;
+}
 
-const App = () => {
-  return (
-    <SocketProvider>
-      {/* Otros componentes pueden ir aquí */}
-      <AulaVirtual />
-    </SocketProvider>
-  );
-};
-
-const root = createRoot(document.getElementById("root"));
-root.render(<App />);
-export default App;
+export default () => (
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);
