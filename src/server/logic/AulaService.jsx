@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { useSocket } from "../../logic/services/SocketContext";
+import { useSocket } from "./SocketContext";
 
 class AulaService extends Component {
   constructor(props) {
