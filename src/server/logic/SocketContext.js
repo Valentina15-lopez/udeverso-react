@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
-import AulaService from "../services/AulaService";
-import AulaScene from "../../ presentation/scenes/AulaScene";
+import AulaService from "./AulaService";
+import AulaScene from "../../client/logica/scenes/AulaScene";
 import SimplePeer from "simple-peer";
 import io from "socket.io-client";
 import * as THREE from "three";

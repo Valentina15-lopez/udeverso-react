@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { useSocket } from "../../logic/services/SocketContext";
+import { useSocket } from "./SocketContext";
 
 class AulaService extends Component {
   constructor(props) {
@@ -33,12 +33,12 @@ class AulaService extends Component {
   }
 
   init = async () => {
-    const { initSocketConnection } = useSocket();
+    //const { initSocketConnection } = useSocket();&&arreglar esto
     console.log("Window loaded.");
 
     this.localMediaStream.current = await this.getMedia(this.mediaConstraints);
     this.createLocalVideoElement();
-    initSocketConnection();
+    //initSocketConnection();
 
     console.log("Creating three.js scene...");
   };

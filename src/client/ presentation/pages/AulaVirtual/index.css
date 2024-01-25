@@ -1,0 +1,12 @@
+div .aula {
+  overflow: hidden;
+  background: yellow;
+  margin: 0;
+  padding: 0;
+}
+
+#info {
+  padding: 1em;
+  border: 1em;
+  color: rgb(223, 223, 223);
+}

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import * as THREE from "three";
-import { createEnvironment } from "../../logic/services/environment";
-import AulaService from "../../logic/services/AulaService";
+import { createEnvironment } from "../../../config/environment";
+import AulaService from "../../../server/logic/AulaService";
 
 class AulaScene extends Component {
   constructor(props) {
