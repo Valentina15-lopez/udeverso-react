@@ -30,7 +30,7 @@ const Abm = () => {
                           <Link to="/ver-salas">Ver salas</Link>
                       </li>
                       <li>
-                          <Link to="/borrar-material">Borrar material de docente</Link>
+                          <Link to="/borrar-material-docente">Borrar material de docente</Link>
                       </li>
                       <li>
                           <Link to="/login">Login</Link>
