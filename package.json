@@ -87,6 +87,7 @@
     "react-error-overlay": "6.0.9",
     "should": "13.2.3",
     "supertest": "3.3.0",
+    "three": "^0.159.0",
     "vhost": "~3.0.2",
     "webpack-cli": "^5.1.4"
   },
