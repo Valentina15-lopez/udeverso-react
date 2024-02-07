@@ -1,5 +1,5 @@
 import React from "react";
-import AulaScene from "../../../ presentation/components/AulaScene";
+import AulaScene from "../../../ presentation/components/AulaScene.jsx";
 
 const AulaVirtual = () => {
   return (
