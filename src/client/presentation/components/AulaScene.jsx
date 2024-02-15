@@ -58,14 +58,6 @@ const AulaScene = () => {
     );
   }
 
-  function Overlay() {
-    return (
-      <div id="instructions">
-        <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> to roll.
-      </div>
-    );
-  }
-
   return (
     <>
       <Canvas
@@ -74,9 +66,7 @@ const AulaScene = () => {
       >
         <gridHelper ref={ref} args={[100, 100]} />
         <Ball floor={ref} />
-        <Stats />
       </Canvas>
-      <Overlay />
     </>
   );
 };
