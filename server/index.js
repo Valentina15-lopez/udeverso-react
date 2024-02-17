@@ -10,7 +10,7 @@ const io = new Server(server, {
   },
 });
 
-const characters = [];
+const avatars = [];
 
 const generateRandomPosition = () => {
   return [Math.random() * 3, 0, Math.random() * 3];
@@ -23,7 +23,7 @@ const generateRandomHexColor = () => {
 io.on("connection", (socket) => {
   console.log("user connected");
 
-  characters.push({
+  avatars.push({
     id: socket.id,
     position: generateRandomPosition(),
     hairColor: generateRandomHexColor(),
@@ -33,24 +33,22 @@ io.on("connection", (socket) => {
 
   socket.emit("hello");
 
-  io.emit("characters", characters);
+  io.emit("avatars", avatars);
 
   socket.on("move", (position) => {
-    const character = characters.find(
-      (character) => character.id === socket.id
-    );
-    character.position = position;
-    io.emit("characters", characters);
+    const avatar = avatars.find((avatar) => avatar.id === socket.id);
+    avatar.position = position;
+    io.emit("avatars", avatars);
   });
 
   socket.on("disconnect", () => {
     console.log("user disconnected");
 
-    characters.splice(
-      characters.findIndex((character) => character.id === socket.id),
+    avatars.splice(
+      avatars.findIndex((avatar) => avatar.id === socket.id),
       1
     );
-    io.emit("characters", characters);
+    io.emit("avatars", avatars);
   });
 });
 

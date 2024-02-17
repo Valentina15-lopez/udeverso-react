@@ -6,7 +6,7 @@ export const socket = io("http://localhost:3001");
 export const avatarAtom = atom([]);
 
 export const SocketManager = () => {
-  const [avatar, setAvatar] = useAtom(avatarAtom);
+  const [_avatars, setAvatar] = useAtom(avatarAtom);
   useEffect(() => {
     function onConnect() {
       console.log("connected");
@@ -19,19 +19,19 @@ export const SocketManager = () => {
       console.log("hello");
     }
 
-    function onCharacters(value) {
+    function onAvatars(value) {
       setAvatar(value);
     }
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
     socket.on("hello", onHello);
-    socket.on("characters", onCharacters);
+    socket.on("avatars", onAvatars);
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
       socket.off("hello", onHello);
-      socket.off("characters", onCharacters);
+      socket.off("avatars", onAvatars);
     };
   }, []);
 };

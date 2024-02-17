@@ -22,6 +22,7 @@ const AulaScene = () => {
   return (
     <>
       <Environment preset="sunset" />
+      <ContactShadows blur={2} />
       <OrbitControls />
       <gridHelper
         ref={ref}
@@ -41,6 +42,9 @@ const AulaScene = () => {
               avatar.position[2]
             )
           }
+          hairColor={avatar.hairColor}
+          topColor={avatar.topColor}
+          bottomColor={avatar.bottomColor}
         />
       ))}
     </>
