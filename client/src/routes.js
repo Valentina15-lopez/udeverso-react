@@ -1,7 +1,7 @@
-import Menu from "../../client/presentation/pages/Menu";
-import AulaVirtual from "../../client/presentation/pages/AulaVirtual";
-import Abm from "../../client/presentation/pages/ABM";
-import NotFound from "../../client/presentation/pages/NotFound";
+import Menu from "./pages/Menu";
+import AulaVirtual from "./pages/AulaVirtual";
+import Abm from "./pages/ABM";
+import NotFound from "./pages/NotFound";
 
 const routes = [
   {

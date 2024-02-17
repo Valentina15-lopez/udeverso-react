@@ -17,6 +17,8 @@
     "api"
   ],
   "dependencies": {
+    "@react-three/drei": "^9.97.3",
+    "@react-three/fiber": "^8.15.16",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -39,6 +41,7 @@
     "fresh": "0.5.2",
     "http": "^0.0.1-security",
     "https-browserify": "^1.0.0",
+    "jotai": "^2.6.4",
     "merge-descriptors": "1.0.1",
     "methods": "~1.1.2",
     "on-finished": "~2.3.0",
@@ -61,6 +64,7 @@
     "statuses": "~1.5.0",
     "stream-http": "^3.2.0",
     "three": "^0.159.0",
+    "three-stdlib": "^2.29.4",
     "type-is": "~1.6.18",
     "utils-merge": "1.0.1",
     "vary": "~1.1.2",
