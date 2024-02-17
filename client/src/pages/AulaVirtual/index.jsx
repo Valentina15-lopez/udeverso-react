@@ -8,7 +8,7 @@ const AulaVirtual = () => {
     <div>
       <h1>Udeverso - Aula Virtual</h1>
       <SocketManager />
-      <Canvas shadows camera={{ position: [8, 8, 8], fov: 30 }}>
+      <Canvas shadows camera={{ position: [10, 10, 10], fov: 30 }}>
         <AulaScene />
       </Canvas>
     </div>
