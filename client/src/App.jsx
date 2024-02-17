@@ -1,4 +1,4 @@
-import routes from "../../server/routes/routes";
+import routes from "./routes";
 import { BrowserRouter, useRoutes } from "react-router-dom";
 function App() {
   const element = useRoutes(routes);
