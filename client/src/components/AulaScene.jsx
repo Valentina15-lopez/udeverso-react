@@ -1,7 +1,4 @@
-import React, { useRef, useEffect, useState, useMemo } from "react";
-import { createRoot } from "react-dom/client";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Stats } from "@react-three/drei";
+import React, { useRef, useState } from "react";
 import * as THREE from "three";
 import { avatarAtom, socket } from "./SocketManager";
 import { useAtom } from "jotai";
