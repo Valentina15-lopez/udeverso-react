@@ -6,6 +6,7 @@ import * as THREE from "three";
 import { avatarAtom, socket } from "./SocketManager";
 import { useAtom } from "jotai";
 import { Avatar } from "./Avatar";
+import { useUserMedia } from '../components/useUSerMedia';
 import {
   ContactShadows,
   Environment,
@@ -17,6 +18,18 @@ const AulaScene = () => {
   const ref = useRef();
   const [avatars] = useAtom(avatarAtom);
   const [onFloor, setOnFloor] = useState(false);
+  const { stream, error } = useUserMedia({ audio: true, video: true }); //maria
+  
+  // ----------------------- Inicio: maria  ----------------------
+  //Emitir el flujo de audio al servidor cuando esté disponible
+   
+  useEffect(() => {
+    if (stream && !error) {
+      socket.emit("audioStream", stream);
+    }
+  }, [stream, error]);
+ // ----------------------- fin: maria  ----------------------
+
   useCursor(onFloor);
 
   return (
@@ -31,6 +44,10 @@ const AulaScene = () => {
         onPointerEnter={() => setOnFloor(true)}
         onPointerLeave={() => setOnFloor(false)}
       />
+
+      
+      
+
       {avatars.map((avatar) => (
         <Avatar
           key={avatar.id}

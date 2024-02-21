@@ -4,6 +4,7 @@ import http from "http";
 
 const app = express();
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000", // Reemplaza esto con la URL de tu aplicación React
@@ -42,6 +43,14 @@ io.on("connection", (socket) => {
     character.position = position;
     io.emit("characters", characters);
   });
+  // ---------------------------------------------------inicio  Maria  Escuchar el evento de flujo de audio del cliente
+  // Escuchar el evento de flujo de audio del cliente
+  socket.on("audioStream", (stream) => {
+    console.log("audio");
+    // Retransmitir el flujo de audio a todos los otros usuarios conectados
+    socket.broadcast.emit("audioStream", stream);
+  }); 
+    // ---------------------------------------------------inicio  Maria  Escuchar el evento de flujo de audio del cliente
 
   socket.on("disconnect", () => {
     console.log("user disconnected");
@@ -59,3 +68,7 @@ const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+
+
+ 
