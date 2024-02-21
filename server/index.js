@@ -15,7 +15,7 @@ const server = https.createServer(credentials, app);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://localhost:3000", // Reemplaza esto con la URL de tu aplicación React
+    origin: "https://metaversoude.ddns.net:3000", // Reemplaza esto con la URL de tu aplicación React
   },
 });
 
