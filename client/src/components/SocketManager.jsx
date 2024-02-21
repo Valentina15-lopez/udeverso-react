@@ -2,7 +2,7 @@ import { atom, useAtom } from "jotai";
 import { useEffect } from "react";
 import { io } from "socket.io-client";
 
-export const socket = io("http://localhost:3001");
+export const socket = io("https://localhost:3001");
 export const avatarAtom = atom([]);
 
 export const SocketManager = () => {
