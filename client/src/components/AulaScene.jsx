@@ -7,19 +7,23 @@ import * as THREE from "three";
 import { avatarAtom, socket } from "./SocketManager";
 import { useAtom } from "jotai";
 import { Avatar } from "./Avatar";
+import { useLoader } from "@react-three/fiber";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import {
   ContactShadows,
   Environment,
   OrbitControls,
   useCursor,
 } from "@react-three/drei";
-import floorTexture from "../assets/pisoAula.jpg"; // Ajusta la ruta a tu textura
+import modeloGlb from "../assets/version1aula.glb";
 
 const AulaScene = () => {
   const aulaRef = useRef();
   const [avatars] = useAtom(avatarAtom);
   const [onFloor, setOnFloor] = useState(false);
   useCursor(onFloor);
+  // Cargar modelo glb
+  const gltf = useLoader(GLTFLoader, modeloGlb);
 
   return (
     <>
@@ -31,23 +35,8 @@ const AulaScene = () => {
         onPointerEnter={() => setOnFloor(true)}
         onPointerLeave={() => setOnFloor(false)}
       >
-        {/* Paredes */}
-        <Box args={[10, 5, 1]} position={[0, 0, -5]}>
-          <meshStandardMaterial color={"blue"} />
-        </Box>
-        <Box args={[1, 5, 10]} position={[-5, 0, 0]}>
-          <meshStandardMaterial color={"blue"} />
-        </Box>
-        <Box args={[1, 5, 10]} position={[5, 0, 0]}>
-          <meshStandardMaterial color={"blue"} />
-        </Box>
-
-        {/* Suelo  */}
-        <mesh rotation-x={-Math.PI / 2} position={[0, -2.5, 0]}>
-          <planeGeometry args={[10, 10]} />
-          <meshStandardMaterial color={"red"} />
-        </mesh>
-
+        {/* Renderizar modelo glb */}
+        <primitive object={gltf.scene} position={[0, -2.5, 0]} />
         {avatars.map((avatar) => (
           <Avatar
             key={avatar.id}
