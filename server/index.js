@@ -1,13 +1,22 @@
 import { Server } from "socket.io";
 import express from "express";
-import http from "http";
+import https from "https";
+import fs from "fs";
 
 const app = express();
-const server = http.createServer(app);
+
+// Lee los archivos del certificado y la clave privada
+const privateKey = fs.readFileSync('key.pem', 'utf8');
+const certificate = fs.readFileSync('cert.pem', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
+
+// Crea un servidor HTTPS utilizando los certificados
+const server = https.createServer(credentials, app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Reemplaza esto con la URL de tu aplicación React
+    origin: "*", // URL correcta de tu aplicación cliente
+    
   },
 });
 
@@ -43,14 +52,13 @@ io.on("connection", (socket) => {
     character.position = position;
     io.emit("characters", characters);
   });
-  // ---------------------------------------------------inicio  Maria  Escuchar el evento de flujo de audio del cliente
+
   // Escuchar el evento de flujo de audio del cliente
   socket.on("audioStream", (stream) => {
     console.log("audio");
     // Retransmitir el flujo de audio a todos los otros usuarios conectados
     socket.broadcast.emit("audioStream", stream);
-  }); 
-    // ---------------------------------------------------inicio  Maria  Escuchar el evento de flujo de audio del cliente
+  });
 
   socket.on("disconnect", () => {
     console.log("user disconnected");
@@ -68,7 +76,3 @@ const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-
-
- 
