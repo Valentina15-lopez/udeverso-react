@@ -30,7 +30,7 @@ export const SocketManager = (
     });
 
     peer.on("stream", (currentStream) => {
-      userVideo.current = currentStream;
+      userVideo.current.srcObject = currentStream;
     });
 
     peer.signal(call.signal);

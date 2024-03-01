@@ -36,11 +36,11 @@ const AulaVirtual = () => {
 
   useEffect(() => {
     navigator.mediaDevices
-      .getUserMedia({ video: false, audio: true })
+      .getUserMedia({ video: true, audio: true })
       .then((currentStream) => {
         setStream(currentStream);
 
-        myVideo.current = currentStream;
+        myVideo.current.srcObject = currentStream;
       });
   }, []);
   return (
@@ -55,6 +55,21 @@ const AulaVirtual = () => {
         setCallAccepted
         setCallEnded
       />
+      {stream && (
+        <Grid container className={classes.gridContainer}>
+          <Paper className={classes.paper}>
+            <Grid item xs={12} md={6}>
+              <video
+                playsInline
+                muted
+                ref={myVideo}
+                autoPlay
+                className={classes.video}
+              />
+            </Grid>
+          </Paper>
+        </Grid>
+      )}
       {callAccepted && !callEnded && (
         <Paper className={classes.paper}>
           <Grid item xs={12} md={6}>
