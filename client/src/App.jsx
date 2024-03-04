@@ -1,5 +1,7 @@
 import routes from "./routes";
 import { BrowserRouter, useRoutes } from "react-router-dom";
+import { ContextProvider } from "./components/SocketManager";
+
 function App() {
   const element = useRoutes(routes);
   return element;
@@ -7,6 +9,8 @@ function App() {
 
 export default () => (
   <BrowserRouter>
-    <App />
+    <ContextProvider>
+      <App />
+    </ContextProvider>
   </BrowserRouter>
 );

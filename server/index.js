@@ -1,12 +1,22 @@
 import { Server } from "socket.io";
 import express from "express";
+//import http from "http";
 import http from "http";
+import fs from "fs";
 
 const app = express();
-const server = http.createServer(app);
+//const server = http.createServer(app);
+// Lee los archivos del certificado y la clave privada
+const privateKey = fs.readFileSync("key.pem", "utf8");
+const certificate = fs.readFileSync("cert.pem", "utf8");
+const credentials = { key: privateKey, cert: certificate };
+
+const server = http.createServer(credentials, app);
+
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Reemplaza esto con la URL de tu aplicación React
+    origin: "*",
+    methods: ["GET", "POST"],
   },
 });
 
@@ -45,17 +55,24 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("user disconnected");
-
+    socket.broadcast.emit("callEnded");
     characters.splice(
       characters.findIndex((character) => character.id === socket.id),
       1
     );
     io.emit("characters", characters);
   });
+
+  socket.emit("me", socket.id);
+
+  socket.on("callUser", ({ userToCall, signalData, from, name, data }) => {
+    io.to(userToCall).emit("callUser", { signal: signalData, from, name });
+    io.to(data.to).emit("callAccepted", data.signal);
+  });
 });
 
 const PORT = process.env.PORT || 3001;
 
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log("Server is running on port");
 });
