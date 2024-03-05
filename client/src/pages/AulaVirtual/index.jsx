@@ -1,7 +1,16 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import AulaScene from "../../components/AulaScene";
+import {
+  Button,
+  TextField,
+  Grid,
+  Typography,
+  Container,
+  Paper,
+  makeStyles,
+} from "@material-ui/core";
 import { Canvas } from "@react-three/fiber";
-import { Grid, Paper, makeStyles } from "@material-ui/core";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import { SocketContext } from "../../components/SocketManager";
 
 const useStyles = makeStyles((theme) => ({
@@ -25,12 +34,43 @@ const useStyles = makeStyles((theme) => ({
 }));
 const AulaVirtual = () => {
   const classes = useStyles();
+  const { me, callUser, userVideo, stream, setStream } =
+    useContext(SocketContext);
+  const myVideo = useRef();
 
-  const { myVideo, userVideo, stream } = useContext(SocketContext);
+  const [idToCall, setIdToCall] = useState("");
+  useEffect(() => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((currentStream) => {
+        setStream(currentStream);
 
+        myVideo.current = currentStream;
+      });
+  }, []);
   return (
     <div>
       <h1>Udeverso - Aula Virtual</h1>
+      <CopyToClipboard text={me} className={classes.margin}>
+        <Button variant="contained" color="primary" fullWidth>
+          Copy Your ID
+        </Button>
+      </CopyToClipboard>
+      <TextField
+        label="ID to call"
+        value={idToCall}
+        onChange={(e) => setIdToCall(e.target.value)}
+        fullWidth
+      />
+      <Button
+        variant="contained"
+        color="primary"
+        fullWidth
+        onClick={() => callUser(idToCall)}
+        className={classes.margin}
+      >
+        Call
+      </Button>
       <Grid container className={classes.gridContainer}>
         {stream && (
           <Paper className={classes.paper}>

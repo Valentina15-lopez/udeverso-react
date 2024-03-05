@@ -30,49 +30,26 @@ const generateRandomHexColor = () => {
   return "#" + Math.floor(Math.random() * 16777215).toString(16);
 };
 
+const PORT = process.env.PORT || 3001;
+
+app.get("/", (req, res) => {
+  res.send("Running");
+});
+
 io.on("connection", (socket) => {
-  console.log("user connected");
-
-  characters.push({
-    id: socket.id,
-    position: generateRandomPosition(),
-    hairColor: generateRandomHexColor(),
-    topColor: generateRandomHexColor(),
-    bottomColor: generateRandomHexColor(),
-  });
-
-  socket.emit("hello");
-
-  io.emit("characters", characters);
-
-  socket.on("move", (position) => {
-    const character = characters.find(
-      (character) => character.id === socket.id
-    );
-    character.position = position;
-    io.emit("characters", characters);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
-    socket.broadcast.emit("callEnded");
-    characters.splice(
-      characters.findIndex((character) => character.id === socket.id),
-      1
-    );
-    io.emit("characters", characters);
-  });
-
   socket.emit("me", socket.id);
 
-  socket.on("callUser", ({ userToCall, signalData, from, name, data }) => {
+  socket.on("disconnect", () => {
+    socket.broadcast.emit("callEnded");
+  });
+
+  socket.on("callUser", ({ userToCall, signalData, from, name }) => {
     io.to(userToCall).emit("callUser", { signal: signalData, from, name });
+  });
+
+  socket.on("answerCall", (data) => {
     io.to(data.to).emit("callAccepted", data.signal);
   });
 });
 
-const PORT = process.env.PORT || 3001;
-
-server.listen(PORT, () => {
-  console.log("Server is running on port");
-});
+server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
