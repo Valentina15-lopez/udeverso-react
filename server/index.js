@@ -4,7 +4,7 @@ import http from "http";
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000", // Reemplaza esto con la URL de tu aplicación React
   },
@@ -34,6 +34,11 @@ io.on("connection", (socket) => {
   socket.emit("hello");
 
   io.emit("characters", characters);
+
+  socket.on("stream", (media) => {
+    //emitir el evento a todos los socket conectados
+    socket.broadcast.emit("stream", medias);
+  });
 
   socket.on("move", (position) => {
     const character = characters.find(

@@ -27,6 +27,7 @@ export const SocketManager = () => {
     socket.on("disconnect", onDisconnect);
     socket.on("hello", onHello);
     socket.on("characters", onCharacters);
+    socket.on("stream", onCharacters);
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
