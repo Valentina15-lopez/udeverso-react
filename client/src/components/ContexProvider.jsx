@@ -12,8 +12,9 @@ export const socket = io("http://localhost:3001");
 
 const ContextProvider = ({ children }) => {
   const [avatar, setAvatar] = useAtom(avatarAtom);
-  const [username, setUsername] = useAtom(usernameAtom);
+  const [name, setName] = useState("");
   const [me, setMe] = useAtom(idsAtom);
+  const [call, setCall] = useState({});
 
   useEffect(() => {
     function onConnect() {
@@ -36,7 +37,10 @@ const ContextProvider = ({ children }) => {
     socket.on("hello", onHello);
     socket.on("characters", onCharacters);
     socket.on("me", (id) => setMe(id));
-    socket.on("username", (name) => setUsername(name));
+
+    socket.on("callUser", ({ from, name: callerName, signal }) => {
+      setCall({ isReceivingCall: true, from, name: callerName, signal });
+    });
 
     return () => {
       socket.off("connect", onConnect);
@@ -44,14 +48,14 @@ const ContextProvider = ({ children }) => {
       socket.off("hello", onHello);
       socket.off("characters", onCharacters);
     };
-  }, [username]);
+  }, []);
   return (
     <SocketContext.Provider
       value={{
         me,
-        username,
         avatar,
         socket,
+        call,
       }}
     >
       {children}

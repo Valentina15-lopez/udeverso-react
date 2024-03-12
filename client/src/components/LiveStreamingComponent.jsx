@@ -1,18 +1,12 @@
 import React, { useEffect, useRef, useContext } from "react";
 import Peer from "peerjs";
 import { SocketContext, socket, usernameAtom, idsAtom } from "./ContexProvider";
-import { useAtom } from "jotai";
 
 const LiveStreamingComponent = () => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const videoContainerRef = useRef(null);
-  const { me, username } = useContext(SocketContext);
-  const [usernames] = useAtom(usernameAtom);
-  const [ids] = useAtom(idsAtom);
-
-  console.log("usernames", usernames);
-  console.log("ids", ids);
+  const { me, name, setMe, setUsername, call } = useContext(SocketContext);
 
   useEffect(() => {
     let peer;
@@ -46,10 +40,11 @@ const LiveStreamingComponent = () => {
         });
 
         peer.on("signal", (data) => {
-          socket.emit("callAllUsers", {
+          socket.emit("answerCall", { signal: data, to: call.from });
+          socket.emit("callUser", {
             signalData: data,
             from: me,
-            name: username,
+            name,
           });
         });
 

@@ -34,11 +34,13 @@ io.on("connection", (socket) => {
   socket.emit("hello");
 
   io.emit("characters", characters);
-  socket.emit("username", socket.name);
   socket.emit("me", socket.id);
 
-  socket.on("callAllUsers", ({ signalData, from, name }) => {
-    socket.broadcast.emit("callAllUsers", { signalData, from, name });
+  socket.on("callUser", ({ userToCall, signalData, from, name }) => {
+    io.to(userToCall).emit("callUser", { signal: signalData, from, name });
+  });
+  socket.on("answerCall", (data) => {
+    io.to(data.to).emit("callAccepted", data.signal);
   });
 
   socket.on("stream", (dataUrl) => {

@@ -2,12 +2,21 @@ import React, { useContext } from "react";
 import AulaScene from "../../components/AulaScene";
 import { Canvas } from "@react-three/fiber";
 import LiveStreamingComponent from "../../components/LiveStreamingComponent";
-import { SocketContext } from "../../components/ContexProvider";
+import {
+  SocketContext,
+  usernameAtom,
+  idsAtom,
+} from "../../components/ContexProvider";
+import { useAtom } from "jotai";
 
 const AulaVirtual = () => {
-  const { me, username } = useContext(SocketContext);
+  const { me } = useContext(SocketContext);
+  const [usernames] = useAtom(usernameAtom);
+  const [ids] = useAtom(idsAtom);
+
+  console.log("usernames", usernames);
+  console.log("ids", ids);
   console.log("##id", me);
-  console.log("##username", username);
   return (
     <div>
       <h1>Udeverso - Aula Virtual</h1>
