@@ -23,62 +23,7 @@
 
     <div id="root"></div>
     <script src="../src/index.jsx"></script>
-    <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"></script>
   </head>
 
-  <body>
-    <video
-      src=""
-      id="video"
-      style="width: 800px; height: 600px"
-      autoplay="true"
-    ></video>
-    <canvas id="preview"></canvas>
-    <div class="status"></div>
-    <script>
-      var canvas = document.querySelector("#preview");
-      var context = canvas.getContext("2d");
-      var btn = document.querySelector("#btn");
-      canvas.width = 512;
-      canvas.height = 384;
-      //canvas.style.display = "none";
-
-      context.width = canvas.width;
-      context.height = canvas.height;
-
-      var video = document.querySelector("#video");
-
-      var socket = io();
-
-      function publicarMensaje(msg) {
-        document.querySelector(".status").innerText = msg;
-      }
-      function loadCamara(stream) {
-        video.srcObject = stream;
-        publicarMensaje("camara funcionando");
-      }
-      function errorCamara() {
-        publicarMensaje("camara fallando");
-      }
-      function verVideo(video, context) {
-        context.drawImage(video, 0, 0, context.width, context.height);
-        socket.emit("stream", canvas.toDataURL("image/webp"));
-      }
-      document.addEventListener("DOMContentLoaded", function () {
-        // Tu código aquí se ejecutará cuando la pestaña se abra y el DOM esté completamente cargado.
-        navigator.getUserMedia =
-          navigator.getUserMedia || navigator.mozGetUserMedia;
-        if (navigator.getUserMedia) {
-          navigator.getUserMedia(
-            { video: true, audio: true },
-            loadCamara,
-            errorCamara
-          );
-        }
-        var intervalo = setInterval(() => {
-          verVideo(video, context);
-        }, 30);
-      });
-    </script>
-  </body>
+  <body></body>
 </html>

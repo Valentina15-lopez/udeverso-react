@@ -34,10 +34,15 @@ io.on("connection", (socket) => {
   socket.emit("hello");
 
   io.emit("characters", characters);
+  socket.emit("username", socket.name);
+  socket.emit("me", socket.id);
 
-  socket.on("stream", (media) => {
-    //emitir el evento a todos los socket conectados
-    socket.broadcast.emit("stream", medias);
+  socket.on("callAllUsers", ({ signalData, from, name }) => {
+    socket.broadcast.emit("callAllUsers", { signalData, from, name });
+  });
+
+  socket.on("stream", (dataUrl) => {
+    socket.broadcast.emit("stream", dataUrl);
   });
 
   socket.on("move", (position) => {
