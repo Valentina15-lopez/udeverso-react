@@ -1,37 +1,75 @@
-import { atom, useAtom } from "jotai";
-import { useEffect } from "react";
+import React, { createContext, useState, useRef, useEffect } from "react";
 import { io } from "socket.io-client";
+import Peer from "simple-peer";
 
-export const socket = io("http://localhost:3001");
-export const avatarAtom = atom([]);
+const SocketContext = createContext();
 
-export const SocketManager = () => {
-  const [avatar, setAvatar] = useAtom(avatarAtom);
-  useEffect(() => {
-    function onConnect() {
-      console.log("connected");
-    }
-    function onDisconnect() {
-      console.log("disconnected");
-    }
+const socket = io("http://localhost:3001");
+//const socket = io("https://warm-wildwood-81069.herokuapp.com");
 
-    function onHello() {
-      console.log("hello");
-    }
+const ContextProvider = ({ children }) => {
+  const [callEnded, setCallEnded] = useState(false);
+  const [stream, setStream] = useState();
+  const [name, setName] = useState("");
+  const [callAccepted, setCallAccepted] = useState(false);
+  const [call, setCall] = useState({});
+  const [me, setMe] = useState("");
+  const userVideo = useRef();
+  const connectionRef = useRef();
 
-    function onCharacters(value) {
-      setAvatar(value);
-    }
+  const callUser = (id) => {
+    setCallAccepted(true);
+    const peer = new Peer({ initiator: true, trickle: false, stream });
 
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("hello", onHello);
-    socket.on("characters", onCharacters);
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      socket.off("hello", onHello);
-      socket.off("characters", onCharacters);
-    };
-  }, []);
+    peer.on("signal", (data) => {
+      socket.emit("callUser", {
+        userToCall: id,
+        signalData: data,
+        from: me,
+        name,
+        to: call.from,
+      });
+    });
+
+    peer.on("stream", (currentStream) => {
+      userVideo.current.srcObject = currentStream;
+    });
+
+    socket.on("callAccepted", (signal) => {
+      setCallAccepted(true);
+
+      peer.signal(signal);
+    });
+
+    connectionRef.current = peer;
+  };
+
+  const leaveCall = () => {
+    setCallEnded(true);
+
+    connectionRef.current.destroy();
+
+    window.location.reload();
+  };
+
+  return (
+    <SocketContext.Provider
+      value={{
+        setStream,
+        call,
+        userVideo,
+        stream,
+        name,
+        setName,
+        callEnded,
+        me,
+        callUser,
+        leaveCall,
+      }}
+    >
+      {children}
+    </SocketContext.Provider>
+  );
 };
+
+export { ContextProvider, SocketContext };

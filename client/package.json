@@ -17,6 +17,7 @@
     "api"
   ],
   "dependencies": {
+    "@material-ui/core": "^4.12.4",
     "@react-three/drei": "^9.97.3",
     "@react-three/fiber": "^8.15.16",
     "@testing-library/jest-dom": "^5.17.0",
