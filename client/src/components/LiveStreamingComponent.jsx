@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useContext } from "react";
 import Peer from "peerjs";
-import { SocketContext, socket, usernameAtom, idsAtom } from "./ContexProvider";
+import { SocketContext, socket, userAtom } from "./ContexProvider";
+import { useAtom } from "jotai";
 
 const LiveStreamingComponent = () => {
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
-  const videoContainerRef = useRef(null);
-  const { me, name, setMe, setUsername, call } = useContext(SocketContext);
+  const myVideoRef = useRef(null);
+  const userVideoRef = useRef(null);
+  const [users] = useAtom(userAtom);
+
+  console.log("usernames", users);
+  const { me, name, call } = useContext(SocketContext);
 
   useEffect(() => {
     let peer;
@@ -17,7 +20,7 @@ const LiveStreamingComponent = () => {
     };
 
     const loadCamera = (stream) => {
-      videoRef.current.srcObject = stream;
+      myVideoRef.current.srcObject = stream;
       publicarMensaje("Cámara funcionando");
     };
 
@@ -49,10 +52,7 @@ const LiveStreamingComponent = () => {
         });
 
         peer.on("stream", (currentStream) => {
-          const newVideo = document.createElement("video");
-          newVideo.srcObject = currentStream;
-          newVideo.autoplay = true;
-          videoContainerRef.current.appendChild(newVideo);
+          userVideoRef.srcObject = currentStream;
         });
 
         socket.on("callAccepted", (signal) => {
@@ -65,14 +65,7 @@ const LiveStreamingComponent = () => {
 
     setupWebRTC();
 
-    const intervalId = setInterval(() => {
-      const context = canvasRef.current.getContext("2d");
-      context.drawImage(videoRef.current, 0, 0, context.width, context.height);
-      socket.emit("stream", canvasRef.current.toDataURL("image/webp"));
-    }, 30);
-
     return () => {
-      clearInterval(intervalId);
       if (peer) {
         peer.destroy();
       }
@@ -84,13 +77,15 @@ const LiveStreamingComponent = () => {
     <div>
       <h1>Emisión en directo</h1>
       <video
-        ref={videoRef}
+        ref={myVideoRef}
         style={{ width: "800px", height: "600px" }}
         autoPlay
       />
-      <canvas ref={canvasRef} id="preview" width="512" height="384" />
-      <div ref={videoContainerRef} id="videoContainer" />
-      <div className="status" />
+      <video
+        ref={userVideoRef}
+        style={{ width: "800px", height: "600px" }}
+        autoPlay
+      />
     </div>
   );
 };

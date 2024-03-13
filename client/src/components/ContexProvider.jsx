@@ -5,15 +5,11 @@ import Peer from "simple-peer";
 
 const SocketContext = createContext();
 
-export const avatarAtom = atom([]);
-export const usernameAtom = atom([]);
-export const idsAtom = atom([]);
+export const userAtom = atom([]);
 export const socket = io("http://localhost:3001");
 
 const ContextProvider = ({ children }) => {
-  const [avatar, setAvatar] = useAtom(avatarAtom);
-  const [name, setName] = useState("");
-  const [me, setMe] = useAtom(idsAtom);
+  const [user, setUser] = useAtom(userAtom);
   const [call, setCall] = useState({});
 
   useEffect(() => {
@@ -28,15 +24,14 @@ const ContextProvider = ({ children }) => {
       console.log("hello");
     }
 
-    function onCharacters(value) {
-      setAvatar(value);
+    function onUsers(value) {
+      setUser(value);
     }
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
     socket.on("hello", onHello);
-    socket.on("characters", onCharacters);
-    socket.on("me", (id) => setMe(id));
+    socket.on("users", onUsers);
 
     socket.on("callUser", ({ from, name: callerName, signal }) => {
       setCall({ isReceivingCall: true, from, name: callerName, signal });
@@ -46,14 +41,13 @@ const ContextProvider = ({ children }) => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
       socket.off("hello", onHello);
-      socket.off("characters", onCharacters);
+      socket.off("users", onUsers);
     };
   }, []);
   return (
     <SocketContext.Provider
       value={{
-        me,
-        avatar,
+        user,
         socket,
         call,
       }}
