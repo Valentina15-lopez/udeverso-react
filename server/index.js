@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import express from "express";
 import http from "http";
+import { v4 as uuidV4 } from "uuid";
 
 const app = express();
 
@@ -10,12 +11,23 @@ export const io = new Server(server, {
     origin: "http://localhost:3000", // Reemplaza esto con la URL de tu aplicación React
   },
 });
-app.get("/aulavirtual", (req, res) => {
-  res.redirect(`/${uuidV4()}`);
+app.use((req, res, next) => {
+  console.log(`Solicitud recibida para: ${req.url}`);
+  next();
+});
+app.get("/", (req, res) => {
+  console.log("roomId", roomId); // Verifi
 });
 
-app.get("/aulavirtual/:room", (req, res) => {
-  res.render("room", { roomId: req.params.room });
+app.get("/aulavirtual", (req, res) => {
+  const roomId = uuidV4(); // Genera el ID único
+  console.log("roomId", roomId); // Verifica si el ID se genera correctamente
+  res.redirect(`/aulavirtual/${roomId}`); // Redirige al cliente a la ruta con el ID generado
+});
+
+app.get("/aulavirtual/:roomId", (req, res) => {
+  // Renderiza la vista "room" con el ID de la sala
+  res.render("room", { roomId: req.params.roomId });
 });
 
 const users = [];
@@ -38,20 +50,15 @@ io.on("connection", (socket) => {
     topColor: generateRandomHexColor(),
     bottomColor: generateRandomHexColor(),
   });
-
-  socket.emit("hello");
-
   io.emit("users", users);
 
-  socket.on("callUser", ({ userToCall, signalData, from, name }) => {
-    io.to(userToCall).emit("callUser", { signal: signalData, from, name });
-  });
-  socket.on("answerCall", (data) => {
-    io.to(data.to).emit("callAccepted", data.signal);
-  });
+  socket.on("join-room", (roomId, userId) => {
+    socket.join(roomId);
+    socket.to(roomId).broadcast.emit("user-connected", userId);
 
-  socket.on("stream", (dataUrl) => {
-    socket.broadcast.emit("stream", dataUrl);
+    socket.on("disconnect", () => {
+      socket.to(roomId).broadcast.emit("user-disconnected", userId);
+    });
   });
 
   socket.on("move", (position) => {
