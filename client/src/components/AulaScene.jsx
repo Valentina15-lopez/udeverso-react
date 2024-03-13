@@ -1,4 +1,11 @@
-import React, { useRef, useLayoutEffect, useState } from "react";
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useMemo,
+  useContext,
+  useLayoutEffect,
+} from "react";
 import { createRoot } from "react-dom/client";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
@@ -9,7 +16,7 @@ import {
   BakeShadows,
 } from "@react-three/drei";
 import * as THREE from "three";
-import { avatarAtom, socket } from "./SocketManager";
+import { SocketContext, socket, userAtom } from "./ContexProvider";
 import { useAtom } from "jotai";
 import { Avatar } from "./Avatar";
 import { useLoader } from "@react-three/fiber";
@@ -26,7 +33,7 @@ import {
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
-  const [avatars] = useAtom(avatarAtom);
+  const [users] = useAtom(userAtom);
   const [keysPressed, setKeysPressed] = useState({});
 
   const { up, scale, ...config } = useControls({
@@ -54,7 +61,7 @@ const AulaScene = () => {
   }, []);
 
   const handleAvatarMovement = () => {
-    avatars.forEach((avatar) => {
+    users.forEach((avatar) => {
       const speed = 0.1;
       if (keysPressed["ArrowUp"] || keysPressed["KeyW"]) {
         avatar.position[2] -= speed;
@@ -74,6 +81,11 @@ const AulaScene = () => {
   useFrame(() => {
     handleAvatarMovement();
   });
+
+  const ref = useRef();
+
+  const [onFloor, setOnFloor] = useState(false);
+  useCursor(onFloor);
 
   return (
     <>
@@ -110,15 +122,13 @@ const AulaScene = () => {
             </mesh>
           )}
         </CubeCamera>
-        {avatars.map((avatar) => (
+        {users.map((user) => (
           <Avatar
-            key={avatar.id}
-            position={
-              new THREE.Vector3(avatar.position[0], 0, avatar.position[2])
-            }
-            hairColor={avatar.hairColor}
-            topColor={avatar.topColor}
-            bottomColor={avatar.bottomColor}
+            key={user.id}
+            position={new THREE.Vector3(user.position[0], 0, user.position[2])}
+            hairColor={user.hairColor}
+            topColor={user.topColor}
+            bottomColor={user.bottomColor}
           />
         ))}
       </group>
@@ -127,7 +137,6 @@ const AulaScene = () => {
         files="https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/hdris/noon-grass/noon_grass_1k.hdr"
         background
       />
-      <BakeShadows />
     </>
   );
 };
