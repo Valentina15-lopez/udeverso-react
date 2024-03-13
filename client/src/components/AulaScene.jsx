@@ -6,6 +6,7 @@ import React, {
   useContext,
   useLayoutEffect,
 } from "react";
+import { Environment, OrbitControls, useCursor } from "@react-three/drei";
 import { createRoot } from "react-dom/client";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
@@ -16,6 +17,7 @@ import {
   BakeShadows,
 } from "@react-three/drei";
 import * as THREE from "three";
+import { CubeCamera } from "@react-three/drei";
 import { SocketContext, socket, userAtom } from "./ContexProvider";
 import { useAtom } from "jotai";
 import { Avatar } from "./Avatar";
@@ -23,13 +25,6 @@ import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { useControls } from "leva";
 import modeloGlb from "../assets/modeloAula3.glb";
-import {
-  Environment,
-  OrbitControls,
-  useCursor,
-  CubeCamera,
-  KeyboardControls,
-} from "@react-three/drei";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
@@ -91,6 +86,7 @@ const AulaScene = () => {
     <>
       <fog attach="fog" args={["purple", 0, 130]} />
       <ambientLight intensity={0.1} />
+      <OrbitControls />
       <group position={[0, -1, 0]}>
         <primitive object={gltf.scene} />
         <CubeCamera
@@ -107,6 +103,7 @@ const AulaScene = () => {
               position={[-13.68, -0.467, 17.52]}
               scale={0.02}
               geometry={gltf.nodes.PisoAula.geometry}
+              onClick={(e) => socket.emit("move", [e.point.x, 0, e.point.z])}
               dispose={null}
             >
               <meshStandardMaterial
