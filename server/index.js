@@ -15,19 +15,16 @@ app.use((req, res, next) => {
   console.log(`Solicitud recibida para: ${req.url}`);
   next();
 });
-app.get("/", (req, res) => {
-  console.log("roomId", roomId); // Verifi
-});
 
+// Ruta para redirigir a AulaVirtual con un ID generado
 app.get("/aulavirtual", (req, res) => {
-  const roomId = uuidV4(); // Genera el ID único
-  console.log("roomId", roomId); // Verifica si el ID se genera correctamente
-  res.redirect(`/aulavirtual/${roomId}`); // Redirige al cliente a la ruta con el ID generado
+  const roomId = uuidV4(); // Genera un ID único
+  res.redirect(`/aulavirtual/${roomId}`);
 });
 
+// Ruta para servir la página de React
 app.get("/aulavirtual/:roomId", (req, res) => {
-  // Renderiza la vista "room" con el ID de la sala
-  res.render("room", { roomId: req.params.roomId });
+  res.sendFile(path.join(__dirname, "../client/build", "index.html"));
 });
 
 const users = [];

@@ -22,7 +22,7 @@ const LiveStreamingComponent = () => {
 
     myPeer.current = new Peer(undefined, {
       host: "/",
-      port: "3001",
+      port: "3002",
     });
 
     // Obtener el stream del usuario actual
