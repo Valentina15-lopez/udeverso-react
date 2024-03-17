@@ -130,7 +130,7 @@ const AulaScene = () => {
         ))}
       </group>
       <OrbitControls minPolarAngle={Math.PI / 2} maxPolarAngle={Math.PI / 2} />
-      //tener en cuenta que es una url externa
+      {/* tener en cuenta que es una url externa */}
       <Environment
         files="https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/hdris/noon-grass/noon_grass_1k.hdr"
         background
