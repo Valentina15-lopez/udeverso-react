@@ -11,6 +11,7 @@ const { Pool } = pkg;
 const app = express();
 
 const server = http.createServer(app);
+const usersList = [];
 export const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000", // Reemplaza esto con la URL de tu aplicación React
@@ -46,12 +47,52 @@ const User = mongoose.model("User", userSchema);
 app.use(express.json());
 app.use(cors()); // Usa el middleware 'cors' para habilitar CORS
 
-// Rutas
+// Configurar la conexión a la base de datos PostgreSQL
+const pool = new Pool({
+  user: "udeverso_user",
+  host: "localhost",
+  database: "udeverso",
+  password: "udeverso_pass",
+  port: 5432, // Puerto predeterminado de PostgreSQL
+});
+
+// Ruta para el login
+app.post("/login", async (req, res) => {
+  const { nombreUsuario, contrasena } = req.body;
+
+  try {
+    const result = await pool.query(
+      "SELECT * FROM usuarios WHERE nombre_usuario = $1",
+      [nombreUsuario]
+    );
+    const usuario = result.rows[0];
+
+    if (!usuario) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    const contrasenaValida = await bcrypt.compare(
+      contrasena,
+      usuario.contrasena
+    );
+    if (!contrasenaValida) {
+      return res.status(401).json({ message: "Credenciales inválidas" });
+    }
+
+    // Aquí podrías generar un token JWT si deseas implementar autenticación basada en tokens
+
+    res.status(200).json({ message: "Inicio de sesión exitoso" });
+  } catch (error) {
+    console.error("Error al autenticar usuario:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+});
+
 app.post("/api/users", async (req, res) => {
   try {
     const user = new User(req.body);
     await user.save();
-    //console.log('Usuario guardado' + user);
+    console.log("Usuario guardado" + user);
     res.status(201).json(user);
   } catch (error) {
     res.status(500).json({ error: "Error al guardar el usuario" });
@@ -62,7 +103,7 @@ app.get("/api/users", async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json(users);
-    //console.dir("Los usuarios devueltos son " + users)
+    //console.dir("Los usuarios devueltos son " + users);
   } catch (error) {
     res.status(500).json({ error: "Error al obtener usuarios" });
   }
@@ -91,13 +132,12 @@ app.put("/api/users/:id", async (req, res) => {
     res.status(500).json({ error: "Error al actualizar el usuario" });
   }
 });
+// Ruta para eliminar un usuario por su ID
+app.delete("/api/users/:id", (req, res) => {
+  const { id } = req.params;
 
-const pool = new Pool({
-  user: "udeverso_user",
-  host: "localhost",
-  database: "udeverso",
-  password: "udeverso_pass",
-  port: 5432, // Puerto predeterminado de PostgreSQL
+  users = users.filter((user) => user.id !== parseInt(id));
+  res.send("Usuario eliminado exitosamente");
 });
 
 const storage = multer.memoryStorage();
@@ -155,8 +195,6 @@ app.get("/aulavirtual/:roomId", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build", "index.html"));
 });
 
-const users = [];
-
 const generateRandomPosition = () => {
   return [Math.random() * 3, 0, Math.random() * 3];
 };
@@ -166,16 +204,14 @@ const generateRandomHexColor = () => {
 };
 
 io.on("connection", (socket) => {
-  console.log("user connected");
-
-  users.push({
+  usersList.push({
     id: socket.id,
     position: generateRandomPosition(),
     hairColor: generateRandomHexColor(),
     topColor: generateRandomHexColor(),
     bottomColor: generateRandomHexColor(),
   });
-  io.emit("users", users);
+  io.emit("usersList", usersList);
 
   socket.on("join-room", (roomId, userId) => {
     socket.join(roomId);
@@ -187,19 +223,19 @@ io.on("connection", (socket) => {
   });
 
   socket.on("move", (position) => {
-    const character = users.find((character) => character.id === socket.id);
+    const character = usersList.find((character) => character.id === socket.id);
     character.position = position;
-    io.emit("users", users);
+    io.emit("usersList", usersList);
   });
 
   socket.on("disconnect", () => {
     console.log("user disconnected");
 
-    users.splice(
-      users.findIndex((character) => character.id === socket.id),
+    usersList.splice(
+      usersList.findIndex((character) => character.id === socket.id),
       1
     );
-    io.emit("users", users);
+    io.emit("usersList", usersList);
   });
 });
 

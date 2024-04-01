@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const CreateUser = ({ onCreate }) => {
+const CreateUser = () => {
   const [formData, setFormData] = useState({
     usuario: "",
     contrasenia: "",
@@ -18,7 +18,7 @@ const CreateUser = ({ onCreate }) => {
     e.preventDefault();
     try {
       // Si no existe el ID del usuario, es una solicitud de inserción
-      await axios.post("http://localhost:3000/api/users", formData);
+      await axios.post("http://localhost:3001/api/users", formData);
       console.log("Usuario creado exitosamente");
     } catch (error) {
       if (error.response) {

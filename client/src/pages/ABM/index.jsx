@@ -1,31 +1,26 @@
-import React, { useState } from "react";
-import CreateUser from "../../components/Administrador/CreateUser";
-import UserList from "../../components/Administrador/UserList";
-import ModifyUser from "../../components/Administrador/ModifyUser";
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Abm = () => {
-  const [currentComponent, setCurrentComponent] = useState(null);
-
-  const changeComponent = (component) => {
-    setCurrentComponent(component);
-  };
   return (
     <div>
       <h1>ABM USUARIOS</h1>
       <nav>
         <ul>
-          <li onClick={() => changeComponent("crear")}>Crear Usuario</li>
-          <li onClick={() => changeComponent("lista")}>Lista de Usuarios</li>
-          <li onClick={() => changeComponent("modificar")}>
-            Modificar Usuario
+          <li>
+            <Link to="/abm/createUsers">Crear Usuario</Link>
+          </li>
+          <li>
+            <Link to="/abm/listUsers">Lista de Usuarios</Link>
+          </li>
+          <li>
+            <Link to="/abm/modifyUsers">Modificar Usuario</Link>
+          </li>
+          <li>
+            <Link to="/abm/material">Insertar Material</Link>
           </li>
         </ul>
       </nav>
-      <div>
-        {currentComponent === "crear" && <CreateUser />}
-        {currentComponent === "lista" && <UserList />}
-        {currentComponent === "modificar" && <ModifyUser />}
-      </div>
     </div>
   );
 };
