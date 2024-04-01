@@ -2,7 +2,6 @@ import { Server } from "socket.io";
 import express from "express";
 import http from "http";
 import { v4 as uuidV4 } from "uuid";
-import mongoose from "mongoose";
 import cors from "cors";
 import multer from "multer";
 import pkg from "pg";
@@ -16,32 +15,9 @@ export const io = new Server(server, {
     origin: "http://localhost:3000", // Reemplaza esto con la URL de tu aplicación React
   },
 });
-//configure mongoose
-mongoose
-  .connect(
-    process.env.MONGODB_URI || "mongodb://localhost/prototipo-udeverso",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
-  .then(() => {
-    console.log("Connected to MongoDB");
-  })
-  .catch((error) => {
-    console.error("Error connecting to MongoDB:", error);
-  });
 
-const userSchema = new mongoose.Schema({
-  usuario: String,
-  contrasenia: String,
-  nombre_para_mostrar: String,
-  sala: String,
-  correo: String,
-  es_estudiante: String,
-});
 
-const User = mongoose.model("User", userSchema);
+//const User = mongoose.model("User", userSchema);
 
 app.use(express.json());
 app.use(cors()); // Usa el middleware 'cors' para habilitar CORS
@@ -49,36 +25,52 @@ app.use(cors()); // Usa el middleware 'cors' para habilitar CORS
 // Rutas
 app.post("/api/users", async (req, res) => {
   try {
-    const user = new User(req.body);
-    await user.save();
-    //console.log('Usuario guardado' + user);
-    res.status(201).json(user);
-  } catch (error) {
-    res.status(500).json({ error: "Error al guardar el usuario" });
+    const { usuario, contrasenia,nombre_para_mostrar,sala,correo,es_estudiante} = req.body;
+    const nuevoUsuario = await pool.query(
+      "INSERT INTO users (usuario, contrasenia,nombre_para_mostrar,sala,correo,es_estudiante) VALUES ($1, $2,$3,$4,$5,$6) RETURNING *",
+      [usuario, contrasenia,nombre_para_mostrar,sala,correo,es_estudiante]
+    );
+
+    res.json(nuevoUsuario.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
   }
 });
 
 app.get("/api/users", async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await pool.query("SELECT * FROM users");
     res.status(200).json(users);
     //console.dir("Los usuarios devueltos son " + users)
   } catch (error) {
     res.status(500).json({ error: "Error al obtener usuarios" });
-  }
+  } 
 });
+
+
 
 app.get("/api/users/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    //console.dir("El id recibido es " + id)
-    const users = await User.findById(id);
-    res.status(200).json(users);
-    //console.dir("Los usuarios devueltos son " + users)
+    console.dir("El id recibido es " + id);
+    const users = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+
+    console.dir("Los usuarios devueltos son " + users);
+
+    // Verificamos si se encontró el usuario
+    if (users.rows.length > 0) {
+      res.status(200).json(users.rows[0]); // Si el usuario existe, devolvemos sus datos
+    } else {
+      res.status(404).send("Usuario no encontrado"); // Si no existe, devolvemos un error 404
+    }
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener usuarios" });
+    console.error("Error al obtener usuarios:", error.message); // Imprimir el mensaje de error en la consola
+    res.status(500).json({ error: "Error al obtener usuarios" }); // Devolver un mensaje de error al cliente
   }
 });
+
+
 
 app.put("/api/users/:id", async (req, res) => {
   try {
@@ -92,12 +84,13 @@ app.put("/api/users/:id", async (req, res) => {
   }
 });
 
+// Configure PostgreSQL connection pool
 const pool = new Pool({
   user: "udeverso_user",
   host: "localhost",
   database: "udeverso",
-  password: "udeverso_pass",
-  port: 5432, // Puerto predeterminado de PostgreSQL
+  password: "puerta2024",
+  port: 5432,
 });
 
 const storage = multer.memoryStorage();

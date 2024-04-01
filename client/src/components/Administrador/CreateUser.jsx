@@ -18,12 +18,12 @@ const CreateUser = ({ onCreate }) => {
     e.preventDefault();
     try {
       // Si no existe el ID del usuario, es una solicitud de inserción
-      await axios.post("http://localhost:3000/api/users", formData);
+      await axios.post("http://localhost:3001/api/users", formData);
       console.log("Usuario creado exitosamente");
     } catch (error) {
       if (error.response) {
         // La solicitud fue realizada y el servidor respondió con un código de estado que no está en el rango 2xx
-        console.error("Error de respuesta del servidor:", error.response.data);
+        //console.error("Error de respuesta del servidor:", error.response.data);
       } else if (error.request) {
         // La solicitud fue realizada pero no se recibió respuesta
         console.error("No se recibió respuesta del servidor");
