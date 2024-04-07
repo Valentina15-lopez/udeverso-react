@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import multer from "multer";
 import pkg from "pg";
+import bcrypt from "bcrypt"; // Importa el módulo bcrypt
 const { Pool } = pkg;
 
 const app = express();
@@ -35,27 +36,36 @@ app.post("/login", async (req, res) => {
   const { nombreUsuario, contrasena } = req.body;
 
   try {
-    const result = await pool.query(
-      "SELECT * FROM usuarios WHERE nombre_usuario = $1",
-      [nombreUsuario]
-    );
+    const result = await pool.query("SELECT * FROM users WHERE usuario = $1", [
+      nombreUsuario,
+    ]);
     const usuario = result.rows[0];
 
     if (!usuario) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
+    console.log(usuario.contrasenia);
+    console.log("##contrasenia", contrasena);
 
+    const saltRounds = 10;
+
+    // Generar hash de la contraseña almacenada
+    const hashContraseñaAlmacenada = await bcrypt.hash(
+      usuario.contrasenia,
+      saltRounds
+    );
+
+    // Comparar contraseña proporcionada con hash almacenado
     const contrasenaValida = await bcrypt.compare(
       contrasena,
-      usuario.contrasena
+      hashContraseñaAlmacenada
     );
     if (!contrasenaValida) {
-      return res.status(401).json({ message: "Credenciales inválidas" });
+      return res.status(401).json({ message: "Contraseña incorrecta" });
     }
 
-    // Aquí podrías generar un token JWT si deseas implementar autenticación basada en tokens
-
-    res.status(200).json({ message: "Inicio de sesión exitoso" });
+    // Envía los datos del usuario al cliente
+    res.status(200).json(usuario);
   } catch (error) {
     console.error("Error al autenticar usuario:", error);
     res.status(500).json({ message: "Error interno del servidor" });

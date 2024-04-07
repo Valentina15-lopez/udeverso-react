@@ -10,14 +10,25 @@ const LoginForm = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:3001/login", {
-        nombreUsuario,
-        contrasena,
+      const response = await fetch("http://localhost:3001/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ nombreUsuario, contrasena }),
       });
-      setMensaje(response.data.message);
+
+      if (response.ok) {
+        const userData = await response.json();
+        // Aquí manejas los datos del usuario recibidos del servidor
+        console.log(userData);
+      } else {
+        // Maneja errores de autenticación
+        const errorMessage = await response.text();
+        console.error(errorMessage);
+      }
     } catch (error) {
-      console.error("Error al iniciar sesión:", error.response.data.message);
-      setMensaje(error.response.data.message);
+      console.error("Error al intentar iniciar sesión:", error);
     }
   };
 
