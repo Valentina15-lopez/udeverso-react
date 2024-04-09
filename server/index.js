@@ -47,7 +47,7 @@ const pool = new Pool({
 // Ruta para verificar la autenticación
 app.get("/api/checkAuth", (req, res) => {
   const token = req.cookies.sessionToken; // Obtener el token de la cookie de sesión
-
+  console.log(token);
   if (!token) {
     return res.sendStatus(401); // No hay token, no autorizado
   }
