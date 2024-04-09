@@ -1,17 +1,19 @@
+import React, { useState, useEffect } from "react";
 import Login from "./pages/Login";
 import AulaVirtual from "./pages/AulaVirtual";
+import { Route, Navigate } from "react-router-dom";
 import Abm from "./pages/ABM";
-import { Navigate } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 import ListUsers from "./pages/ListUsers";
 import ModifyUsers from "./pages/ModifyUsers";
 import CreateUsers from "./pages/CreateUsers";
 import Material from "./pages/Material";
+import { ProtectedRoute } from "./components/AuthContext";
 
 const routes = [
   {
     path: "/aulavirtual/:roomId", // Agrega el parámetro de ruta para el ID
-    element: <AulaVirtual />,
+    element: <ProtectedRoute element={AulaVirtual} />,
   },
   {
     path: "/abm",

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { useAuth } from "../AuthContext";
 
 const LoginForm = () => {
   const [nombreUsuario, setNombreUsuario] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [mensaje, setMensaje] = useState("");
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,10 +16,12 @@ const LoginForm = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ nombreUsuario, contrasena }),
       });
 
       if (response.ok) {
+        login();
         const userData = await response.json();
         // Aquí manejas los datos del usuario recibidos del servidor
         console.log(userData);

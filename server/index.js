@@ -7,7 +7,12 @@ import cors from "cors";
 import multer from "multer";
 import pkg from "pg";
 import bcrypt from "bcrypt"; // Importa el módulo bcrypt
+import jwt from "jsonwebtoken";
+import cookieParser from "cookie-parser";
+
 const { Pool } = pkg;
+
+const secretKey = "miClaveSecreta";
 
 const app = express();
 
@@ -16,11 +21,19 @@ const usersList = [];
 export const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000", // Reemplaza esto con la URL de tu aplicación React
+    credentials: true, // Habilitar el intercambio de cookies y otros datos de autenticación
   },
 });
-
 app.use(express.json());
-app.use(cors()); // Usa el middleware 'cors' para habilitar CORS
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"], // Métodos HTTP permitidos
+    credentials: true,
+  })
+);
+
+app.use(cookieParser());
 
 // Configurar la conexión a la base de datos PostgreSQL
 const pool = new Pool({
@@ -29,6 +42,22 @@ const pool = new Pool({
   database: "udeverso",
   password: "puerta2024",
   port: 5432,
+});
+
+// Ruta para verificar la autenticación
+app.get("/api/checkAuth", (req, res) => {
+  const token = req.cookies.sessionToken; // Obtener el token de la cookie de sesión
+
+  if (!token) {
+    return res.sendStatus(401); // No hay token, no autorizado
+  }
+
+  jwt.verify(token, secretKey, (err, decoded) => {
+    if (err) {
+      return res.sendStatus(403); // Token inválido, prohibido
+    }
+    res.sendStatus(200); // Usuario autenticado, devolver código de estado 200
+  });
 });
 
 // Ruta para el login
@@ -63,8 +92,13 @@ app.post("/login", async (req, res) => {
     if (!contrasenaValida) {
       return res.status(401).json({ message: "Contraseña incorrecta" });
     }
+    // Generar token JWT
+    const token = jwt.sign({ userId: usuario.id }, secretKey, {
+      expiresIn: "24h",
+    });
 
-    // Envía los datos del usuario al cliente
+    // Envía el token al cliente en una cookie
+    res.cookie("sessionToken", token, { httpOnly: true });
     res.status(200).json(usuario);
   } catch (error) {
     console.error("Error al autenticar usuario:", error);
