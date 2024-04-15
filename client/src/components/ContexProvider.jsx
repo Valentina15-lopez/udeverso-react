@@ -35,14 +35,14 @@ const ContextProvider = ({ children }) => {
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
     socket.on("hello", onHello);
-    socket.on("users", onUsers);
+    socket.on("usersList", onUsers);
     socket.on("rooms", onRooms);
 
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
       socket.off("hello", onHello);
-      socket.off("users", onUsers);
+      socket.off("usersList", onUsers);
       socket.off("rooms", onRooms);
     };
   }, []);

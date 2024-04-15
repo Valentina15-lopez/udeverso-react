@@ -23,7 +23,7 @@ $ npm start
 proyecto
 
 ```bash
-$ peerjs --port 3001
+$ peerjs --port 3002
 
 corre en el puerto que tenemos configurado el peer
 
