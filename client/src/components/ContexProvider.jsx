@@ -1,4 +1,4 @@
-import React, { createContext, useState, useRef, useEffect } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import { atom, useAtom } from "jotai";
 import { io } from "socket.io-client";
 
@@ -10,51 +10,37 @@ export const socket = io("http://localhost:3001");
 
 const ContextProvider = ({ children }) => {
   const [user, setUser] = useAtom(userAtom);
-  const [room, setRoom] = useAtom(userAtom);
+  const [room, setRoom] = useAtom(roomAtom);
   const [call, setCall] = useState({});
 
   useEffect(() => {
-    function onConnect() {
-      console.log("connected");
-    }
-    function onDisconnect() {
-      console.log("disconnected");
-    }
+    socket.on("connect", () => {
+      console.log("Connected to server");
+    });
 
-    function onHello() {
-      console.log("hello");
-    }
+    socket.on("disconnect", () => {
+      console.log("Disconnected from server");
+    });
 
-    function onUsers(value) {
+    socket.on("hello", () => {
+      console.log("Received hello from server");
+    });
+
+    socket.on("usersList", (value) => {
       setUser(value);
-    }
-    function onRooms(value) {
-      setRoom(value);
-    }
+    });
 
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("hello", onHello);
-    socket.on("usersList", onUsers);
-    socket.on("rooms", onRooms);
+    socket.on("rooms", (value) => {
+      setRoom(value);
+    });
 
     return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      socket.off("hello", onHello);
-      socket.off("usersList", onUsers);
-      socket.off("rooms", onRooms);
+      socket.disconnect();
     };
   }, []);
+
   return (
-    <SocketContext.Provider
-      value={{
-        user,
-        socket,
-        call,
-        room,
-      }}
-    >
+    <SocketContext.Provider value={{ user, socket, call, room }}>
       {children}
     </SocketContext.Provider>
   );

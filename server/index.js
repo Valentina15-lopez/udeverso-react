@@ -17,7 +17,6 @@ const secretKey = "miClaveSecreta";
 const app = express();
 
 const server = http.createServer(app);
-const usersList = [];
 export const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000", // Reemplaza esto con la URL de tu aplicación React
@@ -34,6 +33,7 @@ app.use(
 );
 
 app.use(cookieParser());
+const usersList = [];
 
 // Configurar la conexión a la base de datos PostgreSQL
 const pool = new Pool({
@@ -220,13 +220,11 @@ app.use((req, res, next) => {
   next();
 });
 
-// Ruta para redirigir a AulaVirtual con un ID generado
 app.get("/aulavirtual", (req, res) => {
   const roomId = uuidV4(); // Genera un ID único
   res.redirect(`/aulavirtual/${roomId}`);
 });
 
-// Ruta para servir la página de React
 app.get("/aulavirtual/:roomId", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build", "index.html"));
 });
@@ -242,6 +240,7 @@ const generateRandomHexColor = () => {
 io.on("connection", (socket) => {
   usersList.push({
     id: socket.id,
+    roomId: null,
     position: generateRandomPosition(),
     hairColor: generateRandomHexColor(),
     topColor: generateRandomHexColor(),
@@ -250,28 +249,23 @@ io.on("connection", (socket) => {
   io.emit("usersList", usersList);
 
   socket.on("join-room", (roomId, userId) => {
-    socket.join(roomId);
-    socket.to(roomId).broadcast.emit("user-connected", userId);
-
-    socket.on("disconnect", () => {
-      socket.to(roomId).broadcast.emit("user-disconnected", userId);
-    });
-  });
-
-  socket.on("move", (position) => {
-    const character = usersList.find((character) => character.id === socket.id);
-    character.position = position;
-    io.emit("usersList", usersList);
+    const userIndex = usersList.findIndex((user) => user.id === userId);
+    if (userIndex !== -1) {
+      usersList[userIndex].roomId = roomId;
+      socket.join(roomId);
+      socket.to(roomId).broadcast.emit("user-connected", userId);
+    }
   });
 
   socket.on("disconnect", () => {
-    console.log("user disconnected");
-
-    usersList.splice(
-      usersList.findIndex((character) => character.id === socket.id),
-      1
-    );
-    io.emit("usersList", usersList);
+    const userIndex = usersList.findIndex((user) => user.id === socket.id);
+    if (userIndex !== -1) {
+      const roomId = usersList[userIndex].roomId;
+      if (roomId) {
+        socket.to(roomId).broadcast.emit("user-disconnected", socket.id);
+      }
+      usersList.splice(userIndex, 1);
+    }
   });
 });
 

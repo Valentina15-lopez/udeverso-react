@@ -1,41 +1,34 @@
 import React, { useEffect, useRef, useContext } from "react";
 import Peer from "peerjs";
 import { SocketContext, userAtom, roomAtom } from "../ContexProvider";
-import { io } from "socket.io-client";
 import { useAtom } from "jotai";
 import { v4 as uuidV4 } from "uuid";
 
 const LiveStreamingComponent = () => {
   const [rooms] = useAtom(roomAtom);
   const myVideoRef = useRef(null);
-  const userVideoRef = useRef(null);
   const [users] = useAtom(userAtom);
-  console.log("usernames", users);
-  const roomId = uuidV4(); // Genera el ID único
-  console.log("roomId", roomId); // Verifica si el ID se genera correctamentes
+  const { socket } = useContext(SocketContext);
   const myPeer = useRef(null);
   const peers = useRef({});
 
   useEffect(() => {
-    // Inicializar PeerJS
-    const socket = io("/");
+    const roomId = uuidV4(); // Genera el ID único
 
+    // Inicializar PeerJS
     myPeer.current = new Peer(undefined, {
       host: "/",
       port: "3002",
     });
 
-    // Obtener el stream del usuario actual
     navigator.mediaDevices
       .getUserMedia({
         video: true,
         audio: true,
       })
       .then((stream) => {
-        // Añadir el stream de vídeo del usuario actual
         addVideoStream(myVideoRef.current, stream);
 
-        // Cuando se recibe una llamada, contestarla y añadir el stream del usuario remoto
         myPeer.current.on("call", (call) => {
           call.answer(stream);
           const video = document.createElement("video");
@@ -44,13 +37,11 @@ const LiveStreamingComponent = () => {
           });
         });
 
-        // Cuando un nuevo usuario se conecta, establecer conexión y añadir su stream
         socket.on("user-connected", (userId) => {
           connectToNewUser(userId, stream);
         });
       });
 
-    // Manejar la desconexión de un usuario
     socket.on("user-disconnected", (userId) => {
       if (peers.current[userId]) {
         peers.current[userId].close();
@@ -58,17 +49,15 @@ const LiveStreamingComponent = () => {
       }
     });
 
-    // Al abrir la conexión PeerJS, unirse a la sala de chat
     myPeer.current.on("open", (id) => {
-      socket.emit("join-room", rooms, id);
+      socket.emit("join-room", roomId, id); // Envía el ID de la sala al servidor
     });
 
-    // Limpiar efecto
     return () => {
       socket.off("user-connected");
       socket.off("user-disconnected");
     };
-  }, []); // Solo se ejecuta una vez al montar el componente
+  }, []);
 
   function connectToNewUser(userId, stream) {
     const call = myPeer.current.call(userId, stream);
@@ -85,11 +74,9 @@ const LiveStreamingComponent = () => {
 
   function addVideoStream(video, stream) {
     if (!video) {
-      // Si el elemento de vídeo es nulo, creamos uno nuevo
       video = document.createElement("video");
     }
     video.srcObject = stream;
-    console.log("videoUsuario", video);
     video.addEventListener("loadedmetadata", () => {
       video.play();
     });
@@ -102,7 +89,13 @@ const LiveStreamingComponent = () => {
 
   return (
     <div>
-      <div id="video-grid"></div>
+      <div id="video-grid">
+        <video ref={myVideoRef} muted autoPlay playsInline />
+        {console.log("USERS", users)}
+        {users.map((user) => (
+          <video key={user.id} id={user.id} playsInline autoPlay />
+        ))}
+      </div>
     </div>
   );
 };

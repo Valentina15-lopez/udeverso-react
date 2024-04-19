@@ -18,7 +18,7 @@ import {
 } from "@react-three/drei";
 import * as THREE from "three";
 import { CubeCamera } from "@react-three/drei";
-import { SocketContext, socket, userAtom } from "./ContexProvider";
+import { socket, userAtom } from "./ContexProvider";
 import { useAtom } from "jotai";
 import { Avatar } from "./Avatar";
 import { useLoader } from "@react-three/fiber";
