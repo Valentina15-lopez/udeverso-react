@@ -49,13 +49,16 @@ app.get("/api/checkAuth", (req, res) => {
   const token = req.cookies.sessionToken; // Obtener el token de la cookie de sesión
   console.log(token);
   if (!token) {
+    console.log("No hay token, no autorizado");
     return res.sendStatus(401); // No hay token, no autorizado
   }
 
   jwt.verify(token, secretKey, (err, decoded) => {
     if (err) {
+      console.log("Token inválido, prohibido");
       return res.sendStatus(403); // Token inválido, prohibido
     }
+    console.log("Usuario autenticado, devolver código de estado 200");
     res.sendStatus(200); // Usuario autenticado, devolver código de estado 200
   });
 });
@@ -71,35 +74,48 @@ app.post("/login", async (req, res) => {
     const usuario = result.rows[0];
 
     if (!usuario) {
+      console.log("Usuario no encontrado");
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
-    console.log(usuario.contrasenia);
-    console.log("##contrasenia", contrasena);
+    console.log("En la base es:" + usuario.contrasenia);
+    console.log("La enviada es:" + contrasena);
 
-    const saltRounds = 10;
+    const contrasenaValida1 = await bcrypt.compare(contrasena, usuario.contrasenia);
+    console.log("La nueva comparación da:" + contrasenaValida1);
+
+    //const saltRounds = 10;
 
     // Generar hash de la contraseña almacenada
-    const hashContraseñaAlmacenada = await bcrypt.hash(
-      usuario.contrasenia,
-      saltRounds
-    );
+    //const hashContraseñaAlmacenada = await bcrypt.hash(
+    //  usuario.contrasenia,
+    //  saltRounds
+    //);
+
+    //console.log("El hash es:" + hashContraseñaAlmacenada);
 
     // Comparar contraseña proporcionada con hash almacenado
-    const contrasenaValida = await bcrypt.compare(
-      contrasena,
-      hashContraseñaAlmacenada
-    );
-    if (!contrasenaValida) {
+    //const contrasenaValida = await bcrypt.compare(
+    //  contrasena,
+    //  hashContraseñaAlmacenada
+    //);
+    //if (!contrasenaValida) {
+    //  console.log("Contraseña incorrecta");
+    //  return res.status(401).json({ message: "Contraseña incorrecta" });
+    //}
+    if (!contrasenaValida1) {
+      console.log("Contraseña incorrecta");
       return res.status(401).json({ message: "Contraseña incorrecta" });
     }
+    console.log("Generar token JWT");
     // Generar token JWT
     const token = jwt.sign({ userId: usuario.id }, secretKey, {
       expiresIn: "24h",
     });
-
+    console.log("Envía el token al cliente en una cookie");
     // Envía el token al cliente en una cookie
     res.cookie("sessionToken", token, { httpOnly: true });
     res.status(200).json(usuario);
+    console.log("Respuesta enviada");
   } catch (error) {
     console.error("Error al autenticar usuario:", error);
     res.status(500).json({ message: "Error interno del servidor" });
@@ -131,7 +147,7 @@ app.post("/api/users", async (req, res) => {
 app.get("/api/users", async (req, res) => {
   try {
     const users = await pool.query("SELECT * FROM users");
-    res.status(200).json(users);
+    res.status(200).json(users.rows);
     //console.dir("Los usuarios devueltos son " + users);
   } catch (error) {
     res.status(500).json({ error: "Error al obtener usuarios" });
@@ -140,10 +156,11 @@ app.get("/api/users", async (req, res) => {
 
 app.get("/api/users/:id", async (req, res) => {
   try {
+    const id = req.params.id;
     console.dir("El id recibido es " + id);
-    const users = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+    const users = await pool.query("SELECT * FROM users WHERE usuario = $1", [id]);
 
-    console.dir("Los usuarios devueltos son " + users);
+    console.dir("Los usuarios devueltos son " + users.rows.json);
 
     // Verificamos si se encontró el usuario
     if (users.rows.length > 0) {
@@ -153,7 +170,7 @@ app.get("/api/users/:id", async (req, res) => {
     }
   } catch (error) {
     console.error("Error al obtener usuarios:", error.message); // Imprimir el mensaje de error en la consola
-    res.status(500).json({ error: "Error al obtener usuarios" }); // Devolver un mensaje de error al cliente
+    res.status(500).json({ error: "Error al obtener el usuario." }); // Devolver un mensaje de error al cliente
   }
 });
 
@@ -168,13 +185,14 @@ app.put("/api/users/:id", async (req, res) => {
     res.status(500).json({ error: "Error al actualizar el usuario" });
   }
 });
-// Ruta para eliminar un usuario por su ID
-app.delete("/api/users/:id", (req, res) => {
-  const { id } = req.params;
 
-  users = users.filter((user) => user.id !== parseInt(id));
-  res.send("Usuario eliminado exitosamente");
-});
+// Ruta para eliminar un usuario por su ID
+//app.delete("/api/users/:id", (req, res) => {
+//  const { id } = req.params;
+//
+//  users = users.filter((user) => user.id !== parseInt(id));
+//  res.send("Usuario eliminado exitosamente");
+//});
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
