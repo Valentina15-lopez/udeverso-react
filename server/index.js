@@ -83,25 +83,6 @@ app.post("/login", async (req, res) => {
     const contrasenaValida1 = await bcrypt.compare(contrasena, usuario.contrasenia);
     console.log("La nueva comparación da:" + contrasenaValida1);
 
-    //const saltRounds = 10;
-
-    // Generar hash de la contraseña almacenada
-    //const hashContraseñaAlmacenada = await bcrypt.hash(
-    //  usuario.contrasenia,
-    //  saltRounds
-    //);
-
-    //console.log("El hash es:" + hashContraseñaAlmacenada);
-
-    // Comparar contraseña proporcionada con hash almacenado
-    //const contrasenaValida = await bcrypt.compare(
-    //  contrasena,
-    //  hashContraseñaAlmacenada
-    //);
-    //if (!contrasenaValida) {
-    //  console.log("Contraseña incorrecta");
-    //  return res.status(401).json({ message: "Contraseña incorrecta" });
-    //}
     if (!contrasenaValida1) {
       console.log("Contraseña incorrecta");
       return res.status(401).json({ message: "Contraseña incorrecta" });
@@ -132,9 +113,18 @@ app.post("/api/users", async (req, res) => {
       correo,
       es_estudiante,
     } = req.body;
+
+    const saltRounds = 10;
+
+    //Generar hash de la contraseña almacenada
+    const hashContrasenia = await bcrypt.hash(
+      contrasenia,
+      saltRounds
+    );
+
     const nuevoUsuario = await pool.query(
       "INSERT INTO users (usuario, contrasenia,nombre_para_mostrar,sala,correo,es_estudiante) VALUES ($1, $2,$3,$4,$5,$6) RETURNING *",
-      [usuario, contrasenia, nombre_para_mostrar, sala, correo, es_estudiante]
+      [usuario, hashContrasenia, nombre_para_mostrar, sala, correo, es_estudiante]
     );
 
     res.json(nuevoUsuario.rows[0]);
