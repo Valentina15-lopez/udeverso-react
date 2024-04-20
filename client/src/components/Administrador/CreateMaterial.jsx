@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 const CreateMaterial = () => {
-  const { userId } = useParams();
+  const [usuarios, setUsuarios] = useState([]); // Estado para almacenar la lista de usuarios
   const [formData, setFormData] = useState({
     usuario: "",
     nombre: "",
@@ -12,33 +12,26 @@ const CreateMaterial = () => {
   });
 
   useEffect(() => {
-    const loadUserData = async () => {
+    const loadUsers = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3001/api/users/${userId}`
-        );
-        const userData = response.data;
-        setFormData({
-          ...formData,
-          usuario: userData.usuario,
-        });
+        const response = await axios.get("http://localhost:3001/api/users");
+        const users = response.data; // Supongamos que aquí tienes una lista de usuarios
+        setUsuarios(users); // Guardar la lista de usuarios en el estado
       } catch (error) {
-        console.error(
-          "Error al cargar los datos del usuario al insertar material",
-          error
-        );
+        console.error("Error al cargar los usuarios:", error);
       }
     };
+    loadUsers(); // Llamar a la función para cargar usuarios
+  }, []); // Nota que el array de dependencias está vacío para que se ejecute solo una vez
 
-    loadUserData();
-  }, [userId]);
 
   const handleChange = (e) => {
-    if (e.target.name === "archivo") {
-      // Si el cambio es en el campo de archivo, almacenamos el archivo en el estado
-      setFormData({ ...formData, archivo: e.target.files[0] });
+    const { name, value, files } = e.target;
+
+    if (name === "archivo") {
+      setFormData({ ...formData, archivo: files[0] }); // Almacenar el archivo
     } else {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
+      setFormData({ ...formData, [name]: value }); // Actualizar el resto del formulario
     }
   };
 
@@ -46,19 +39,19 @@ const CreateMaterial = () => {
     e.preventDefault();
     try {
       const formDataToSend = new FormData(); // Creamos un objeto FormData
-      formDataToSend.append("usuario", formData.usuario);
+      formDataToSend.append("usuario", formData.usuario); // Usuario seleccionado
       formDataToSend.append("nombre", formData.nombre);
       formDataToSend.append("ext", formData.ext);
-      formDataToSend.append("archivo", formData.archivo); // Agregamos el archivo al FormData
+      formDataToSend.append("archivo", formData.archivo); // Agregar el archivo
 
       await axios.post(
-        "http://localhost:5000/api/users/material",
-        formDataToSend,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+          "http://localhost:3001/api/users/material", // Usar el endpoint correcto
+          formDataToSend,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
       );
       console.log("Material agregado exitosamente");
     } catch (error) {
@@ -67,36 +60,39 @@ const CreateMaterial = () => {
   };
 
   return (
-    <div>
-      <h1>Insertar Material</h1>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <label>
-          Usuario:
-          <input
-            type="text"
-            name="usuario"
-            value={formData.usuario}
-            onChange={handleChange}
-          />
-        </label>
-        <br />
-        <label>
-          Nombre archivo:
-          <input type="text" name="nombre" onChange={handleChange} />
-        </label>
-        <br />
-        <label>
-          Extension:
-          <input type="text" name="ext" onChange={handleChange} />
-        </label>
-        <br />
-        <label>
-          Archivo:
-          <input type="file" name="archivo" onChange={handleChange} />
-        </label>
-        <button type="submit">Enviar</button>
-      </form>
-    </div>
+      <div>
+        <h1>Insertar Material</h1>
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
+          <label>
+            Usuario:
+            <select name="usuario" value={formData.usuario} onChange={handleChange}>
+              <option value="">Seleccionar usuario</option>
+              {usuarios.map((usuario) => (
+                  <option key={usuario.usuario} value={usuario.usuario}>
+                    {usuario.usuario}
+                  </option>
+              ))}
+            </select>
+          </label>
+          <br />
+          <label>
+            Nombre del archivo:
+            <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} />
+          </label>
+          <br />
+          <label>
+            Extensión:
+            <input type="text" name="ext" value={formData.ext} onChange={handleChange} />
+          </label>
+          <br />
+          <label>
+            Archivo:
+            <input type="file" name="archivo" onChange={handleChange} />
+          </label>
+          <br />
+          <button type="submit">Enviar</button>
+        </form>
+      </div>
   );
 };
 
