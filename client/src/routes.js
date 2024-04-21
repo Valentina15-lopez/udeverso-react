@@ -8,7 +8,7 @@ import ModifyUsers from "./pages/ModifyUsers";
 import CreateUsers from "./pages/CreateUsers";
 import DeleteUsers from "./pages/DeleteUsers";
 import Material from "./pages/Material";
-import ListMaterials from "./pages/ListMaterial";
+import ListMaterials from "./pages/ListMaterials";
 import axios from "axios";
 import { Navigate, useLocation } from "react-router-dom";
 
