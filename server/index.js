@@ -154,7 +154,7 @@ app.get("/api/users", async (req, res) => {
     const id = req.params.id;
     const users = await pool.query("SELECT * FROM users WHERE usuario = $1", [id]);
 
-    console.dir("Los usuarios devueltos son " + users.rows.json);
+    //console.dir("Los usuarios devueltos son " + users.rows.json);
 
     // Verificamos si se encontró el usuario
     if (users.rows.length > 0) {
@@ -284,19 +284,15 @@ app.get("/api/users/material/:usuario", async (req, res) => {
   console.log("Se llamo al endpoint GET /api/users/material/:usuario con " + req)
   try {
     const { usuario } = req.params;
-    const materiales = await getMaterialById(usuario);
+    const query = "SELECT * FROM usuario_material WHERE usuario = $1";
+    const values = [usuario];
+    const { rows } =  await pool.query(query, values);
+    const materiales = await rows;
     res.status(200).json(materiales);
   } catch (error) {
     res.status(500).json({ error: "Error al obtener usuarios" });
   }
 });
-
-const getMaterialById = async (usuario) => {
-  const query = "SELECT * FROM usuario_material WHERE usuario = $1";
-  const values = [usuario];
-  const { rows } = await pool.query(query, values);
-  return rows[0];
-};
 
 app.use((req, res, next) => {
   console.log(`Solicitud recibida para: ${req.url}`);
