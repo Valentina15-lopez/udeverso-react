@@ -28,7 +28,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: "http://localhost:3000",
-    methods: ["GET", "POST"], // Métodos HTTP permitidos
+    methods: ["GET", "POST", "PUT", "DELETE"], // Métodos HTTP permitidos
     credentials: true,
   })
 );
@@ -46,6 +46,7 @@ const pool = new Pool({
 
 // Ruta para verificar la autenticación
 app.get("/api/checkAuth", (req, res) => {
+  console.log("Se llamo al endpoint GET /api/checkAuth con " + req)
   const token = req.cookies.sessionToken; // Obtener el token de la cookie de sesión
   console.log(token);
   if (!token) {
@@ -65,6 +66,7 @@ app.get("/api/checkAuth", (req, res) => {
 
 // Ruta para el login
 app.post("/login", async (req, res) => {
+  console.log("Se llamo al endpoint POST /login con " + req)
   const { nombreUsuario, contrasena } = req.body;
 
   try {
@@ -104,6 +106,7 @@ app.post("/login", async (req, res) => {
 });
 
 app.post("/api/users", async (req, res) => {
+  console.log("Se llamo al endpoint POST /api/users con " + req)
   try {
     const {
       usuario,
@@ -135,6 +138,7 @@ app.post("/api/users", async (req, res) => {
 });
 
 app.get("/api/users", async (req, res) => {
+  console.log("Se llamo al endpoint GET /api/users con " + req)
   try {
     const users = await pool.query("SELECT * FROM users");
     res.status(200).json(users.rows);
@@ -144,10 +148,10 @@ app.get("/api/users", async (req, res) => {
   }
 });
 
-app.get("/api/users/:id", async (req, res) => {
-  try {
+  app.get("/api/users/:id", async (req, res) => {
+    console.log("Se llamo al endpoint GET /api/users/:id con " + req)
+    try {
     const id = req.params.id;
-    console.dir("El id recibido es " + id);
     const users = await pool.query("SELECT * FROM users WHERE usuario = $1", [id]);
 
     console.dir("Los usuarios devueltos son " + users.rows.json);
@@ -165,6 +169,7 @@ app.get("/api/users/:id", async (req, res) => {
 });
 
 app.put("/api/users/:usuario", async (req, res) => {
+  console.log("Se llamo al endpoint PUT /api/users/:usuario con " + req)
   try {
     const { usuario } = req.params; // El usuario a actualizar
     const {
@@ -231,6 +236,7 @@ app.put("/api/users/:usuario", async (req, res) => {
 
 // Ruta para eliminar un usuario por su ID
 app.delete("/api/users/:usuario", async (req, res) => {
+  console.log("Se llamo al endpoint DELETE /api/users/:usuario con " + req)
   try {
     const { usuario } = req.params; // ID del usuario a eliminar
 
@@ -255,6 +261,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 app.post("/api/users/material", upload.single("archivo"), async (req, res) => {
+  console.log("Se llamo al endpoint POST /api/users/material con " + req)
   try {
     const { usuario, nombre, ext } = req.body;
     const fileBuffer = req.file.buffer;
@@ -274,6 +281,7 @@ app.post("/api/users/material", upload.single("archivo"), async (req, res) => {
 });
 
 app.get("/api/users/material/:usuario", async (req, res) => {
+  console.log("Se llamo al endpoint GET /api/users/material/:usuario con " + req)
   try {
     const { usuario } = req.params;
     const materiales = await getMaterialById(usuario);
@@ -297,12 +305,14 @@ app.use((req, res, next) => {
 
 // Ruta para redirigir a AulaVirtual con un ID generado
 app.get("/aulavirtual", (req, res) => {
+  console.log("Se llamo al endpoint GET /aulavirtual con " + req)
   const roomId = uuidV4(); // Genera un ID único
   res.redirect(`/aulavirtual/${roomId}`);
 });
 
 // Ruta para servir la página de React
 app.get("/aulavirtual/:roomId", (req, res) => {
+  console.log("Se llamo al endpoint GET /aulavirtual/:roomId con " + req)
   res.sendFile(path.join(__dirname, "../client/build", "index.html"));
 });
 
