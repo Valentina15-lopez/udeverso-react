@@ -280,8 +280,8 @@ app.post("/api/users/material", upload.single("archivo"), async (req, res) => {
   }
 });
 
-app.get("/api/users/material/:usuario", async (req, res) => {
-  console.log("Se llamo al endpoint GET /api/users/material/:usuario con " + req)
+app.get("/api/users/:usuario/material", async (req, res) => {
+  console.log("Se llamo al endpoint GET /api/users/:usuario/material con " + req)
   try {
     const { usuario } = req.params;
     const query = "SELECT * FROM usuario_material WHERE usuario = $1";
@@ -291,6 +291,28 @@ app.get("/api/users/material/:usuario", async (req, res) => {
     res.status(200).json(materiales);
   } catch (error) {
     res.status(500).json({ error: "Error al obtener usuarios" });
+  }
+});
+
+app.delete("/api/users/:usuario/material/:nombre", async (req, res) => {
+  console.log("Se llamo al endpoint DELETE /api/users/:usuario/material/:nombre con " + req)
+  try {
+    const { usuario , nombre} = req.params; // ID del usuario a eliminar
+
+    console.log("El material " + nombre + " se va a borrar del usuario " + usuario);
+
+    // Ejecutar la operación DELETE
+    const result = await pool.query("DELETE FROM usuario_material WHERE usuario = $1 and nombre = $2", [usuario, nombre]);
+
+    // Verificar cuántas filas fueron afectadas
+    if (result.rowCount > 0) {
+      res.status(200).send("Material borrado con exito");
+    } else {
+      res.status(404).send("Material no encontrado");
+    }
+  } catch (error) {
+    console.error("Error al eliminar material:", error);
+    res.status(500).send("Error del servidor");
   }
 });
 

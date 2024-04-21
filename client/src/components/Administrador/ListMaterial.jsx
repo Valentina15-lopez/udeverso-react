@@ -83,10 +83,7 @@ const ListMaterial = () => {
                             <li key={index}>
                                 {material.nombre}.{material.ext}
                                 {/* Botón para descargar el material */}
-                                <button
-                                    type="button"
-                                    onClick={() => downloadMaterial(material)}
-                                >
+                                <button type="button" onClick={() => downloadMaterial(material)}>
                                     Descargar
                                 </button>
                             </li>
