@@ -55,28 +55,6 @@ const AulaScene = () => {
     };
   }, []);
 
-  const handleAvatarMovement = () => {
-    users.forEach((avatar) => {
-      const speed = 0.1;
-      if (keysPressed["ArrowUp"] || keysPressed["KeyW"]) {
-        avatar.position[2] -= speed;
-      }
-      if (keysPressed["ArrowDown"] || keysPressed["KeyS"]) {
-        avatar.position[2] += speed;
-      }
-      if (keysPressed["ArrowLeft"] || keysPressed["KeyA"]) {
-        avatar.position[0] -= speed;
-      }
-      if (keysPressed["ArrowRight"] || keysPressed["KeyD"]) {
-        avatar.position[0] += speed;
-      }
-    });
-  };
-
-  useFrame(() => {
-    handleAvatarMovement();
-  });
-
   const ref = useRef();
 
   const [onFloor, setOnFloor] = useState(false);

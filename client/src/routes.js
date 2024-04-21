@@ -9,6 +9,7 @@ import CreateUsers from "./pages/CreateUsers";
 import Material from "./pages/Material";
 import axios from "axios";
 import { Navigate, useLocation } from "react-router-dom";
+import { Join } from "./components/Streaming/Join";
 
 const ProtectedRoute = ({ element }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -50,6 +51,10 @@ const routes = [
   {
     path: "/aulavirtual/:roomId", // Agrega el parámetro de ruta para el ID
     element: <ProtectedRoute element={<AulaVirtual />} />,
+  },
+  {
+    path: "/aulavirtual", // Agrega el parámetro de ruta para el ID
+    element: <ProtectedRoute element={<Join />} />,
   },
   {
     path: "/abm",

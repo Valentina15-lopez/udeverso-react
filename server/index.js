@@ -2,7 +2,6 @@ import { Server } from "socket.io";
 import express from "express";
 import http from "http";
 import { v4 as uuidV4 } from "uuid";
-import mongoose from "mongoose";
 import cors from "cors";
 import multer from "multer";
 import pkg from "pg";
@@ -19,10 +18,12 @@ const app = express();
 const server = http.createServer(app);
 export const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Reemplaza esto con la URL de tu aplicación React
+    origin: "*",
+    methods: ["GET", "POST"],
     credentials: true, // Habilitar el intercambio de cookies y otros datos de autenticación
   },
 });
+
 app.use(express.json());
 app.use(
   cors({
@@ -237,6 +238,74 @@ const generateRandomHexColor = () => {
   return "#" + Math.floor(Math.random() * 16777215).toString(16);
 };
 
+const rooms = {};
+const chats = {};
+
+const roomHandler = (socket) => {
+  const createRoom = () => {
+    const roomId = uuidV4();
+    rooms[roomId] = {};
+    socket.emit("room-created", { roomId });
+    console.log("user created the room");
+  };
+
+  const joinRoom = ({ roomId, peerId, userName }) => {
+    if (!rooms[roomId]) rooms[roomId] = {};
+    if (!chats[roomId]) chats[roomId] = [];
+    socket.emit("get-messages", chats[roomId]);
+    console.log("user joined the room", roomId, peerId, userName);
+    rooms[roomId][peerId] = { peerId, userName };
+    socket.join(roomId);
+    socket.to(roomId).emit("user-joined", { peerId, userName });
+    socket.emit("get-users", {
+      roomId,
+      participants: rooms[roomId],
+    });
+
+    socket.on("disconnect", () => {
+      console.log("user left the room", peerId);
+      leaveRoom({ roomId, peerId });
+    });
+  };
+
+  const leaveRoom = ({ peerId, roomId }) => {
+    socket.to(roomId).emit("user-disconnected", peerId);
+  };
+
+  const startSharing = ({ peerId, roomId }) => {
+    console.log({ roomId, peerId });
+    socket.to(roomId).emit("user-started-sharing", peerId);
+  };
+
+  const stopSharing = (roomId) => {
+    socket.to(roomId).emit("user-stopped-sharing");
+  };
+
+  const addMessage = (roomId, message) => {
+    console.log({ message });
+    if (chats[roomId]) {
+      chats[roomId].push(message);
+    } else {
+      chats[roomId] = [message];
+    }
+    socket.to(roomId).emit("add-message", message);
+  };
+
+  const changeName = ({ peerId, userName, roomId }) => {
+    if (rooms[roomId] && rooms[roomId][peerId]) {
+      rooms[roomId][peerId].userName = userName;
+      socket.to(roomId).emit("name-changed", { peerId, userName });
+    }
+  };
+
+  socket.on("create-room", createRoom);
+  socket.on("join-room", joinRoom);
+  socket.on("start-sharing", startSharing);
+  socket.on("stop-sharing", stopSharing);
+  socket.on("send-message", addMessage);
+  socket.on("change-name", changeName);
+};
+
 io.on("connection", (socket) => {
   usersList.push({
     id: socket.id,
@@ -247,25 +316,10 @@ io.on("connection", (socket) => {
     bottomColor: generateRandomHexColor(),
   });
   io.emit("usersList", usersList);
-
-  socket.on("join-room", (roomId, userId) => {
-    const userIndex = usersList.findIndex((user) => user.id === userId);
-    if (userIndex !== -1) {
-      usersList[userIndex].roomId = roomId;
-      socket.join(roomId);
-      socket.to(roomId).broadcast.emit("user-connected", userId);
-    }
-  });
-
+  console.log("a user connected");
+  roomHandler(socket);
   socket.on("disconnect", () => {
-    const userIndex = usersList.findIndex((user) => user.id === socket.id);
-    if (userIndex !== -1) {
-      const roomId = usersList[userIndex].roomId;
-      if (roomId) {
-        socket.to(roomId).broadcast.emit("user-disconnected", socket.id);
-      }
-      usersList.splice(userIndex, 1);
-    }
+    console.log("user disconnected");
   });
 });
 
