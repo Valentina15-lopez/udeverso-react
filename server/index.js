@@ -230,12 +230,26 @@ app.put("/api/users/:usuario", async (req, res) => {
 });
 
 // Ruta para eliminar un usuario por su ID
-//app.delete("/api/users/:id", (req, res) => {
-//  const { id } = req.params;
-//
-//  users = users.filter((user) => user.id !== parseInt(id));
-//  res.send("Usuario eliminado exitosamente");
-//});
+app.delete("/api/users/:usuario", async (req, res) => {
+  try {
+    const { usuario } = req.params; // ID del usuario a eliminar
+
+    console.log("El usuario a borrar es " + usuario);
+
+    // Ejecutar la operación DELETE
+    const result = await pool.query("DELETE FROM users WHERE usuario = $1", [usuario]);
+
+    // Verificar cuántas filas fueron afectadas
+    if (result.rowCount > 0) {
+      res.status(200).send("Usuario borrado con éxito");
+    } else {
+      res.status(404).send("Usuario no encontrado");
+    }
+  } catch (error) {
+    console.error("Error al eliminar usuario:", error);
+    res.status(500).send("Error del servidor");
+  }
+});
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
