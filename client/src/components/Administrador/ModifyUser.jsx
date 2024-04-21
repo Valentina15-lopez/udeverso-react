@@ -120,7 +120,7 @@ const ModifyUser = () => {
             <input type="text" name="es_estudiante" value={formData.es_estudiante} onChange={handleChange}/>
           </label>
           <br/>
-          <button type="submit">Enviar</button>
+          <button type="submit">Modificar</button>
         </form>
       </div>
   );

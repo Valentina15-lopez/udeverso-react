@@ -6,6 +6,7 @@ import NotFound from "./pages/NotFound";
 import ListUsers from "./pages/ListUsers";
 import ModifyUsers from "./pages/ModifyUsers";
 import CreateUsers from "./pages/CreateUsers";
+import DeleteUsers from "./pages/DeleteUsers";
 import Material from "./pages/Material";
 import axios from "axios";
 import { Navigate, useLocation } from "react-router-dom";
@@ -62,6 +63,10 @@ const routes = [
   {
     path: "/abm/modifyUsers",
     element: <ProtectedRoute element={<ModifyUsers />} />,
+  },
+  {
+    path: "/abm/deleteUsers",
+    element: <ProtectedRoute element={<DeleteUsers />} />,
   },
   {
     path: "/abm/createUsers",

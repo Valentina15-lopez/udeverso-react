@@ -17,6 +17,9 @@ const Abm = () => {
             <Link to="/abm/modifyUsers">Modificar Usuario</Link>
           </li>
           <li>
+            <Link to="/abm/deleteUsers">Borrar Usuario</Link>
+          </li>
+          <li>
             <Link to="/abm/material">Insertar Material</Link>
           </li>
         </ul>
