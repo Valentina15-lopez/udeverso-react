@@ -22,6 +22,9 @@ const Abm = () => {
           <li>
             <Link to="/abm/material">Insertar Material</Link>
           </li>
+          <li>
+            <Link to="/abm/listMaterials">Listar materiales</Link>
+          </li>
         </ul>
       </nav>
     </div>

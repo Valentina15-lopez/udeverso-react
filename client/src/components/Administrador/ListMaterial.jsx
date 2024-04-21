@@ -3,14 +3,8 @@ import axios from "axios";
 
 const ListMaterial = () => {
     const [usuarios, setUsuarios] = useState([]);
-    const [formData, setFormData] = useState({
-        usuario: "",
-        contrasenia: "",
-        nombre_para_mostrar: "",
-        sala: "",
-        correo: "",
-        es_estudiante: "",
-    });
+    const [selectedUsuario, setSelectedUsuario] = useState("");
+    const [materiales, setMateriales] = useState([]);
 
     // Cargar lista de usuarios al inicio
     useEffect(() => {
@@ -23,57 +17,56 @@ const ListMaterial = () => {
             }
         };
 
-        loadUsers();
-    }, []); // Solo se ejecuta una vez cuando el componente se monta
+        loadUsers(); // Se ejecuta solo una vez
+    }, []);
 
-    // Cargar datos del usuario seleccionado
+    // Cargar lista de materiales del usuario seleccionado
     useEffect(() => {
-        const loadUserData = async () => {
-            if (formData.usuario) { // Solo cargar si hay un usuario seleccionado
-                console.log("Usuario seleccionado:", formData.usuario); // Añadir este console.log
+        const loadMaterials = async () => {
+            if (selectedUsuario) { // Solo cargar si hay un usuario seleccionado
                 try {
                     const response = await axios.get(
-                        `http://localhost:3001/api/users/${formData.usuario}`
+                        `http://localhost:3001/api/users/material/${selectedUsuario}`
                     );
-                    const userData = response.data;
-                    // Actualizar formData con los datos del usuario
-                    setFormData({
-                        ...formData,
-                        contrasenia: "", // No cargar contraseñas
-                        nombre_para_mostrar: userData.nombre_para_mostrar || "",
-                        sala: userData.sala || "",
-                        correo: userData.correo || "",
-                        es_estudiante: userData.es_estudiante || "",
-                    });
+                    setMateriales(response.data); // Guardar la lista de materiales
                 } catch (error) {
-                    console.error("Error al cargar datos del usuario:", error);
+                    console.error("Error al cargar materiales del usuario:", error);
                 }
-            }else{
-                console.log("No hay usuario seleccionado."); // Añadir este console.log
+            } else {
+                setMateriales([]); // Si no hay usuario seleccionado, limpiar materiales
             }
         };
 
-        loadUserData(); // Cargar datos cada vez que cambie el usuario
-    }, [formData.usuario]); // Dependencia en el cambio del usuario seleccionado
+        loadMaterials(); // Se ejecuta cada vez que cambia el usuario seleccionado
+    }, [selectedUsuario]);
 
     const handleChange = (e) => {
-        //console.log("Cambio en el formulario:", e.target.name, e.target.value); // Agregar console.log para depuración
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
+        setSelectedUsuario(e.target.value); // Cambia el usuario seleccionado
+    };
+
+    const downloadMaterial = (material) => {
+        const { nombre, ext, material: content } = material;
+
+        // Crear un Blob a partir del buffer
+        const blob = new Blob([new Uint8Array(content.data)], { type: 'application/octet-stream' });
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `${nombre}.${ext}`; // Nombre del archivo con su extensión
+        link.click(); // Simula el clic para descargar
+        window.URL.revokeObjectURL(downloadUrl); // Liberar la URL para evitar fugas de memoria
     };
 
     return (
         <div>
-            <h1>Ver datos de usuario</h1>
+            <h1>Ver materiales de usuario</h1>
             <form>
                 <label>
                     Usuario:
                     <select name="usuario"
-                            value={formData.usuario}
+                            value={selectedUsuario}
                             onChange={handleChange}>
-                        <option value="">Seleccionar usuario</option>
+                        <option value="">Seleccionar Usuario</option>
                         {usuarios.map((usuario) => (
                             <option key={usuario.usuario} value={usuario.usuario}>
                                 {usuario.usuario}
@@ -81,33 +74,29 @@ const ListMaterial = () => {
                         ))}
                     </select>
                 </label>
-                <br/>
-                <label>
-                    Nombre para mostrar:
-                    <input type="text"
-                           name="nombre_para_mostrar"
-                           value={formData.nombre_para_mostrar}
-                           readOnly={true}
-                    />
-                </label>
-                <br/>
-                <label>
-                    Sala:
-                    <input type="text" name="sala" value={formData.sala} readOnly={true}/>
-                </label>
-                <br/>
-                <label>
-                    Correo:
-                    <input type="email" name="correo" value={formData.correo} readOnly={true} />
-                </label>
-                <br/>
-                <label>
-                    Es Estudiante:
-                    <input type="text" name="es_estudiante" value={formData.es_estudiante} readOnly={true}/>
-                </label>
+                <br />
+
+                {/* Lista de materiales del usuario */}
+                {materiales.length > 0 && (
+                    <ul>
+                        {materiales.map((material, index) => (
+                            <li key={index}>
+                                {material.nombre}.{material.ext}
+                                {/* Botón para descargar el material */}
+                                <button
+                                    type="button"
+                                    onClick={() => downloadMaterial(material)}
+                                >
+                                    Descargar
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                )}
             </form>
         </div>
     );
 };
 
 export default ListMaterial;
+
