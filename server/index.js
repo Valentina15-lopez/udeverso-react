@@ -164,15 +164,68 @@ app.get("/api/users/:id", async (req, res) => {
   }
 });
 
-app.put("/api/users/:id", async (req, res) => {
+app.put("/api/users/:usuario", async (req, res) => {
   try {
-    const { id } = req.params;
-    const updatedUser = await User.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-    res.json(updatedUser);
-  } catch (error) {
-    res.status(500).json({ error: "Error al actualizar el usuario" });
+    const { usuario } = req.params; // El usuario a actualizar
+    const {
+      nombre_para_mostrar,
+      sala,
+      correo,
+      es_estudiante,
+    } = req.body;
+
+    const updateFields = [];
+    const updateValues = [usuario]; // Comienza con el usuario para la cláusula WHERE
+    let updateIndex = 2; // El primer índice libre para parámetros dinámicos
+
+    // Agregar cada campo solo si está definido en el cuerpo de la solicitud
+    if (nombre_para_mostrar !== undefined) {
+      updateFields.push(`nombre_para_mostrar = $${updateIndex}`);
+      updateValues.push(nombre_para_mostrar);
+      updateIndex++;
+    }
+
+    if (sala !== undefined) {
+      updateFields.push(`sala = $${updateIndex}`);
+      updateValues.push(sala);
+      updateIndex++;
+    }
+
+    if (correo !== undefined) {
+      updateFields.push(`correo = $${updateIndex}`);
+      updateValues.push(correo);
+      updateIndex++;
+    }
+
+    if (es_estudiante !== undefined) {
+      // Asegúrate de manejar correctamente el tipo de datos para `es_estudiante`
+      const esEstudianteBoolean = es_estudiante === "1" || es_estudiante === "true";
+      updateFields.push(`es_estudiante = $${updateIndex}`);
+      updateValues.push(esEstudianteBoolean);
+      updateIndex++;
+    }
+
+    if (updateFields.length === 0) {
+      return res.status(400).json({ message: "Nada para actualizar" });
+    }
+
+    const updateUserQuery = `
+      UPDATE users
+      SET ${updateFields.join(", ")}
+      WHERE usuario = $1
+        RETURNING *;
+    `;
+
+    const updatedUser = await pool.query(updateUserQuery, updateValues);
+
+    if (updatedUser.rowCount === 0) {
+      return res.status(404).send("Usuario no encontrado");
+    }
+
+    res.json(updatedUser.rows[0]); // Devuelve el usuario actualizado
+  } catch (err) {
+    console.error("Error actualizando usuario:", err.message);
+    res.status(500).send("Error del servidor");
   }
 });
 

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { userAtom } from "../../components/ContexProvider";
-import { useAtom } from "jotai";
 
 const UserList = ({ onUserClick }) => {
     // Estado para almacenar la lista de usuarios
