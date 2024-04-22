@@ -82,6 +82,22 @@ const routes = [
     element: <ProtectedRoute element={<ListMaterials />} />,
   },
   {
+    path: "/abm/insertRoom",
+    element: <ProtectedRoute element={<InsertRooms />} />,
+  },
+  {
+    path: "/abm/updateRoom",
+    element: <ProtectedRoute element={<UpdateRooms />} />,
+  },
+  {
+    path: "/abm/deleteRoom",
+    element: <ProtectedRoute element={<DeleteRooms />} />,
+  },
+  {
+    path: "/abm/listRoom",
+    element: <ProtectedRoute element={<ListRooms />} />,
+  },
+  {
     path: "/", // Redirige la ruta raíz al menú
     element: <Navigate to="/login" replace />,
   },
