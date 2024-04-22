@@ -306,8 +306,10 @@ app.delete("/api/users/:usuario/material/:nombre", async (req, res) => {
 
     // Verificar cuántas filas fueron afectadas
     if (result.rowCount > 0) {
+      console.log("Material borrado con exito");
       res.status(200).send("Material borrado con exito");
     } else {
+      console.log("Material no encontrado");
       res.status(404).send("Material no encontrado");
     }
   } catch (error) {

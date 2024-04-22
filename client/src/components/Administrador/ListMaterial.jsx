@@ -26,7 +26,7 @@ const ListMaterial = () => {
             if (selectedUsuario) { // Solo cargar si hay un usuario seleccionado
                 try {
                     const response = await axios.get(
-                        `http://localhost:3001/api/users/material/${selectedUsuario}`
+                        `http://localhost:3001/api/users/${selectedUsuario}/material`
                     );
                     setMateriales(response.data); // Guardar la lista de materiales
                 } catch (error) {
@@ -57,6 +57,19 @@ const ListMaterial = () => {
         window.URL.revokeObjectURL(downloadUrl); // Liberar la URL para evitar fugas de memoria
     };
 
+    const deleteMaterial = async  (material) => {
+        const { nombre, ext, material: content } = material;
+
+        try {
+            const response = await axios.delete(
+                `http://localhost:3001/api/users/${selectedUsuario}/material/`+nombre
+            );
+            console.log("Material borrado exitosamente");
+        } catch (error) {
+            console.error("Error al borrar materiales del usuario:", error);
+        }
+    };
+
     return (
         <div>
             <h1>Ver materiales de usuario</h1>
@@ -85,6 +98,9 @@ const ListMaterial = () => {
                                 {/* Botón para descargar el material */}
                                 <button type="button" onClick={() => downloadMaterial(material)}>
                                     Descargar
+                                </button>
+                                <button type="button" onClick={() => deleteMaterial(material)}>
+                                    Borrar
                                 </button>
                             </li>
                         ))}
