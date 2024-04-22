@@ -8,19 +8,19 @@ import { RoomContext } from "../RoomContext";
 
 export const Room = () => {
   const { socket } = useContext(SocketContext);
-  const { id } = useParams();
+  const { roomId } = useParams();
   const { stream, screenStream, peers, screenSharingId, setRoomId } =
     useContext(RoomContext);
   const { userName, userId } = useContext(UserContext);
 
   useEffect(() => {
     if (stream)
-      socket.emit("join-room", { roomId: id, peerId: userId, userName });
-  }, [id, userId, stream, userName]);
+      socket.emit("join-room", { roomId: roomId, peerId: userId, userName });
+  }, [roomId, userId, stream, userName]);
 
   useEffect(() => {
-    setRoomId(id || "");
-  }, [id, setRoomId]);
+    setRoomId(roomId || "");
+  }, [roomId, setRoomId]);
 
   const screenSharingVideo =
     screenSharingId === userId ? screenStream : peers[screenSharingId]?.stream;
@@ -29,7 +29,7 @@ export const Room = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="bg-red-500 p-4 text-white">Room id {id}</div>
+      <div className="bg-red-500 p-4 text-white">Room id {roomId}</div>
       <div className="flex grow">
         {screenSharingVideo && (
           <div className="w-4/5 pr-4">

@@ -5,6 +5,7 @@ import Footer from "../src/components/Footer";
 import { AuthProvider } from "./components/AuthContext";
 import routes from "./routes";
 import { RoomProvider } from "../src/components/RoomContext";
+import { UserProvider } from "./context/UserContext";
 
 function App() {
   const element = useRoutes(routes);
@@ -21,9 +22,11 @@ export default function Root() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <RoomProvider>
-          <App />
-        </RoomProvider>
+        <UserProvider>
+          <RoomProvider>
+            <App />
+          </RoomProvider>
+        </UserProvider>
       </BrowserRouter>
     </AuthProvider>
   );

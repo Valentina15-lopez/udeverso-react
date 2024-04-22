@@ -30,7 +30,7 @@ export const RoomProvider = ({ children }) => {
   const { socket } = useContext(SocketContext);
   const navigate = useNavigate();
   const { userName, userId } = useContext(UserContext);
-  const [me, setMe] = useState(Peer);
+  const [me, setMe] = useState();
   const [stream, setStream] = useState();
   const [screenStream, setScreenStream] = useState();
   const [peers, dispatch] = useReducer(peersReducer, {});
@@ -38,7 +38,7 @@ export const RoomProvider = ({ children }) => {
   const [roomId, setRoomId] = useState("");
 
   const enterRoom = ({ roomId }) => {
-    navigate(`/room/${roomId}`);
+    navigate(`/aulavirtual/${roomId}`);
   };
 
   const getUsers = ({ participants }) => {

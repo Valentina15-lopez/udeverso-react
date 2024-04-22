@@ -221,15 +221,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/aulavirtual", (req, res) => {
-  const roomId = uuidV4(); // Genera un ID único
-  res.redirect(`/aulavirtual/${roomId}`);
-});
-
-app.get("/aulavirtual/:roomId", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/build", "index.html"));
-});
-
 const generateRandomPosition = () => {
   return [Math.random() * 3, 0, Math.random() * 3];
 };

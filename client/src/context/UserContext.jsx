@@ -17,6 +17,8 @@ const UserProvider = ({ children }) => {
     localStorage.getItem("userName") || ""
   );
 
+  console.log("userId", userId);
+
   // Efecto para guardar el nombre de usuario en el almacenamiento local
   useEffect(() => {
     localStorage.setItem("userName", userName);
