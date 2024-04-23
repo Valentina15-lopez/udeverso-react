@@ -51,15 +51,15 @@ export const login = async (req, res) => {
 
 export const createUser = async (req, res) => {
     console.log("Se llamo al endpoint POST /api/users con " + JSON.stringify(req.body));
-    const { usuario, contrasenia, nombre_para_mostrar, sala, correo, es_estudiante } = req.body;
+    const { usuario, contrasenia, nombre_para_mostrar, avatar_id, correo, es_estudiante } = req.body;
 
     try {
         const saltRounds = 10;
         const hashContrasenia = await bcrypt.hash(contrasenia, saltRounds);
 
         const nuevoUsuario = await pool.query(
-            "INSERT INTO users (usuario, contrasenia, nombre_para_mostrar, sala, correo, es_estudiante) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-            [usuario, hashContrasenia, nombre_para_mostrar, sala, correo, es_estudiante]
+            "INSERT INTO users (usuario, contrasenia, nombre_para_mostrar, avatar_id, correo, es_estudiante) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+            [usuario, hashContrasenia, nombre_para_mostrar, avatar_id, correo, es_estudiante]
         );
 
         res.json(nuevoUsuario.rows[0]);
@@ -106,7 +106,7 @@ export const updateUser = async(req,res)=>{
         const { usuario } = req.params; // El usuario a actualizar
         const {
             nombre_para_mostrar,
-            sala,
+            avatar_id,
             correo,
             es_estudiante,
         } = req.body;
@@ -122,9 +122,9 @@ export const updateUser = async(req,res)=>{
             updateIndex++;
         }
 
-        if (sala !== undefined) {
-            updateFields.push(`sala = $${updateIndex}`);
-            updateValues.push(sala);
+        if (avatar_id !== undefined) {
+            updateFields.push(`avatar_id = $${updateIndex}`);
+            updateValues.push(avatar_id);
             updateIndex++;
         }
 
@@ -187,5 +187,3 @@ export const deleteUser = async(req,res)=> {
         res.status(500).send("Error del servidor");
     }
 }
-
-// Otros controladores para users...

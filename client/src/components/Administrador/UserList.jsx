@@ -7,7 +7,7 @@ const UserList = () => {
         usuario: "",
         contrasenia: "",
         nombre_para_mostrar: "",
-        sala: "",
+        avatar_id: "",
         correo: "",
         es_estudiante: "",
     });
@@ -41,7 +41,7 @@ const UserList = () => {
                         ...formData,
                         contrasenia: "", // No cargar contraseñas
                         nombre_para_mostrar: userData.nombre_para_mostrar || "",
-                        sala: userData.sala || "",
+                        avatar_id: userData.avatar_id || "",
                         correo: userData.correo || "",
                         es_estudiante: userData.es_estudiante || "",
                     });
@@ -92,8 +92,8 @@ const UserList = () => {
                 </label>
                 <br/>
                 <label>
-                    Sala:
-                    <input type="text" name="sala" value={formData.sala} readOnly={true}/>
+                    Avatar_id:
+                    <input type="text" name="sala" value={formData.avatar_id} readOnly={true}/>
                 </label>
                 <br/>
                 <label>
