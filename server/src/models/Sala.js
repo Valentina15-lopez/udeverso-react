@@ -12,7 +12,7 @@ const Salas = sequelize.define('Salas', {
         allowNull: false
     }
 },{
-    tableName:"sala", //nombre de la tabla
+    tableName:"salas", //nombre de la tabla
     timestamps: true  // Permite que Sequelize maneje `createdAt` y `updatedAt`
 });
 
