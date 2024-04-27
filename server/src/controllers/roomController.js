@@ -174,51 +174,7 @@ export const deleteRoom = async (req, res) => {
     }
 };
 
-/*
-export const getAllRooms = async (req,res) =>{
-    try {
-        // Consulta para obtener todas las salas y sus horarios
-        const result = await pool.query("SELECT s.id AS sala_id, s.descripcion, " +
-            "h.dia_semana, h.hora_inicio, h.hora_fin " +
-            "FROM salas s, horarios_salas h " +
-            "where  s.id = h.sala_id " +
-            "ORDER BY s.id, h.dia_semana, h.hora_inicio");
 
-        // Organizar los datos por sala
-        const salas = [];
-        const salaMap = {}; // Mapa para evitar duplicados de salas
-
-        for (const row of result.rows) {
-            const { sala_id, descripcion, dia_semana, hora_inicio, hora_fin } = row;
-
-            if (!salaMap[sala_id]) {
-                // Si la sala no está en el mapa, agregarla al array y al mapa
-                const sala = {
-                    id: sala_id,
-                    descripcion: descripcion,
-                    horarios: []
-                };
-                salas.push(sala);
-                salaMap[sala_id] = sala;
-            }
-
-            // Si hay horarios, agregar al array de horarios de la sala
-            if (dia_semana !== null) {
-                salaMap[sala_id].horarios.push({
-                    dia_semana,
-                    hora_inicio,
-                    hora_fin
-                });
-            }
-        }
-
-        res.status(200).json(salas); // Devolver las salas y sus horarios
-    } catch (error) {
-        console.error("Error al obtener salas:", error.message);
-        res.status(500).send("Error al obtener salas");
-    }
-}
-*/
 
 export const getAllRooms = async (req, res) => {
     try {
@@ -240,51 +196,6 @@ export const getAllRooms = async (req, res) => {
         res.status(500).json({ message: "Error al obtener salas" });
     }
 };
-
-/*
-export const getRoom = async (req,res) =>{
-    try {
-        const salaId = parseInt(req.params.salaId, 10);
-
-        // Consulta para obtener la sala y sus horarios
-        const result = await pool.query("SELECT s.id AS sala_id, s.descripcion, "+
-            "h.dia_semana, h.hora_inicio, h.hora_fin " +
-            "FROM salas s, horarios_salas h " +
-            "WHERE s.id = h.sala_id and s.id = $1 " +
-            "ORDER BY h.dia_semana, h.hora_inicio", [salaId]);
-
-        if (result.rowCount === 0) {
-            res.status(404).send("Sala no encontrada");
-            return;
-        }
-
-        // Crear la estructura para devolver la información de la sala
-        const sala = {
-            id: result.rows[0].sala_id,
-            descripcion: result.rows[0].descripcion,
-            horarios: []
-        };
-
-        // Añadir los horarios a la sala
-        for (const row of result.rows) {
-            const { dia_semana, hora_inicio, hora_fin } = row;
-
-            if (dia_semana !== null) {
-                sala.horarios.push({
-                    dia_semana,
-                    hora_inicio,
-                    hora_fin
-                });
-            }
-        }
-
-        res.status(200).json(sala); // Devolver la información de la sala
-    } catch (error) {
-        console.error("Error al obtener datos de la sala:", error.message);
-        res.status(500).send("Error al obtener datos de la sala");
-    }
-}
-*/
 
 export const getRoom = async (req, res) => {
     try {
