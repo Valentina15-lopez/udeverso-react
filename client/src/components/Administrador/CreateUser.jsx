@@ -19,7 +19,7 @@ const CreateUser = () => {
     try {
       // Si no existe el ID del usuario, es una solicitud de inserción
       await axios.post("http://localhost:3001/api/users", formData);
-      console.log("Usuario.js creado exitosamente");
+      console.log("Usuarios.js creado exitosamente");
     } catch (error) {
       if (error.response) {
         // La solicitud fue realizada y el servidor respondió con un código de estado que no está en el rango 2xx

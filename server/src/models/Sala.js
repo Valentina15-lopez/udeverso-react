@@ -1,7 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js';
 
-
 const Salas = sequelize.define('Salas', {
     id: {
         type: DataTypes.INTEGER,
@@ -16,5 +15,7 @@ const Salas = sequelize.define('Salas', {
     tableName:"sala", //nombre de la tabla
     timestamps: true  // Permite que Sequelize maneje `createdAt` y `updatedAt`
 });
+
+
 
 export default Salas;

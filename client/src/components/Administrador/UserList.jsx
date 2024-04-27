@@ -30,7 +30,7 @@ const UserList = () => {
     useEffect(() => {
         const loadUserData = async () => {
             if (formData.usuario) { // Solo cargar si hay un usuario seleccionado
-                console.log("Usuario.js seleccionado:", formData.usuario); // Añadir este console.log
+                console.log("Usuarios.js seleccionado:", formData.usuario); // Añadir este console.log
                 try {
                     const response = await axios.get(
                         `http://localhost:3001/api/users/${formData.usuario}`

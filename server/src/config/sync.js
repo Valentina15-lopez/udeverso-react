@@ -1,9 +1,9 @@
 // sync.js
 const sequelize = require('./database');
-const Usuario = require('../models/Usuario.js');
+const Usuario = require('../models/Usuarios.js');
 const Sala = require('../models/Sala.js');
 const UsuariosSalas = require('../models/UsuariosSalas.js');
-const UsuarioMateriales = require('../models/UsuarioMateriales.js');
+const UsuarioMateriales = require('../models/UsuariosMateriales.js');
 
 sequelize.sync({ force: false })  // `force: true` elimina y recrea las tablas
     .then(() => {

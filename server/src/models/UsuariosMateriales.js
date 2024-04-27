@@ -1,12 +1,13 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js';
+import {Usuarios} from './index.js';
 
-const UsuariosMateriales = sequelize.define('UsuariosMaterial', {
+const UsuariosMateriales = sequelize.define('UsuariosMateriales', {
     usuario: {
         type: DataTypes.STRING,
         allowNull: false,  // No se permite nulo
         references: {
-            model: Usuario,  // Referencia al modelo Usuario
+            model: Usuarios,  // Referencia al modelo Usuario
             key: 'usuario',  // Clave foránea apunta a `usuario` en `Usuario`
         },
     },
@@ -18,7 +19,7 @@ const UsuariosMateriales = sequelize.define('UsuariosMaterial', {
         type: DataTypes.STRING,
     },
     material: {
-        type: DataTypes.BYTEA,  // Almacena datos binarios (por ejemplo, archivos)
+        type: DataTypes.BLOB,  // Almacena datos binarios (por ejemplo, archivos)
     },
     // Clave primaria compuesta por `usuario` y `nombre`
 }, {
@@ -32,4 +33,4 @@ const UsuariosMateriales = sequelize.define('UsuariosMaterial', {
     ],
 });
 
-export default UsuariosMaterial;
+export default UsuariosMateriales;

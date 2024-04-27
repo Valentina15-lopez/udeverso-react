@@ -1,5 +1,8 @@
-import pool from "../config/database.js";
+import sequelize from "../config/database.js";
+import UsuariosSalas from "../models/UsuariosSalas.js";
+import Usuario from "../models/Usuarios.js";
 
+/*
 export const addUserToRoom = async (req,res)=>{
     console.log("Se llamó al endpoint POST /api/users/:userId/salas con " + JSON.stringify(req.body));
 
@@ -22,8 +25,8 @@ export const addUserToRoom = async (req,res)=>{
         }
 
         await client.query("COMMIT");
-        console.log("Usuario.js asignado a las salas exitosamente.");
-        res.status(201).send("Usuario.js asignado a las salas exitosamente.");
+        console.log("Usuarios.js asignado a las salas exitosamente.");
+        res.status(201).send("Usuarios.js asignado a las salas exitosamente.");
     } catch (error) {
         await client.query("ROLLBACK");
         console.error("Error al asignar usuario a salas:", error.message);
@@ -32,7 +35,45 @@ export const addUserToRoom = async (req,res)=>{
         client.release();
     }
 }
+*/
 
+export const addUserToRoom = async (req, res) => {
+    console.log("Se llamó al endpoint POST /api/users/:userId/salas con " + JSON.stringify(req.body));
+
+    const transaction = await sequelize.transaction();  // Iniciar una transacción
+
+    try {
+        const userId = req.params.userId;  // El usuario al que se asignarán las salas
+        const { salaIds } = req.body;  // Los IDs de las salas a las que se asignará el usuario
+
+        if (!Array.isArray(salaIds)) {
+            throw new Error("salaIds debe ser un array");
+        }
+
+        for (const salaId of salaIds) {
+            await UsuariosSalas.create(
+                {
+                    user_id: userId,
+                    room_id: salaId,
+                },
+                {
+                    transaction,  // Dentro de la transacción
+                    ignoreDuplicates: true,  // Para evitar duplicados
+                }
+            );
+        }
+
+        await transaction.commit();  // Confirmar la transacción
+        console.log("Usuario asignado a las salas exitosamente.");
+        res.status(201).send("Usuario asignado a las salas exitosamente.");
+    } catch (error) {
+        await transaction.rollback();  // Revertir la transacción en caso de error
+        console.error("Error al asignar usuario a salas:", error.message);
+        res.status(500).send("Error al asignar usuario a salas.");
+    }
+};
+
+/*
 export const deleteUserFromRoom = async (req, res) => {
     try {
         const userId = req.params.userId
@@ -43,14 +84,41 @@ export const deleteUserFromRoom = async (req, res) => {
             [userId, salaId]
         );
 
-        console.log("Usuario.js eliminado de la sala.");
-        res.status(200).send("Usuario.js eliminado de la sala.");
+        console.log("Usuarios.js eliminado de la sala.");
+        res.status(200).send("Usuarios.js eliminado de la sala.");
     } catch (error) {
         console.error("Error al eliminar usuario de la sala:", error.message);
         res.status(500).send("Error al eliminar usuario de la sala.");
     }
 }
+*/
 
+export const deleteUserFromRoom = async (req, res) => {
+    try {
+        const userId = req.params.userId;  // El ID del usuario
+        const salaId = parseInt(req.params.salaId, 10);  // El ID de la sala
+
+        const deletedCount = await UsuariosSalas.destroy({
+            where: {
+                user_id: userId,  // Condición para el usuario
+                room_id: salaId,  // Condición para la sala
+            },
+        });
+
+        if (deletedCount > 0) {
+            console.log("Usuario eliminado de la sala.");
+            res.status(200).send("Usuario eliminado de la sala.");  // Operación exitosa
+        } else {
+            console.log("No se encontró la relación entre usuario y sala.");
+            res.status(404).send("No se encontró la relación entre usuario y sala.");  // Relación no encontrada
+        }
+    } catch (error) {
+        console.error("Error al eliminar usuario de la sala:", error.message);
+        res.status(500).send("Error al eliminar usuario de la sala.");  // Manejo de errores
+    }
+};
+
+/*
 export const getRoomsOfUser = async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -66,7 +134,34 @@ export const getRoomsOfUser = async (req, res) => {
         res.status(500).send("Error al obtener salas del usuario.");
     }
 }
+*/
 
+export const getRoomsOfUser = async (req, res) => {
+    try {
+        const userId = req.params.userId;  // El ID del usuario para el que queremos obtener las salas
+
+        // Usar `findAll` con `include` para obtener todas las salas asociadas a un usuario
+        const rooms = await UsuariosSalas.findAll({
+            where: { user_id: userId },  // Filtrar por el usuario
+            include: [
+                {
+                    model: Salas,  // Incluir las salas asociadas
+                    as: 'salas',  // Alias para la relación
+                },
+            ],
+        });
+
+        // Extraer solo las salas de la respuesta
+        const salas = rooms.map(room => room.salas);
+
+        res.status(200).json(salas);  // Devolver todas las salas asociadas al usuario
+    } catch (error) {
+        console.error("Error al obtener salas del usuario:", error.message);
+        res.status(500).json({ message: "Error al obtener salas del usuario." });
+    }
+};
+
+/*
 export const getUsersOfRoom = async (req,res) =>{
     try {
         const salaId = parseInt(req.params.salaId, 10);
@@ -81,4 +176,29 @@ export const getUsersOfRoom = async (req,res) =>{
         console.error("Error al obtener usuarios de la sala:", error.message);
         res.status(500).send("Error al obtener usuarios de la sala.");
     }
-}
+}*/
+
+export const getUsersOfRoom = async (req, res) => {
+    try {
+        const salaId = parseInt(req.params.salaId, 10);  // ID de la sala
+
+        // Obtener todos los usuarios asociados a una sala específica
+        const usersInRoom = await UsuariosSalas.findAll({
+            where: { room_id: salaId },  // Filtrar por la sala
+            include: [
+                {
+                    model: Usuario,  // Incluir el modelo Usuario para obtener datos del usuario
+                    as: 'usuario',  // Alias para la relación
+                },
+            ],
+        });
+
+        // Extraer solo los usuarios de la respuesta
+        const usuarios = usersInRoom.map(us => us.usuario);
+
+        res.status(200).json(usuarios);  // Devolver todos los usuarios asociados a la sala
+    } catch (error) {
+        console.error("Error al obtener usuarios de la sala:", error.message);
+        res.status(500).json({ message: "Error al obtener usuarios de la sala." });
+    }
+};
