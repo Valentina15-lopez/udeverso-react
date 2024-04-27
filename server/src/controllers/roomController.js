@@ -3,48 +3,6 @@ import Salas from "../models/Sala.js";
 import sequelize from "../config/database.js";
 import {HorariosSalas} from "../models/index.js";
 
-/*
-export const addRoom = async (req,res) => {
-    console.log("Se llamó al endpoint POST /api/salas con " + JSON.stringify(req.body));
-
-    const client = await pool.connect(); // Obtener un cliente para transacciones
-    try {
-        await client.query("BEGIN"); // Iniciar la transacción
-
-        const { descripcion, horarios } = req.body; // Información de la sala y sus horarios
-
-        // Insertar la nueva sala
-        const salaResult = await client.query(
-            "INSERT INTO salas (descripcion) VALUES ($1) RETURNING id",
-            [descripcion]
-        );
-
-        const salaId = salaResult.rows[0].id; // Obtener el ID de la sala recién creada
-
-        // Insertar los horarios para esta sala
-        for (const horario of horarios) {
-            const { dia_semana, hora_inicio, hora_fin } = horario;
-
-            await client.query(
-                "INSERT INTO horarios_salas (sala_id, dia_semana, hora_inicio, hora_fin) VALUES ($1, $2, $3, $4)",
-                [salaId, dia_semana, hora_inicio, hora_fin]
-            );
-        }
-
-        await client.query("COMMIT"); // Confirmar la transacción
-
-        console.log("Sala y horarios agregados exitosamente");
-        res.status(201).send("Sala y horarios agregados exitosamente");
-    } catch (error) {
-        await client.query("ROLLBACK"); // Revertir la transacción en caso de error
-        console.error("Error al agregar sala y horarios:", error.message);
-        res.status(500).send("Error al agregar sala y horarios");
-    } finally {
-        client.release(); // Liberar el cliente
-    }
-}
- */
-
 export const addRoom = async (req, res) => {
     console.log("Se llamó al endpoint POST /api/salas con " + JSON.stringify(req.body));
 
@@ -85,57 +43,6 @@ export const addRoom = async (req, res) => {
     }
 };
 
-/*
-export const updateSchedules = async (req,res) => {
-    console.log("Se llamó al endpoint PUT /api/:salaId/horarios con " + JSON.stringify(req.body));
-
-    const client = await pool.connect(); // Obtener un cliente para transacciones
-
-    try {
-        await client.query("BEGIN"); // Iniciar la transacción
-
-        const salaId = parseInt(req.params.salaId, 10);
-        const { horarios } = req.body;
-
-        // Validación básica para horarios
-        if (!Array.isArray(horarios)) {
-            throw new Error("El formato de horarios debe ser un array.");
-        }
-
-        // Eliminar los horarios existentes para la sala
-        await client.query("DELETE FROM horarios_salas WHERE sala_id = $1", [salaId]);
-
-        // Insertar los nuevos horarios
-        for (const horario of horarios) {
-            const { dia_semana, hora_inicio, hora_fin } = horario;
-
-            if (
-                typeof dia_semana !== "number" ||
-                typeof hora_inicio !== "string" ||
-                typeof hora_fin !== "string"
-            ) {
-                throw new Error("Horarios mal formateados.");
-            }
-
-            await client.query(
-                "INSERT INTO horarios_salas (sala_id, dia_semana, hora_inicio, hora_fin) VALUES ($1, $2, $3, $4)",
-                [salaId, dia_semana, hora_inicio, hora_fin]
-            );
-        }
-
-        await client.query("COMMIT"); // Confirmar la transacción
-
-        res.status(200).send("Horarios modificados exitosamente.");
-    } catch (error) {
-        await client.query("ROLLBACK"); // Revertir la transacción en caso de error
-        console.error("Error al modificar horarios:", error.message);
-        res.status(500).send("Error al modificar horarios.");
-    } finally {
-        client.release(); // Liberar el cliente
-    }
-}
-*/
-
 export const updateSchedules = async (req, res) => {
     console.log("Se llamó al endpoint PUT /api/:salaId/horarios con " + JSON.stringify(req.body));
 
@@ -157,7 +64,7 @@ export const updateSchedules = async (req, res) => {
         });
 
         // Insertar los nuevos horarios
-        for (const horario in horarios) {
+        for (const horario of horarios) {
             const { dia_semana, hora_inicio, hora_fin } = horario;
 
             if (
