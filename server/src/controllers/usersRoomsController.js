@@ -54,7 +54,7 @@ export const addUserToRoom = async (req, res) => {
             await UsuariosSalas.create(
                 {
                     user_id: userId,
-                    room_id: salaId,
+                    sala_id: salaId,
                 },
                 {
                     transaction,  // Dentro de la transacción
@@ -101,7 +101,7 @@ export const deleteUserFromRoom = async (req, res) => {
         const deletedCount = await UsuariosSalas.destroy({
             where: {
                 user_id: userId,  // Condición para el usuario
-                room_id: salaId,  // Condición para la sala
+                sala_id: salaId,  // Condición para la sala
             },
         });
 
@@ -184,7 +184,7 @@ export const getUsersOfRoom = async (req, res) => {
 
         // Obtener todos los usuarios asociados a una sala específica
         const usersInRoom = await UsuariosSalas.findAll({
-            where: { room_id: salaId },  // Filtrar por la sala
+            where: { sala_id: salaId },  // Filtrar por la sala
             include: [
                 {
                     model: Usuario,  // Incluir el modelo Usuario para obtener datos del usuario

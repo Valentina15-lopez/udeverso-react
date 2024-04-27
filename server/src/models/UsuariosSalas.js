@@ -8,15 +8,15 @@ const UsuariosSalas = sequelize.define('UsuariosSalas', {
     user_id: {
         type: DataTypes.STRING,
         references: {
-            model: 'Usuario',// Referencia al modelo Usuario
+            model: Usuarios,// Referencia al modelo Usuario
             key: 'usuario'
         },
         primaryKey: true  // Parte de la clave primaria compuesta
     },
-    room_id: {
+    sala_id: {
         type: DataTypes.INTEGER,
         references: {
-            model: 'Sala',  // Referencia al modelo Sala
+            model: Salas,  // Referencia al modelo Sala
             key: 'id'
         },
         primaryKey: true  // Parte de la clave primaria compuesta
@@ -35,7 +35,7 @@ Usuarios.hasMany(UsuariosSalas, {
 
 // Una sala puede tener muchos usuarios asociados
 Salas.hasMany(UsuariosSalas, {
-    foreignKey: 'room_id',  // Clave foránea en UsuariosSalas
+    foreignKey: 'sala_id',  // Clave foránea en UsuariosSalas
     sourceKey: 'id',  // Clave primaria en Sala
     as: 'usuarios',  // Alias para la relación
 });
