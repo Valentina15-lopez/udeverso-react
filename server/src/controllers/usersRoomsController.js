@@ -22,8 +22,8 @@ export const addUserToRoom = async (req,res)=>{
         }
 
         await client.query("COMMIT");
-        console.log("Usuario asignado a las salas exitosamente.");
-        res.status(201).send("Usuario asignado a las salas exitosamente.");
+        console.log("Usuario.js asignado a las salas exitosamente.");
+        res.status(201).send("Usuario.js asignado a las salas exitosamente.");
     } catch (error) {
         await client.query("ROLLBACK");
         console.error("Error al asignar usuario a salas:", error.message);
@@ -43,8 +43,8 @@ export const deleteUserFromRoom = async (req, res) => {
             [userId, salaId]
         );
 
-        console.log("Usuario eliminado de la sala.");
-        res.status(200).send("Usuario eliminado de la sala.");
+        console.log("Usuario.js eliminado de la sala.");
+        res.status(200).send("Usuario.js eliminado de la sala.");
     } catch (error) {
         console.error("Error al eliminar usuario de la sala:", error.message);
         res.status(500).send("Error al eliminar usuario de la sala.");

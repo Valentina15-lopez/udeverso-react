@@ -30,7 +30,7 @@ const ModifyUser = () => {
   useEffect(() => {
     const loadUserData = async () => {
       if (formData.usuario) { // Solo cargar si hay un usuario seleccionado
-        console.log("Usuario seleccionado:", formData.usuario); // Añadir este console.log
+        console.log("Usuario.js seleccionado:", formData.usuario); // Añadir este console.log
         try {
           const response = await axios.get(
               `http://localhost:3001/api/users/${formData.usuario}`
@@ -72,7 +72,7 @@ const ModifyUser = () => {
           `http://localhost:3001/api/users/${formData.usuario}`,
           formData
       );
-      console.log("Usuario modificado exitosamente");
+      console.log("Usuario.js modificado exitosamente");
     } catch (error) {
       console.error("Error al modificar el usuario:", error);
     }

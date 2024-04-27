@@ -1,5 +1,6 @@
 // src/controllers/userController.js
 import pool from "../config/database.js";
+import Usuario from '../models/Usuario.js';
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -21,31 +22,40 @@ export const checkAuth = (req, res) => {
 };
 
 export const login = async (req, res) => {
-    console.log("Se llamo al endpoint POST /login con " + JSON.stringify(req.body));
+    console.log('Se llamó al endpoint POST /login con ' + JSON.stringify(req.body));
     const { nombreUsuario, contrasena } = req.body;
 
     try {
-        const result = await pool.query("SELECT * FROM users WHERE usuario = $1", [nombreUsuario]);
-        const usuario = result.rows[0];
+        // Usar Sequelize para encontrar al usuario por el nombre de usuario
+        const usuario = await Usuario.findOne({ where: { usuario: nombreUsuario } });
 
         if (!usuario) {
-            return res.status(404).json({ message: "Usuario no encontrado" });
+            console.log("Usuario no encontrado");
+            return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
+        // Verificar si la contraseña ingresada coincide con la almacenada
         const contrasenaValida = await bcrypt.compare(contrasena, usuario.contrasenia);
+
         if (!contrasenaValida) {
-            return res.status(401).json({ message: "Contraseña incorrecta" });
+            console.log("Contraseña incorrecta");
+            return res.status(401).json({ message: 'Contraseña incorrecta' });
         }
 
-        const token = jwt.sign({ userId: usuario.id }, secretKey, {
-            expiresIn: "24h",
+        // Generar un token JWT para el usuario autenticado
+        const token = jwt.sign({ userId: usuario.usuario }, secretKey, {
+            expiresIn: '24h',  // El token expirará en 24 horas
         });
 
-        res.cookie("sessionToken", token, { httpOnly: true });
-        res.status(200).json(usuario);
+        // Establecer el token como cookie en la respuesta
+        res.cookie('sessionToken', token, { httpOnly: true });
+
+        // Enviar la respuesta con información del usuario (o solo el token, según tu preferencia)
+        res.status(200).json({ usuario, token });
+        console.log("Respuesta enviada con informacion del usuario y token");
     } catch (error) {
-        console.error("Error al autenticar usuario:", error);
-        res.status(500).json({ message: "Error interno del servidor" });
+        console.error('Error al autenticar usuario:', error);
+        res.status(500).json({ message: 'Error interno del servidor' });
     }
 };
 

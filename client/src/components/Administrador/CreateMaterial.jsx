@@ -38,7 +38,7 @@ const CreateMaterial = () => {
     e.preventDefault();
     try {
       const formDataToSend = new FormData(); // Creamos un objeto FormData
-      formDataToSend.append("usuario", formData.usuario); // Usuario seleccionado
+      formDataToSend.append("usuario", formData.usuario); // Usuario.js seleccionado
       formDataToSend.append("nombre", formData.nombre);
       formDataToSend.append("ext", formData.ext);
       formDataToSend.append("archivo", formData.archivo); // Agregar el archivo

@@ -30,7 +30,7 @@ const DeleteUser = () => {
     useEffect(() => {
         const loadUserData = async () => {
             if (formData.usuario) { // Solo cargar si hay un usuario seleccionado
-                console.log("Usuario seleccionado:", formData.usuario); // Añadir este console.log
+                console.log("Usuario.js seleccionado:", formData.usuario); // Añadir este console.log
                 try {
                     const response = await axios.get(
                         `http://localhost:3001/api/users/${formData.usuario}`
@@ -70,7 +70,7 @@ const DeleteUser = () => {
             await axios.delete(
                 `http://localhost:3001/api/users/${formData.usuario}`
             );
-            console.log("Usuario borrado exitosamente");
+            console.log("Usuario.js borrado exitosamente");
         } catch (error) {
             console.error("Error al borrar el usuario:", error);
         }

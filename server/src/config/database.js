@@ -1,14 +1,11 @@
-// src/config/database.js
-import pkg from "pg";
+import { Sequelize } from 'sequelize';
 
-const { Pool } = pkg;
+const sequelize = new Sequelize('udeverso', 'udeverso_user','puerta2024',{
+    host : 'localhost',dialect: "postgres",logging: false});
 
-const pool = new Pool({
-    user: "udeverso_user",
-    host: "localhost",
-    database: "udeverso",
-    password: "puerta2024",
-    port: 5432,
-});
+sequelize.authenticate().
+then(()=>{console.log("Conexión a la base de datos exitosa");})
+    .catch((error)=>{console.log("Error al conectar a la base de datos:", error)});
 
-export default pool;
+//module.exports = sequelize
+export default sequelize;
