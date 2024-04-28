@@ -1,41 +1,6 @@
 import sequelize from "../config/database.js";
 import {Salas, UsuariosSalas, Usuarios} from "../models/index.js";
 
-/*
-export const addUserToRoom = async (req,res)=>{
-    console.log("Se llamó al endpoint POST /api/users/:userId/salas con " + JSON.stringify(req.body));
-
-    const client = await pool.connect(); // Transacción para garantizar consistencia
-    try {
-        await client.query("BEGIN");
-
-        const userId = req.params.userId
-        const { salaIds } = req.body;
-
-        if (!Array.isArray(salaIds)) {
-            throw new Error("salaIds debe ser un array");
-        }
-
-        for (const salaId of salaIds) {
-            await client.query(
-                "INSERT INTO user_salas (user_id, sala_id) VALUES ($1, $2) ON CONFLICT DO NOTHING",
-                [userId, salaId]
-            );
-        }
-
-        await client.query("COMMIT");
-        console.log("Usuarios.js asignado a las salas exitosamente.");
-        res.status(201).send("Usuarios.js asignado a las salas exitosamente.");
-    } catch (error) {
-        await client.query("ROLLBACK");
-        console.error("Error al asignar usuario a salas:", error.message);
-        res.status(500).send("Error al asignar usuario a salas.");
-    } finally {
-        client.release();
-    }
-}
-*/
-
 export const addUserToRoom = async (req, res) => {
     console.log("Se llamó al endpoint POST /api/users/:userId/salas con " + JSON.stringify(req.body));
 
@@ -71,26 +36,6 @@ export const addUserToRoom = async (req, res) => {
         res.status(500).send("Error al asignar usuario a salas.");
     }
 };
-
-/*
-export const deleteUserFromRoom = async (req, res) => {
-    try {
-        const userId = req.params.userId
-        const salaId = parseInt(req.params.salaId, 10);
-
-        await pool.query(
-            "DELETE FROM user_salas WHERE user_id = $1 AND sala_id = $2",
-            [userId, salaId]
-        );
-
-        console.log("Usuarios.js eliminado de la sala.");
-        res.status(200).send("Usuarios.js eliminado de la sala.");
-    } catch (error) {
-        console.error("Error al eliminar usuario de la sala:", error.message);
-        res.status(500).send("Error al eliminar usuario de la sala.");
-    }
-}
-*/
 
 export const deleteUserFromRoom = async (req, res) => {
     try {
