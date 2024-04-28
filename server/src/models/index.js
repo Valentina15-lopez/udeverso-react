@@ -2,9 +2,9 @@
 
 import Usuarios from './Usuarios.js';
 import UsuariosMateriales from './UsuariosMateriales.js';
-
 import Salas from "./Sala.js";
 import HorariosSalas from "./HorariosSalas.js";
+import UsuariosSalas from "./UsuariosSalas.js";
 
 // Definir asociaciones después de importar todos los modelos
 Usuarios.hasMany(UsuariosMateriales, {
@@ -33,5 +33,31 @@ HorariosSalas.belongsTo(Salas, {
     as: 'sala',  // Alias para la relación
 });
 
+// Un usuario puede tener muchas salas
+Usuarios.hasMany(UsuariosSalas, {
+    foreignKey: 'user_id',  // Clave foránea en UsuariosSalas
+    sourceKey: 'usuario',  // Clave primaria en Usuario
+    as: 'salas',  // Alias para la relación
+});
+
+UsuariosSalas.belongsTo(Usuarios, {
+    foreignKey: 'user_id',
+    targetKey: 'usuario',
+    as: 'usuario',  // Alias para la relación
+});
+
+// Una sala puede tener muchos usuarios asociados
+Salas.hasMany(UsuariosSalas, {
+    foreignKey: 'sala_id',  // Clave foránea en UsuariosSalas
+    sourceKey: 'id',  // Clave primaria en Sala
+    as: 'usuarios',  // Alias para la relación
+});
+
+UsuariosSalas.belongsTo(Salas, {
+    foreignKey: 'sala_id',
+    targetKey: 'id',
+    as: 'sala',  // Alias para la relación
+});
+
 // Exportar los modelos para uso global
-export { Usuarios, UsuariosMateriales, Salas, HorariosSalas };
+export { Usuarios, UsuariosMateriales, Salas, HorariosSalas, UsuariosSalas };

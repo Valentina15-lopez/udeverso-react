@@ -26,18 +26,4 @@ const UsuariosSalas = sequelize.define('UsuariosSalas', {
     timestamps: true  // Permite que Sequelize maneje `createdAt` y `updatedAt`
 });
 
-// Un usuario puede tener muchas salas
-Usuarios.hasMany(UsuariosSalas, {
-    foreignKey: 'user_id',  // Clave foránea en UsuariosSalas
-    sourceKey: 'usuario',  // Clave primaria en Usuario
-    as: 'salas',  // Alias para la relación
-});
-
-// Una sala puede tener muchos usuarios asociados
-Salas.hasMany(UsuariosSalas, {
-    foreignKey: 'sala_id',  // Clave foránea en UsuariosSalas
-    sourceKey: 'id',  // Clave primaria en Sala
-    as: 'usuarios',  // Alias para la relación
-});
-
 export default UsuariosSalas;

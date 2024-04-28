@@ -3,7 +3,7 @@ import sequelize from '../config/database.js';
 
 const Usuarios = sequelize.define('Usuarios', {
     usuario: {
-        type: DataTypes.STRING,  // Asegúrate de usar la referencia correcta
+        type: DataTypes.STRING,
         primaryKey: true
     },
     contrasenia: {
@@ -24,4 +24,4 @@ const Usuarios = sequelize.define('Usuarios', {
     timestamps: true  // Permite que Sequelize maneje `createdAt` y `updatedAt`
 });
 
-export default Usuarios;  // Exportación correcta para ES Modules
+export default Usuarios;

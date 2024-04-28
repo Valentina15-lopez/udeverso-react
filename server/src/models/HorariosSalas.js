@@ -6,7 +6,7 @@ const HorariosSalas = sequelize.define('HorariosSalas', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true,  // Asegúrate de que el campo `id` se auto-incremente
+        autoIncrement: true,
     },
     sala_id: {
         type: DataTypes.INTEGER,
@@ -33,4 +33,4 @@ const HorariosSalas = sequelize.define('HorariosSalas', {
     timestamps: true,  // Para `createdAt` y `updatedAt`
 });
 
-export default HorariosSalas;  // No olvides exportar el modelo
+export default HorariosSalas;  

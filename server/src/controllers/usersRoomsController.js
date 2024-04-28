@@ -1,6 +1,5 @@
 import sequelize from "../config/database.js";
-import UsuariosSalas from "../models/UsuariosSalas.js";
-import Usuario from "../models/Usuarios.js";
+import {Salas, UsuariosSalas, Usuarios} from "../models/index.js";
 
 /*
 export const addUserToRoom = async (req,res)=>{
@@ -118,24 +117,6 @@ export const deleteUserFromRoom = async (req, res) => {
     }
 };
 
-/*
-export const getRoomsOfUser = async (req, res) => {
-    try {
-        const userId = req.params.userId;
-
-        const result = await pool.query(
-            "SELECT s.* FROM user_salas us JOIN salas s ON us.sala_id = s.id WHERE us.user_id = $1",
-            [userId]
-        );
-
-        res.status(200).json(result.rows); // Devolver todas las salas del usuario
-    } catch (error) {
-        console.error("Error al obtener salas del usuario:", error.message);
-        res.status(500).send("Error al obtener salas del usuario.");
-    }
-}
-*/
-
 export const getRoomsOfUser = async (req, res) => {
     try {
         const userId = req.params.userId;  // El ID del usuario para el que queremos obtener las salas
@@ -146,13 +127,13 @@ export const getRoomsOfUser = async (req, res) => {
             include: [
                 {
                     model: Salas,  // Incluir las salas asociadas
-                    as: 'salas',  // Alias para la relación
+                    as: 'sala',  // Alias para la relación
                 },
             ],
         });
 
         // Extraer solo las salas de la respuesta
-        const salas = rooms.map(room => room.salas);
+        const salas = rooms.map(room => room.sala);
 
         res.status(200).json(salas);  // Devolver todas las salas asociadas al usuario
     } catch (error) {
@@ -160,23 +141,6 @@ export const getRoomsOfUser = async (req, res) => {
         res.status(500).json({ message: "Error al obtener salas del usuario." });
     }
 };
-
-/*
-export const getUsersOfRoom = async (req,res) =>{
-    try {
-        const salaId = parseInt(req.params.salaId, 10);
-
-        const result = await pool.query(
-            "SELECT u.* FROM user_salas us JOIN users u ON us.user_id = u.id WHERE us.sala_id = $1",
-            [salaId]
-        );
-
-        res.status(200).json(result.rows); // Devolver todos los usuarios de la sala
-    } catch (error) {
-        console.error("Error al obtener usuarios de la sala:", error.message);
-        res.status(500).send("Error al obtener usuarios de la sala.");
-    }
-}*/
 
 export const getUsersOfRoom = async (req, res) => {
     try {
@@ -187,7 +151,7 @@ export const getUsersOfRoom = async (req, res) => {
             where: { sala_id: salaId },  // Filtrar por la sala
             include: [
                 {
-                    model: Usuario,  // Incluir el modelo Usuario para obtener datos del usuario
+                    model: Usuarios,  // Incluir el modelo Usuario para obtener datos del usuario
                     as: 'usuario',  // Alias para la relación
                 },
             ],

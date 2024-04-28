@@ -1,7 +1,6 @@
 import {v4 as uuidV4} from "uuid";
-import Salas from "../models/Sala.js";
 import sequelize from "../config/database.js";
-import {HorariosSalas} from "../models/index.js";
+import {HorariosSalas, Salas} from "../models/index.js";
 
 export const addRoom = async (req, res) => {
     console.log("Se llamó al endpoint POST /api/salas con " + JSON.stringify(req.body));
