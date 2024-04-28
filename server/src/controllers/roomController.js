@@ -97,44 +97,6 @@ export const updateSchedules = async (req, res) => {
     }
 };
 
-/*
-export const deleteRoom = async (req,res) =>{
-    const client = await pool.connect(); // Obtener un cliente para transacciones
-
-    try {
-        await client.query("BEGIN"); // Iniciar la transacción
-
-        const salaId = parseInt(req.params.salaId, 10);
-
-        // Primero, verifica si la sala existe
-        const checkSala = await client.query("SELECT * FROM salas WHERE id = $1", [salaId]);
-
-        if (checkSala.rowCount === 0) {
-            res.status(404).send("Sala no encontrada");
-            await client.query("ROLLBACK"); // Revertir la transacción en caso de error
-            return;
-        }
-
-        //Si no hay clave foranea hacer
-        await client.query("DELETE FROM horarios_salas WHERE sala_id = $1", [salaId]);
-
-        // Borrar la sala (esto también borrará sus horarios gracias a la clave foránea)
-        await client.query("DELETE FROM salas WHERE id = $1", [salaId]);
-
-        await client.query("COMMIT"); // Confirmar la transacción
-
-        res.status(200).send("Sala y horarios eliminados exitosamente");
-    } catch (error) {
-        await client.query("ROLLBACK"); // Revertir la transacción en caso de error
-        console.error("Error al borrar la sala:", error.message);
-        res.status(500).send("Error al borrar la sala");
-    } finally {
-        client.release(); // Liberar el cliente
-    }
-}
-
-*/
-
 export const deleteRoom = async (req, res) => {
     const transaction = await sequelize.transaction();  // Iniciar una transacción
 
