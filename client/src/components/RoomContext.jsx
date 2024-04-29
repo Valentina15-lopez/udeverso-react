@@ -104,9 +104,11 @@ export const RoomProvider = ({ children }) => {
 
   useEffect(() => {
     const peer = new Peer(userId, {
-      host: "peerjs.webrtctest.online",
+      host: "localhost",
+      port: 3002,
       path: "/",
     });
+
     setMe(peer);
 
     try {
