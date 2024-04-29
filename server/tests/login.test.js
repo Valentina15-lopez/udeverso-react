@@ -4,14 +4,24 @@ import app from '../index.js';  // Importa tu aplicación Express
 import Usuarios from '../src/models/Usuarios.js';  // Importa el modelo de Usuarios
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import http from "http";
 
 // Clave secreta para JWT (debe coincidir con la clave usada en tu aplicación)
 const secretKey = 'miClaveSecreta';
 
 describe('Endpoint POST /login', () => {
-    // Preparación previa a las pruebas
+    let server;  // Variable para el servidor Express
+
     beforeEach(async () => {
-        await Usuarios.destroy({ where: {} });  // Limpiar la tabla de usuarios antes de cada prueba
+        server = http.createServer(app);  // Crear el servidor Express
+        await server.listen(3001);  // Iniciar el servidor en el puerto 3001
+        await Usuarios.destroy({ where: {} });  // Limpiar la tabla de usuarios
+    });
+
+    afterEach(async () => {
+        if (server) {
+            await server.close();  // Cerrar el servidor para liberar el puerto
+        }
     });
 
     it('Debe devolver 404 si el usuario no existe', async () => {

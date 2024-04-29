@@ -76,9 +76,13 @@ io.on("connection", (socket) => {
     });
 });
 
-const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+// Solo inicia el servidor si el script se ejecuta directamente
+//esto se agregó por que daba error al momento de correr los tests, como que el servidor estaba iniciado y el puerto quedaba en uso
+if (require.main === module) {
+    const PORT = process.env.PORT || 3001;
+    server.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}
 
 export default app;
