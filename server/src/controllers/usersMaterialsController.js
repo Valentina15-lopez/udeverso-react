@@ -1,7 +1,7 @@
 import {UsuariosMateriales} from "../models/index.js";
 
 export const addMaterialToUser = async (req, res) => {
-    console.log("Se llamó al endpoint POST /api/users/material con " + JSON.stringify(req.body));
+    //console.log("Se llamó al endpoint POST /api/users/material con " + JSON.stringify(req.body));
 
     try {
         const { usuario, nombre, ext } = req.body;  // Datos del material
@@ -15,7 +15,7 @@ export const addMaterialToUser = async (req, res) => {
             material: fileBuffer,  // El contenido binario del archivo
         });
 
-        console.log("Material agregado exitosamente");
+        //console.log("Material agregado exitosamente");
         res.status(200).json(nuevoMaterial);  // Respuesta exitosa con el material agregado
     } catch (error) {
         console.error("Error al agregar material:", error.message);
@@ -24,7 +24,7 @@ export const addMaterialToUser = async (req, res) => {
 };
 
 export const getAllMaterialsOfUser = async (req, res) => {
-    console.log("Se llamó al endpoint GET /api/users/:usuario/material con " + JSON.stringify(req.body));
+    //console.log("Se llamó al endpoint GET /api/users/:usuario/material con " + JSON.stringify(req.body));
 
     try {
         const { usuario } = req.params;  // Obtener el usuario del parámetro de la ruta
@@ -42,12 +42,12 @@ export const getAllMaterialsOfUser = async (req, res) => {
 };
 
 export const deleteMaterialOfUser = async (req, res) => {
-    console.log("Se llamó al endpoint DELETE /api/users/:usuario/material/:nombre con " + JSON.stringify(req.body));
+    //console.log("Se llamó al endpoint DELETE /api/users/:usuario/material/:nombre con " + JSON.stringify(req.body));
 
     try {
         const { usuario, nombre } = req.params;  // Obtener el usuario y el nombre del material
 
-        console.log("El material " + nombre + " se va a borrar del usuario " + usuario);
+        //console.log("El material " + nombre + " se va a borrar del usuario " + usuario);
 
         // Eliminar el material que corresponde al usuario y al nombre dados
         const deletedCount = await UsuariosMateriales.destroy({
@@ -59,10 +59,10 @@ export const deleteMaterialOfUser = async (req, res) => {
 
         // Verificar cuántas filas fueron afectadas
         if (deletedCount > 0) {
-            console.log("Material borrado con éxito");
+            //console.log("Material borrado con éxito");
             res.status(200).send("Material borrado con éxito");  // Operación exitosa
         } else {
-            console.log("Material no encontrado");
+            //console.log("Material no encontrado");
             res.status(404).send("Material no encontrado");  // Material no encontrado
         }
     } catch (error) {

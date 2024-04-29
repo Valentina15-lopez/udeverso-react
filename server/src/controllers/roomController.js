@@ -3,7 +3,7 @@ import sequelize from "../config/database.js";
 import {HorariosSalas, Salas} from "../models/index.js";
 
 export const addRoom = async (req, res) => {
-    console.log("Se llamó al endpoint POST /api/salas con " + JSON.stringify(req.body));
+    //console.log("Se llamó al endpoint POST /api/salas con " + JSON.stringify(req.body));
 
     const { descripcion, horarios } = req.body;
 
@@ -33,7 +33,7 @@ export const addRoom = async (req, res) => {
 
         await transaction.commit();  // Confirmar la transacción
 
-        console.log("Sala y horarios agregados exitosamente");
+        //console.log("Sala y horarios agregados exitosamente");
         res.status(201).send("Sala y horarios agregados exitosamente");
     } catch (error) {
         await transaction.rollback();  // Revertir la transacción en caso de error
@@ -43,7 +43,7 @@ export const addRoom = async (req, res) => {
 };
 
 export const updateSchedules = async (req, res) => {
-    console.log("Se llamó al endpoint PUT /api/:salaId/horarios con " + JSON.stringify(req.body));
+    //console.log("Se llamó al endpoint PUT /api/:salaId/horarios con " + JSON.stringify(req.body));
 
     const transaction = await sequelize.transaction();  // Iniciar una transacción
 
