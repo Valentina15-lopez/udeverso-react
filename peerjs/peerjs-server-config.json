@@ -1,0 +1,6 @@
+{
+  "port": 3002,
+  "key": "peerjs",
+  "path": "/",
+  "debug": true
+}
