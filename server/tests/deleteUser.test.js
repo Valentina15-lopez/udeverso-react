@@ -12,13 +12,12 @@ describe('Endpoint DELETE /api/users/:usuario', () => {
         await server.listen(3001);  // Iniciar el servidor en el puerto 3001
     });
 
-    // Cerrar el servidor después de cada prueba
     afterEach(async () => {
-        if (server) {
+        if (server && server.listening) {
             await server.close();  // Cierra el servidor para liberar el puerto
         }
-        await Usuarios.destroy({ where: {} });  // Limpiar datos de prueba
         jest.restoreAllMocks();  // Restablecer todos los mocks
+        await Usuarios.destroy({ where: {} });  // Limpiar datos de prueba
     });
 
     it('Debe eliminar el usuario y devolver estado 200', async () => {

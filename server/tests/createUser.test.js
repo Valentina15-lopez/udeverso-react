@@ -14,9 +14,11 @@ describe('Endpoint POST /api/users', () => {
     });
 
     afterEach(async () => {
-        if (server) {
-            await server.close();  // Cerrar el servidor para liberar el puerto
+        if (server && server.listening) {
+            await server.close();  // Cierra el servidor para liberar el puerto
         }
+        jest.restoreAllMocks();  // Restablecer todos los mocks
+        await Usuarios.destroy({ where: {} });  // Limpiar datos de prueba
     });
 
     it('Debe crear un usuario exitosamente', async () => {
