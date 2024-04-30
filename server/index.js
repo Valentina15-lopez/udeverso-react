@@ -8,6 +8,7 @@ import roomRoutes from "./src/routes/roomRoutes.js";
 import usersRoomsRoutes from "./src/routes/usersRoomsRoutes.js";
 import userMaterialsRoutes from "./src/routes/userMaterialsRoutes.js";
 import logger from "./src/middleware/logger.js";
+import sequelize from "./src/config/database.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -76,13 +77,19 @@ io.on("connection", (socket) => {
     });
 });
 
-// Solo inicia el servidor si el script se ejecuta directamente
-//esto se agregó por que daba error al momento de correr los tests, como que el servidor estaba iniciado y el puerto quedaba en uso
-if (require.main === module) {
-    const PORT = process.env.PORT || 3001;
-    server.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
+// Autenticar la conexión a la base de datos antes de iniciar el servidor
+sequelize.authenticate()
+    .then(() => {
+        console.log("Conexión a la base de datos exitosa");
+    })
+    .catch((error) => {
+        console.error("Error al conectarse a la base de datos:", error.message);
+        process.exit(1);  // Termina la aplicación si no se puede conectar
     });
-}
+
+const PORT = process.env.PORT || 3001;
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
 
 export default app;
