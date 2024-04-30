@@ -2,8 +2,9 @@
   "name": "udeverso-server",
   "type": "module",
   "scripts": {
-    "dev": "nodemon index.js",
+    "dev": "NODE_ENV=test nodemon index.js",
     "test": "NODE_ENV=test jest",
+    "start": "NODE_ENV=production node index.js",
     "test:coverage": "NODE_ENV=test jest --coverage"
   },
   "main": "src/index.js",
