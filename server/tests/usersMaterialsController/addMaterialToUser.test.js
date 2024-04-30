@@ -15,7 +15,8 @@ describe('Endpoint POST /api/users/material', () => {
         }
 
         server = http.createServer(app);  // Crear el servidor
-        await server.listen(3001);  // Iniciar el servidor
+        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        await server.listen(PORT);
         await UsuariosMateriales.destroy({ where: {} });  // Limpiar la tabla de materiales
         await Usuarios.destroy({ where: {} });
     });
