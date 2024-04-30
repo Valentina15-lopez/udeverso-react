@@ -33,7 +33,7 @@ export const Room = () => {
       <div className="flex grow">
         {screenSharingVideo && (
           <div className="w-4/5 pr-4">
-            <VideoPlayer stream={screenSharingVideo} />
+            <VideoPlayer stream={screenSharingVideo} userId />
           </div>
         )}
         <div
@@ -43,7 +43,7 @@ export const Room = () => {
         >
           {screenSharingId !== userId && (
             <div>
-              <VideoPlayer stream={stream} />
+              <VideoPlayer stream={stream} userId />
               <NameInput />
             </div>
           )}
@@ -52,7 +52,7 @@ export const Room = () => {
             .filter((peer) => !!peer.stream)
             .map((peer) => (
               <div key={peer.peerId}>
-                <VideoPlayer stream={peer.stream} />
+                <VideoPlayer stream={peer.stream} userId />
                 <div>{peer.userName}</div>
               </div>
             ))}
