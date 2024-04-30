@@ -1,7 +1,7 @@
 // tests/createUser.test.js
 import request from 'supertest';
-import app from '../index.js';  // Importa tu aplicación Express
-import Usuarios from '../src/models/Usuarios.js';  // Importa el modelo Usuarios
+import app from '../../index.js';  // Importa tu aplicación Express
+import Usuarios from '../../src/models/Usuarios.js';  // Importa el modelo Usuarios
 import http from 'http';
 
 describe('Endpoint POST /api/users', () => {

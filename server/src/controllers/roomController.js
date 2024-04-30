@@ -38,7 +38,7 @@ export const addRoom = async (req, res) => {
     } catch (error) {
         await transaction.rollback();  // Revertir la transacción en caso de error
         console.error("Error al agregar sala y horarios:", error.message);
-        res.status(500).send("Error al agregar sala y horarios");
+        res.status(500).json({ message: "Error al agregar sala y horarios" });
     }
 };
 
@@ -131,7 +131,7 @@ export const deleteRoom = async (req, res) => {
     } catch (error) {
         await transaction.rollback();  // Revertir la transacción en caso de error
         console.error("Error al borrar la sala:", error.message);
-        res.status(500).send("Error al borrar la sala");
+        res.status(500).json({ message: "Error al borrar la sala" });
     }
 };
 

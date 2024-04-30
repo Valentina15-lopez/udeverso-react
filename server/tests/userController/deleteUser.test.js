@@ -1,6 +1,6 @@
 import request from 'supertest';
-import app from '../index.js';  // Importa tu aplicación Express
-import Usuarios from '../src/models/Usuarios.js';
+import app from '../../index.js';  // Importa tu aplicación Express
+import Usuarios from '../../src/models/Usuarios.js';
 import http from 'http';
 
 describe('Endpoint DELETE /api/users/:usuario', () => {
