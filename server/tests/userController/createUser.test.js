@@ -14,7 +14,8 @@ describe('Endpoint POST /api/users', () => {
         }
 
         server = http.createServer(app);  // Crear el servidor Express
-        await server.listen(3001);  // Iniciar el servidor en el puerto 3001
+        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        await server.listen(PORT);
         await Usuarios.destroy({ where: {} });  // Limpiar la tabla de usuarios
     });
 
@@ -25,11 +26,6 @@ describe('Endpoint POST /api/users', () => {
         }
         await Usuarios.destroy({ where: {} });  // Limpiar datos de prueba
 
-        try {
-            await sequelize.close();  // Cerrar la conexión de Sequelize
-        } catch (error) {
-            console.error('Error al cerrar Sequelize:', error);
-        }
     });
 
     it('Debe crear un usuario exitosamente', async () => {

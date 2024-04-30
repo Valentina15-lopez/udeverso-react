@@ -19,7 +19,8 @@ describe('Endpoint POST /login', () => {
         }
 
         server = http.createServer(app);  // Crear un nuevo servidor
-        await server.listen(3001);  // Iniciar el servidor
+        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        await server.listen(PORT);
         await Usuarios.destroy({ where: {} });  // Limpiar la tabla de usuarios
     });
 
@@ -33,11 +34,6 @@ describe('Endpoint POST /login', () => {
         console.log('Limpiando datos...');
         await Usuarios.destroy({ where: {} });  // Limpiar la tabla de usuarios
 
-        try {
-            await sequelize.close();  // Cerrar la conexión de Sequelize
-        } catch (error) {
-            console.error('Error al cerrar Sequelize:', error);
-        }
     });
 
     it('Debe devolver 404 si el usuario no existe', async () => {

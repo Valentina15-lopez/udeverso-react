@@ -15,7 +15,8 @@ describe('Endpoint POST /api/users/:userId/salas', () => {
         }
 
         server = http.createServer(app);  // Crear el servidor
-        await server.listen(3001);  // Iniciar el servidor
+        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        await server.listen(PORT);
         await UsuariosSalas.destroy({ where: {} });  // Limpiar la tabla de usuarios-salas
         await Usuarios.destroy({ where: {} });  // Limpiar la tabla de usuarios
         await Salas.destroy({ where: {} });  // Limpiar la tabla de salas
@@ -45,14 +46,6 @@ describe('Endpoint POST /api/users/:userId/salas', () => {
             console.error('Error al limpiar datos:', error);
         }
 
-        // Cerrar la conexión de Sequelize
-        try {
-            console.log('Cerrando conexión de Sequelize...');
-            await sequelize.close();
-            console.log('Conexión de Sequelize cerrada.');
-        } catch (error) {
-            console.error('Error al cerrar Sequelize:', error);
-        }
     });
 
 

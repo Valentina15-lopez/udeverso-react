@@ -15,7 +15,8 @@ describe('Endpoint DELETE /api/users/:userId/salas/:salaId', () => {
         }
 
         server = http.createServer(app);
-        await server.listen(3001);
+        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        await server.listen(PORT);
         await UsuariosSalas.destroy({ where: {} });
         await Salas.destroy({ where: {} });
         await Usuarios.destroy({ where: {} });
@@ -26,11 +27,7 @@ describe('Endpoint DELETE /api/users/:userId/salas/:salaId', () => {
         if (server && server.listening) {
             await server.close();  // Cerrar el servidor para liberar el puerto
         }
-        try {
-            await sequelize.close();  // Cerrar la conexión de Sequelize
-        } catch (error) {
-            console.error('Error al cerrar Sequelize:', error);
-        }
+
     });
 
     it('Debe eliminar correctamente al usuario de la sala y devolver estado 200', async () => {

@@ -15,7 +15,8 @@ describe('Endpoint GET /api/salas', () => {
         }
 
         server = http.createServer(app);
-        await server.listen(3001);
+        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        await server.listen(PORT);
         await HorariosSalas.destroy({ where: {} });  // Limpiar horarios
         await Salas.destroy({ where: {} });  // Limpiar salas
     });
@@ -24,19 +25,12 @@ describe('Endpoint GET /api/salas', () => {
     afterEach(async () => {
         jest.restoreAllMocks();  // Restablecer mocks
         if (server && server.listening) {
-            console.log('Cerrando servidor...');
             await server.close();  // Cerrar el servidor
         }
 
-        console.log('Limpiando datos...');
         await HorariosSalas.destroy({ where: {} });
         await Salas.destroy({ where: {} });
 
-        try {
-            await sequelize.close();  // Cerrar la conexión de Sequelize
-        } catch (error) {
-            console.error('Error al cerrar Sequelize:', error);
-        }
     });
 
     it('Debe devolver todas las salas con sus horarios', async () => {

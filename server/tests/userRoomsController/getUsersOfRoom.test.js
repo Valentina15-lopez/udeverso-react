@@ -16,7 +16,8 @@ describe('Endpoint GET /api/salas/:salaId/usuarios', () => {
         }
 
         server = http.createServer(app);
-        await server.listen(3001);  // Iniciar el servidor
+        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        await server.listen(PORT);
         await UsuariosSalas.destroy({ where: {} });  // Limpiar las tablas para un estado limpio
         await Salas.destroy({ where: {} });
         await Usuarios.destroy({ where: {} });
@@ -34,11 +35,6 @@ describe('Endpoint GET /api/salas/:salaId/usuarios', () => {
         await Salas.destroy({ where: {} });
         await Usuarios.destroy({ where: {} });
 
-        try {
-            await sequelize.close();  // Cerrar la conexión de Sequelize
-        } catch (error) {
-            console.error('Error al cerrar Sequelize:', error);
-        }
     });
 
     it('Debe devolver los usuarios asociados a una sala', async () => {

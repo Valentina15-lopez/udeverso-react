@@ -13,7 +13,8 @@ describe('Endpoint DELETE /api/salas/:salaId', () => {
             await server.close();  // Cerrar el servidor si está corriendo
         }
         server = http.createServer(app);  // Crear el servidor
-        await server.listen(3001);  // Iniciar el servidor en el puerto 3001
+        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        await server.listen(PORT);
         await HorariosSalas.destroy({ where: {} });  // Limpiar la tabla de horarios
         await Salas.destroy({ where: {} });  // Limpiar la tabla de salas
     });
@@ -21,19 +22,12 @@ describe('Endpoint DELETE /api/salas/:salaId', () => {
     afterEach(async () => {
         jest.restoreAllMocks();  // Restablecer todos los mocks
         if (server && server.listening) {
-            console.log('Cerrando servidor...');
             await server.close();  // Cerrar el servidor
         }
 
-        console.log('Limpiando datos...');
         await HorariosSalas.destroy({ where: {} });  // Limpiar horarios primero
         await Salas.destroy({ where: {} });  // Luego limpiar salas
 
-        try {
-            await sequelize.close();  // Cerrar la conexión de Sequelize
-        } catch (error) {
-            console.error('Error al cerrar Sequelize:', error);
-        }
     });
 
     it('Debe devolver 404 si la sala no se encuentra', async () => {

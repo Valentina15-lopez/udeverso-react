@@ -14,7 +14,8 @@ describe('Endpoint PUT /api/salas/:salaId/horarios', () => {
         }
 
         server = http.createServer(app);  // Crear el servidor
-        await server.listen(3001);  // Iniciar el servidor en el puerto 3001
+        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        await server.listen(PORT);
         await HorariosSalas.destroy({ where: {} });  // Limpiar la tabla de horarios
         await Salas.destroy({ where: {} });  // Limpiar la tabla de salas
     });
@@ -27,11 +28,6 @@ describe('Endpoint PUT /api/salas/:salaId/horarios', () => {
         await HorariosSalas.destroy({ where: {} });  // Limpiar horarios antes de salas
         await Salas.destroy({ where: {} });  // Limpiar salas después de limpiar horarios
 
-        try {
-            await sequelize.close();  // Cerrar la conexión de Sequelize
-        } catch (error) {
-            console.error('Error al cerrar Sequelize:', error);
-        }
     });
 
     it('Debe devolver 500 si hay un error interno al destruir horarios', async () => {
