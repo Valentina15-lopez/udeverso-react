@@ -3,8 +3,8 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
-    "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test": "NODE_ENV=test jest",
+    "test:coverage": "NODE_ENV=test jest --coverage"
   },
   "main": "src/index.js",
   "dependencies": {
