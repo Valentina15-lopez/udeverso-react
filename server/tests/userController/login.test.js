@@ -19,10 +19,10 @@ describe('Endpoint POST /login', () => {
     });
 
     afterEach(async () => {
+        jest.restoreAllMocks();  // Restablecer todos los mocks
         if (server && server.listening) {
             await server.close();  // Cierra el servidor para liberar el puerto
         }
-        jest.restoreAllMocks();  // Restablecer todos los mocks
         await Usuarios.destroy({ where: {} });  // Limpiar datos de prueba
     });
 

@@ -15,12 +15,12 @@ describe('Endpoint POST /api/salas', () => {
     });
 
     afterEach(async () => {
+        jest.restoreAllMocks();  // Restablecer todos los mocks antes de la limpieza
         if (server && server.listening) {
-            await server.close();  // Cierra el servidor para liberar el puerto
+            await server.close();  // Cerrar el servidor
         }
-        await HorariosSalas.destroy({ where: {} });  // Limpiar la tabla de horarios
-        await Salas.destroy({ where: {} });  // Limpiar la tabla de salas
-        jest.restoreAllMocks();  // Restaurar todos los mocks
+        await HorariosSalas.destroy({ where: {} });  // Limpiar horarios antes de salas
+        await Salas.destroy({ where: {} });  // Limpiar salas después de limpiar horarios
     });
 
     it('Debe agregar una sala y sus horarios exitosamente', async () => {
