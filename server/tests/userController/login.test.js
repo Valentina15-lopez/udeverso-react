@@ -5,6 +5,7 @@ import Usuarios from '../../src/models/Usuarios.js';  // Importa el modelo de Us
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import http from "http";
+import sequelize from "../../src/config/database.js";
 
 // Clave secreta para JWT (debe coincidir con la clave usada en tu aplicación)
 const secretKey = 'miClaveSecreta';
@@ -13,17 +14,30 @@ describe('Endpoint POST /login', () => {
     let server;  // Variable para el servidor Express
 
     beforeEach(async () => {
-        server = http.createServer(app);  // Crear el servidor Express
-        await server.listen(3001);  // Iniciar el servidor en el puerto 3001
+        if (server && server.listening) {
+            await server.close();  // Cerrar el servidor si está corriendo
+        }
+
+        server = http.createServer(app);  // Crear un nuevo servidor
+        await server.listen(3001);  // Iniciar el servidor
         await Usuarios.destroy({ where: {} });  // Limpiar la tabla de usuarios
     });
 
     afterEach(async () => {
-        jest.restoreAllMocks();  // Restablecer todos los mocks
+        jest.restoreAllMocks();  // Restaurar todos los mocks
         if (server && server.listening) {
-            await server.close();  // Cierra el servidor para liberar el puerto
+            console.log('Cerrando el servidor...');
+            await server.close();  // Cerrar el servidor
         }
-        await Usuarios.destroy({ where: {} });  // Limpiar datos de prueba
+
+        console.log('Limpiando datos...');
+        await Usuarios.destroy({ where: {} });  // Limpiar la tabla de usuarios
+
+        try {
+            await sequelize.close();  // Cerrar la conexión de Sequelize
+        } catch (error) {
+            console.error('Error al cerrar Sequelize:', error);
+        }
     });
 
     it('Debe devolver 404 si el usuario no existe', async () => {

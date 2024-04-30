@@ -3,11 +3,16 @@ import request from 'supertest';
 import app from '../../index.js';  // Importa tu aplicación Express
 import Usuarios from '../../src/models/Usuarios.js';  // Importa el modelo Usuarios
 import http from 'http';
+import sequelize from "../../src/config/database.js";
 
 describe('Endpoint POST /api/users', () => {
     let server;  // Variable para el servidor Express
 
     beforeEach(async () => {
+        if (server && server.listening) {
+            await server.close();  // Cerrar el servidor si está corriendo
+        }
+
         server = http.createServer(app);  // Crear el servidor Express
         await server.listen(3001);  // Iniciar el servidor en el puerto 3001
         await Usuarios.destroy({ where: {} });  // Limpiar la tabla de usuarios
@@ -19,6 +24,12 @@ describe('Endpoint POST /api/users', () => {
             await server.close();  // Cierra el servidor para liberar el puerto
         }
         await Usuarios.destroy({ where: {} });  // Limpiar datos de prueba
+
+        try {
+            await sequelize.close();  // Cerrar la conexión de Sequelize
+        } catch (error) {
+            console.error('Error al cerrar Sequelize:', error);
+        }
     });
 
     it('Debe crear un usuario exitosamente', async () => {

@@ -3,11 +3,16 @@ import app from '../../index.js';
 import Salas from '../../src/models/Sala.js';
 import HorariosSalas from '../../src/models/HorariosSalas.js';
 import http from 'http';
+import sequelize from "../../src/config/database.js";
 
 describe('Endpoint GET /api/salas/:salaId', () => {
     let server;
 
     beforeEach(async () => {
+        if (server && server.listening) {
+            await server.close();  // Cerrar el servidor si está corriendo
+        }
+
         server = http.createServer(app);  // Crear el servidor
         await server.listen(3001);  // Iniciar el servidor
         await HorariosSalas.destroy({ where: {} });  // Limpiar horarios
@@ -24,6 +29,12 @@ describe('Endpoint GET /api/salas/:salaId', () => {
         console.log('Limpiando datos...');
         await HorariosSalas.destroy({ where: {} });  // Limpiar horarios
         await Salas.destroy({ where: {} });  // Limpiar salas
+
+        try {
+            await sequelize.close();  // Cerrar la conexión de Sequelize
+        } catch (error) {
+            console.error('Error al cerrar Sequelize:', error);
+        }
     });
 
     it('Debe devolver una sala y sus horarios', async () => {

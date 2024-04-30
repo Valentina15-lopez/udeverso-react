@@ -2,12 +2,17 @@ import request from 'supertest';
 import app from '../../index.js';  // Importa tu aplicación Express
 import Usuarios from '../../src/models/Usuarios.js';
 import http from 'http';
+import sequelize from "../../src/config/database.js";
 
 describe('Endpoint DELETE /api/users/:usuario', () => {
     let server;
 
     // Configurar el servidor antes de las pruebas
     beforeEach(async () => {
+        if (server && server.listening) {
+            await server.close();  // Cerrar el servidor si está corriendo
+        }
+
         server = http.createServer(app);
         await server.listen(3001);  // Iniciar el servidor en el puerto 3001
     });
@@ -18,6 +23,12 @@ describe('Endpoint DELETE /api/users/:usuario', () => {
             await server.close();  // Cierra el servidor para liberar el puerto
         }
         await Usuarios.destroy({ where: {} });  // Limpiar datos de prueba
+
+        try {
+            await sequelize.close();  // Cerrar la conexión de Sequelize
+        } catch (error) {
+            console.error('Error al cerrar Sequelize:', error);
+        }
     });
 
     it('Debe eliminar el usuario y devolver estado 200', async () => {

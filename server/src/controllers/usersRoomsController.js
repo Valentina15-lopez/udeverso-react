@@ -10,8 +10,10 @@ export const addUserToRoom = async (req, res) => {
         const userId = req.params.userId;  // El usuario al que se asignarán las salas
         const { salaIds } = req.body;  // Los IDs de las salas a las que se asignará el usuario
 
+        // Validar que salaIds es un array
         if (!Array.isArray(salaIds)) {
-            throw new Error("salaIds debe ser un array");
+            await transaction.rollback();  // Revertir la transacción
+            return res.status(400).json({ message: "salaIds debe ser un array" });  // Devolver 400 con mensaje
         }
 
         for (const salaId of salaIds) {
@@ -33,7 +35,7 @@ export const addUserToRoom = async (req, res) => {
     } catch (error) {
         await transaction.rollback();  // Revertir la transacción en caso de error
         console.error("Error al asignar usuario a salas:", error.message);
-        res.status(500).send("Error al asignar usuario a salas.");
+        res.status(500).json({ message: "Error al asignar usuario a salas." });  // Manejo de errores
     }
 };
 
@@ -58,7 +60,7 @@ export const deleteUserFromRoom = async (req, res) => {
         }
     } catch (error) {
         console.error("Error al eliminar usuario de la sala:", error.message);
-        res.status(500).send("Error al eliminar usuario de la sala.");  // Manejo de errores
+        res.status(500).json({ message: "Error al eliminar usuario de la sala." });  // Manejo de errores
     }
 };
 

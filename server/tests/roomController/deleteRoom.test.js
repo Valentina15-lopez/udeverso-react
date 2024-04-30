@@ -3,11 +3,15 @@ import app from '../../index.js';
 import Salas from '../../src/models/Sala.js';
 import HorariosSalas from '../../src/models/HorariosSalas.js';
 import http from 'http';
+import sequelize from "../../src/config/database.js";
 
 describe('Endpoint DELETE /api/salas/:salaId', () => {
     let server;
 
     beforeEach(async () => {
+        if (server && server.listening) {
+            await server.close();  // Cerrar el servidor si está corriendo
+        }
         server = http.createServer(app);  // Crear el servidor
         await server.listen(3001);  // Iniciar el servidor en el puerto 3001
         await HorariosSalas.destroy({ where: {} });  // Limpiar la tabla de horarios
@@ -24,6 +28,12 @@ describe('Endpoint DELETE /api/salas/:salaId', () => {
         console.log('Limpiando datos...');
         await HorariosSalas.destroy({ where: {} });  // Limpiar horarios primero
         await Salas.destroy({ where: {} });  // Luego limpiar salas
+
+        try {
+            await sequelize.close();  // Cerrar la conexión de Sequelize
+        } catch (error) {
+            console.error('Error al cerrar Sequelize:', error);
+        }
     });
 
     it('Debe devolver 404 si la sala no se encuentra', async () => {

@@ -3,11 +3,16 @@ import app from '../../index.js';  // Importar la aplicación Express
 import Salas from '../../src/models/Sala.js';  // Modelo de salas
 import HorariosSalas from '../../src/models/HorariosSalas.js';  // Modelo de horarios
 import http from 'http';
+import sequelize from "../../src/config/database.js";
 
 describe('Endpoint POST /api/salas', () => {
     let server;
 
     beforeEach(async () => {
+        if (server && server.listening) {
+            await server.close();  // Cerrar el servidor si está corriendo
+        }
+
         server = http.createServer(app);  // Crear el servidor
         await server.listen(3001);  // Iniciar el servidor en el puerto 3001
         await HorariosSalas.destroy({ where: {} });  // Limpiar la tabla de horarios
@@ -15,13 +20,35 @@ describe('Endpoint POST /api/salas', () => {
     });
 
     afterEach(async () => {
-        jest.restoreAllMocks();  // Restablecer todos los mocks antes de la limpieza
+        jest.restoreAllMocks();  // Restablecer todos los mocks
+
         if (server && server.listening) {
-            await server.close();  // Cerrar el servidor
+            try {
+                console.log('Cerrando servidor...');
+                await server.close();  // Cerrar el servidor
+                console.log('Servidor cerrado.');
+            } catch (error) {
+                console.error('Error al cerrar el servidor:', error);
+            }
         }
-        await HorariosSalas.destroy({ where: {} });  // Limpiar horarios antes de salas
-        await Salas.destroy({ where: {} });  // Limpiar salas después de limpiar horarios
+
+        console.log('Limpiando datos...');
+        try {
+            await HorariosSalas.destroy({ where: {} });  // Limpiar horarios antes de salas
+            await Salas.destroy({ where: {} });  // Limpiar salas después de horarios
+        } catch (error) {
+            console.error('Error al limpiar datos:', error);
+        }
+
+        try {
+            console.log('Cerrando conexión de Sequelize...');
+            await sequelize.close();  // Cerrar la conexión de Sequelize
+            console.log('Conexión de Sequelize cerrada.');
+        } catch (error) {
+            console.error('Error al cerrar Sequelize:', error);
+        }
     });
+
 
     it('Debe agregar una sala y sus horarios exitosamente', async () => {
         const salaData = {
