@@ -1,9 +1,9 @@
 import request from 'supertest';
-import app from '../../index.js';
+import {app} from '../../index.js';
 import Salas from '../../src/models/Sala.js';
 import HorariosSalas from '../../src/models/HorariosSalas.js';
 import http from 'http';
-import sequelize from "../../src/config/database.js";
+import portfinder from "portfinder";
 
 describe('Endpoint DELETE /api/salas/:salaId', () => {
     let server;
@@ -13,7 +13,8 @@ describe('Endpoint DELETE /api/salas/:salaId', () => {
             await server.close();  // Cerrar el servidor si está corriendo
         }
         server = http.createServer(app);  // Crear el servidor
-        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 });
+        console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint DELETE /api/salas/:salaId.");
         await server.listen(PORT);
         await HorariosSalas.destroy({ where: {} });  // Limpiar la tabla de horarios
         await Salas.destroy({ where: {} });  // Limpiar la tabla de salas

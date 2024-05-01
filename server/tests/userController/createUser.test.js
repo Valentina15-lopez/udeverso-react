@@ -1,9 +1,9 @@
 // tests/createUser.test.js
 import request from 'supertest';
-import app from '../../index.js';  // Importa tu aplicación Express
+import {app} from '../../index.js';  // Importa tu aplicación Express
 import Usuarios from '../../src/models/Usuarios.js';  // Importa el modelo Usuarios
 import http from 'http';
-import sequelize from "../../src/config/database.js";
+import portfinder from "portfinder";
 
 describe('Endpoint POST /api/users', () => {
     let server;  // Variable para el servidor Express
@@ -14,7 +14,8 @@ describe('Endpoint POST /api/users', () => {
         }
 
         server = http.createServer(app);  // Crear el servidor Express
-        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 });
+        console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint POST /api/users.");
         await server.listen(PORT);
         await Usuarios.destroy({ where: {} });  // Limpiar la tabla de usuarios
     });

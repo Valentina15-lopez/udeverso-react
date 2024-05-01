@@ -1,8 +1,8 @@
 import request from 'supertest';
-import app from '../../index.js';  // Importa tu aplicación Express
+import {app} from '../../index.js';  // Importa tu aplicación Express
 import Usuarios from '../../src/models/Usuarios.js';
 import http from 'http';
-import sequelize from "../../src/config/database.js";
+import portfinder from "portfinder";
 
 describe('Endpoint GET /api/users', () => {
     let server;
@@ -14,7 +14,8 @@ describe('Endpoint GET /api/users', () => {
         }
 
         server = http.createServer(app);
-        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 });
+        console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint Endpoint GET /api/users.");
         await server.listen(PORT);
     });
 

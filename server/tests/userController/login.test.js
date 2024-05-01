@@ -1,11 +1,11 @@
 // tests/login.test.js
 import request from 'supertest';
-import app from '../../index.js';  // Importa tu aplicación Express
+import {app} from '../../index.js';  // Importa tu aplicación Express
 import Usuarios from '../../src/models/Usuarios.js';  // Importa el modelo de Usuarios
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import http from "http";
-import sequelize from "../../src/config/database.js";
+import portfinder from "portfinder";
 
 // Clave secreta para JWT (debe coincidir con la clave usada en tu aplicación)
 const secretKey = 'miClaveSecreta';
@@ -19,7 +19,8 @@ describe('Endpoint POST /login', () => {
         }
 
         server = http.createServer(app);  // Crear un nuevo servidor
-        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 });
+        console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint POST /login.");
         await server.listen(PORT);
         await Usuarios.destroy({ where: {} });  // Limpiar la tabla de usuarios
     });

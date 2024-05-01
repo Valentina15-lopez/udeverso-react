@@ -87,9 +87,13 @@ sequelize.authenticate()
         process.exit(1);  // Termina la aplicación si no se puede conectar
     });
 
-const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+// server/index.js
+// ...
+const startServer = () => {
+    const PORT = process.env.PORT || 3001;
+    server.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+};
 
-export default app;
+export { app, startServer };

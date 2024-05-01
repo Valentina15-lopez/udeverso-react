@@ -1,10 +1,10 @@
 import request from 'supertest';
-import app from '../../index.js';  // Tu aplicación Express
+import {app} from '../../index.js';  // Tu aplicación Express
 import Salas from '../../src/models/Sala.js';  // Modelo de Salas
 import Usuarios from '../../src/models/Usuarios.js';  // Modelo de Usuarios
 import UsuariosSalas from '../../src/models/UsuariosSalas.js';  // Relación Usuario-Salas
 import http from 'http';
-import sequelize from "../../src/config/database.js";
+import portfinder from "portfinder";
 
 describe('Endpoint GET /api/salas/:salaId/usuarios', () => {
     let server;
@@ -16,7 +16,8 @@ describe('Endpoint GET /api/salas/:salaId/usuarios', () => {
         }
 
         server = http.createServer(app);
-        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 });
+        console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint GET /api/salas/:salaId/usuarios.");
         await server.listen(PORT);
         await UsuariosSalas.destroy({ where: {} });  // Limpiar las tablas para un estado limpio
         await Salas.destroy({ where: {} });

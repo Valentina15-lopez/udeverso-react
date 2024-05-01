@@ -1,9 +1,9 @@
 import request from 'supertest';
-import app from '../../index.js';  // Importar la aplicación Express
+import {app} from '../../index.js';  // Importar la aplicación Express
 import Salas from '../../src/models/Sala.js';  // Modelo de salas
 import HorariosSalas from '../../src/models/HorariosSalas.js';  // Modelo de horarios
 import http from 'http';
-import sequelize from "../../src/config/database.js";
+import portfinder from 'portfinder';  // Importar el módulo portfinder
 
 describe('Endpoint POST /api/salas', () => {
     let server;
@@ -14,7 +14,9 @@ describe('Endpoint POST /api/salas', () => {
         }
 
         server = http.createServer(app);  // Crear el servidor
-        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        // Buscar un puerto disponible
+        const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 });
+        console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint POST /api/salas.");
         await server.listen(PORT);
         await HorariosSalas.destroy({ where: {} });  // Limpiar la tabla de horarios
         await Salas.destroy({ where: {} });  // Limpiar la tabla de salas

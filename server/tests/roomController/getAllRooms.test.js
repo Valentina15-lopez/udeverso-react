@@ -1,9 +1,9 @@
 import request from 'supertest';
-import app from '../../index.js';
+import {app} from '../../index.js';
 import Salas from '../../src/models/Sala.js';
 import HorariosSalas from '../../src/models/HorariosSalas.js';
 import http from 'http';
-import sequelize from "../../src/config/database.js";
+import portfinder from "portfinder";
 
 describe('Endpoint GET /api/salas', () => {
     let server;
@@ -15,7 +15,8 @@ describe('Endpoint GET /api/salas', () => {
         }
 
         server = http.createServer(app);
-        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 });
+        console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint GET /api/salas.");
         await server.listen(PORT);
         await HorariosSalas.destroy({ where: {} });  // Limpiar horarios
         await Salas.destroy({ where: {} });  // Limpiar salas

@@ -1,10 +1,10 @@
 import request from 'supertest';
-import app from '../../index.js';  // Importar la aplicación Express
+import {app} from '../../index.js';  // Importar la aplicación Express
 import UsuariosMateriales from '../../src/models/UsuariosMateriales.js';  // Modelo del material
 import http from 'http';
-import multer from 'multer';  // Para simular la carga de archivos
 import path from 'path';
-import Usuarios from "../../src/models/Usuarios.js";  // Para manejar rutas de archivos
+import Usuarios from "../../src/models/Usuarios.js";
+import portfinder from "portfinder";  // Para manejar rutas de archivos
 
 describe('Endpoint POST /api/users/material', () => {
     let server;
@@ -15,7 +15,8 @@ describe('Endpoint POST /api/users/material', () => {
         }
 
         server = http.createServer(app);  // Crear el servidor
-        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 });
+        console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint POST /api/users/material.");
         await server.listen(PORT);
         await UsuariosMateriales.destroy({ where: {} });  // Limpiar la tabla de materiales
         await Usuarios.destroy({ where: {} });

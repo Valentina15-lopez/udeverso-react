@@ -1,9 +1,9 @@
 import request from 'supertest';
-import app from '../../index.js';  // Tu aplicación Express
+import {app} from '../../index.js';  // Tu aplicación Express
 import UsuariosMateriales from '../../src/models/UsuariosMateriales.js';  // Modelo de materiales
 import http from 'http';
-import sequelize from '../../src/config/database.js';
 import Usuarios from "../../src/models/Usuarios.js";
+import portfinder from "portfinder";
 
 describe('Endpoint DELETE /api/users/:usuario/material/:nombre', () => {
     let server;
@@ -14,7 +14,8 @@ describe('Endpoint DELETE /api/users/:usuario/material/:nombre', () => {
         }
 
         server = http.createServer(app);  // Crear el servidor
-        const PORT = 3001 + Math.floor(Math.random() * 100);  // Cambia el puerto para cada prueba
+        const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 });
+        console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint DELETE /api/users/:usuario/material/:nombre.");
         await server.listen(PORT);
         await UsuariosMateriales.destroy({ where: {} });  // Limpiar materiales
     });
