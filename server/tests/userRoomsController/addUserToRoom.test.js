@@ -53,7 +53,7 @@ describe('Endpoint POST /api/users/:userId/salas', () => { // Grupo de pruebas p
             .send({ salaIds: [sala1.id, sala2.id] });  // Enviar solicitud con los IDs de salas
 
         expect(response.status).toBe(201);  // Verificar éxito
-        expect(response.text).toBe("Usuario asignado a las salas exitosamente.");  // Mensaje esperado
+        expect(response.body.message).toBe("Usuario asignado a las salas exitosamente.");  // Mensaje esperado
 
         // Verificar que el usuario se agregó a las salas correctas
         const userSala1 = await UsuariosSalas.findOne({ // Buscar usuario en sala 1

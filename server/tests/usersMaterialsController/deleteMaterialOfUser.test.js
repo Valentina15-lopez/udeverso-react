@@ -17,6 +17,7 @@ describe('Endpoint DELETE /api/users/:usuario/material/:nombre', () => { // Grup
         const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 }); // Buscar un puerto disponible
         //console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint DELETE /api/users/:usuario/material/:nombre.");
         await server.listen(PORT); // Iniciar el servidor en el puerto encontrado
+        await Usuarios.destroy({ where: {} });  // Limpiar usuarios
         await UsuariosMateriales.destroy({ where: {} });  // Limpiar materiales
     });
 
@@ -28,7 +29,8 @@ describe('Endpoint DELETE /api/users/:usuario/material/:nombre', () => { // Grup
         }
 
         try {
-            await UsuariosMateriales.destroy({ where: {} });  // Limpiar la tabla
+            await Usuarios.destroy({ where: {} });  // Limpiar usuarios
+            await UsuariosMateriales.destroy({ where: {} });  // Limpiar materiales
         } catch (error) {
             console.error('Error al limpiar datos:', error); // Manejar errores
         }
@@ -49,7 +51,7 @@ describe('Endpoint DELETE /api/users/:usuario/material/:nombre', () => { // Grup
             .delete('/api/users/usuario1/material/material1')  // Solicitud para eliminar un material
             .expect(200);  // Debería responder con estado 200
 
-        expect(response.text).toBe("Material borrado con éxito");  // Mensaje esperado
+        expect(response.body.message).toBe("Material borrado con éxito");  // Mensaje esperado
 
         // Verificar que el material realmente fue eliminado
         const material = await UsuariosMateriales.findOne({
@@ -64,7 +66,7 @@ describe('Endpoint DELETE /api/users/:usuario/material/:nombre', () => { // Grup
             .delete('/api/users/usuario1/material/materialInexistente')  // Solicitud para eliminar un material inexistente
             .expect(404);  // Debería responder con estado 404
 
-        expect(response.text).toBe("Material no encontrado");  // Mensaje esperado
+        expect(response.body.message).toBe("Material no encontrado");  // Mensaje esperado
     });
 
     it('Debe devolver 500 si ocurre un error interno', async () => { // Prueba para error interno

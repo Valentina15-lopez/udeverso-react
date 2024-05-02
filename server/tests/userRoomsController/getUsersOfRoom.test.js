@@ -1,27 +1,27 @@
-import request from 'supertest';
-import {app} from '../../index.js';  // Tu aplicación Express
+import request from 'supertest'; // Importa el módulo supertest
+import {app} from '../../index.js';  // Importa tu aplicación Express
 import Salas from '../../src/models/Sala.js';  // Modelo de Salas
 import Usuarios from '../../src/models/Usuarios.js';  // Modelo de Usuarios
 import UsuariosSalas from '../../src/models/UsuariosSalas.js';  // Relación Usuario-Salas
-import http from 'http';
-import portfinder from "portfinder";
+import http from 'http'; // Importa el módulo http
+import portfinder from "portfinder"; // Importa el módulo portfinder
 
-describe('Endpoint GET /api/salas/:salaId/usuarios', () => {
-    let server;
+describe('Endpoint GET /api/salas/:salaId/usuarios', () => { // Grupo de pruebas para el endpoint GET /api/salas/:salaId/usuarios
+    let server; // Variable para el servidor Express
 
     // Configuración inicial antes de cada prueba
-    beforeEach(async () => {
-        if (server && server.listening) {
+    beforeEach(async () => { // Antes de cada prueba
+        if (server && server.listening) { // Si el servidor está corriendo
             await server.close();  // Cerrar el servidor si está corriendo
         }
 
-        server = http.createServer(app);
-        const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 });
-        console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint GET /api/salas/:salaId/usuarios.");
-        await server.listen(PORT);
+        server = http.createServer(app); // Crear el servidor Express
+        const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 }); // Buscar un puerto disponible
+        //console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint GET /api/salas/:salaId/usuarios."); //
+        await server.listen(PORT); // Iniciar el servidor en el puerto encontrado
         await UsuariosSalas.destroy({ where: {} });  // Limpiar las tablas para un estado limpio
-        await Salas.destroy({ where: {} });
-        await Usuarios.destroy({ where: {} });
+        await Salas.destroy({ where: {} }); // Limpiar las tablas para un estado limpio
+        await Usuarios.destroy({ where: {} }); // Limpiar las tablas para un estado limpio
     });
 
     afterEach(async () => { // Después de cada prueba
@@ -31,9 +31,9 @@ describe('Endpoint GET /api/salas/:salaId/usuarios', () => {
         }
 
         // Limpiar la base de datos
-        await UsuariosSalas.destroy({ where: {} });
-        await Salas.destroy({ where: {} });
-        await Usuarios.destroy({ where: {} });
+        await UsuariosSalas.destroy({ where: {} }); // Limpiar la tabla de usuarios-salas
+        await Salas.destroy({ where: {} }); // Limpiar la tabla de salas
+        await Usuarios.destroy({ where: {} }); // Limpiar la tabla de usuarios
 
     });
 

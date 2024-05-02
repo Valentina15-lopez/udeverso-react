@@ -40,7 +40,7 @@ describe('Endpoint DELETE /api/users/:userId/salas/:salaId', () => { // Grupo de
             .delete(`/api/users/${user.usuario}/salas/${sala.id}`) // Endpoint para eliminar usuario de sala
             .expect(200); // Esperar estado 200
 
-        expect(response.text).toBe("Usuario eliminado de la sala.");  // Verificar mensaje
+        expect(response.body.message).toBe("Usuario eliminado de la sala.");  // Verificar mensaje
         const result = await UsuariosSalas.findOne({ // Buscar relación
             where: { user_id: user.usuario, sala_id: sala.id },
         });
@@ -52,7 +52,7 @@ describe('Endpoint DELETE /api/users/:userId/salas/:salaId', () => { // Grupo de
             .delete(`/api/users/usuarioInexistente/salas/999`) // Endpoint para eliminar usuario de sala
             .expect(404); // Esperar estado 404
 
-        expect(response.text).toBe("No se encontró la relación entre usuario y sala.");  // Mensaje esperado
+        expect(response.body.message).toBe("No se encontró la relación entre usuario y sala.");  // Mensaje esperado
     });
 
     it('Debe devolver 500 si ocurre un error interno', async () => { // Prueba para error interno
