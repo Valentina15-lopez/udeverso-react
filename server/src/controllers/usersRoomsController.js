@@ -31,7 +31,7 @@ export const addUserToRoom = async (req, res) => {
 
         await transaction.commit();  // Confirmar la transacción
         //console.log("Usuario asignado a las salas exitosamente.");
-        res.status(201).send("Usuario asignado a las salas exitosamente.");
+        return res.status(201).json({ message: "Usuario asignado a las salas exitosamente." }); // Operación exitosa
     } catch (error) {
         await transaction.rollback();  // Revertir la transacción en caso de error
         console.error("Error al asignar usuario a salas:", error.message);
@@ -53,10 +53,10 @@ export const deleteUserFromRoom = async (req, res) => {
 
         if (deletedCount > 0) {
             //console.log("Usuario eliminado de la sala.");
-            res.status(200).send("Usuario eliminado de la sala.");  // Operación exitosa
+            return res.status(200).json({ message: "Usuario eliminado de la sala." }); // Operación exitosa
         } else {
             //console.log("No se encontró la relación entre usuario y sala.");
-            res.status(404).send("No se encontró la relación entre usuario y sala.");  // Relación no encontrada
+            return res.status(404).json({message: "No se encontró la relación entre usuario y sala."}); // No encontrado
         }
     } catch (error) {
         console.error("Error al eliminar usuario de la sala:", error.message);

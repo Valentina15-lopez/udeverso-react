@@ -1,9 +1,8 @@
-import dotenv from 'dotenv';
-dotenv.config({ path: `.env.${process.env.NODE_ENV || 'test'}` });  // Cargar el archivo correspondiente
+import dotenv from 'dotenv'; //importar librería dotenv
+dotenv.config({ path: `.env.${process.env.NODE_ENV || 'test'}` });  // Cargar el archivo correspondiente de configuración
+import { Sequelize } from 'sequelize';//importar la clase Sequelize
 
-import { Sequelize } from 'sequelize';
-
-const databaseConfig = {
+const databaseConfig = { // Configuración de la base de datos
     test: {
         username: process.env.TEST_DB_USER,
         password: process.env.TEST_DB_PASS,
@@ -25,7 +24,7 @@ const databaseConfig = {
 const currentEnvironment = process.env.NODE_ENV || 'test';  // Entorno por defecto
 const sequelizeConfig = databaseConfig[currentEnvironment];  // Configuración según el entorno
 
-const sequelize = new Sequelize(
+const sequelize = new Sequelize( // Crear una instancia de la clase Sequelize
     sequelizeConfig.database,
     sequelizeConfig.username,
     sequelizeConfig.password,
@@ -36,4 +35,4 @@ const sequelize = new Sequelize(
     }
 );
 
-export default sequelize;
+export default sequelize; // Exportar la instancia de la clase Sequelize

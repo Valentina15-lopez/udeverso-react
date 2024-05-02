@@ -69,4 +69,38 @@ describe('Endpoint PUT /api/salas/:salaId/horarios', () => {
 
         expect(horariosActualizados.length).toBe(2);  // Verificar actualizaciones
     });
+
+    it('Debe devolver 400 si horarios no es un array', async () => {
+        const sala = await Salas.create({
+            descripcion: 'Sala para Actualización de Horarios',
+        });
+
+        const horarios = 'no es un array';
+
+        const response = await request(app)
+            .put(`/api/salas/${sala.id}/horarios`)
+            .send({ horarios });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("El formato de horarios debe ser un array.");
+    });
+
+    it('Debe devolver 400 si los tipos de datos son incorrectos', async () => {
+        const sala = await Salas.create({
+            descripcion: 'Sala para Actualización de Horarios',
+        });
+
+        const horarios = [
+            { dia_semana: 'no es un número', hora_inicio: '08:00', hora_fin: '10:00' },
+            { dia_semana: 2, hora_inicio: 123, hora_fin: '12:00' },
+            { dia_semana: 3, hora_inicio: '14:00', hora_fin: true },
+        ];
+
+        const response = await request(app)
+            .put(`/api/salas/${sala.id}/horarios`)
+            .send({ horarios });
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Horarios mal formateados.");
+    });
 });

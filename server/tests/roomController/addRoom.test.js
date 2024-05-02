@@ -73,6 +73,38 @@ describe('Endpoint POST /api/salas', () => {
         expect(horarios.length).toBe(2);  // Debería haber dos horarios
     });
 
+    it('Debe devolver 400 si horarios no es un array', async () => {
+        const salaData = {
+            descripcion: 'Sala de pruebas',
+            horarios: 'no es un array',
+        };
+
+        const response = await request(app)
+            .post('/api/salas')
+            .send(salaData);
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("El formato de horarios debe ser un array.");
+    });
+
+    it('Debe devolver 400 si los tipos de datos son incorrectos', async () => {
+        const salaData = {
+            descripcion: 'Sala de pruebas',
+            horarios: [
+                { dia_semana: 'no es un número', hora_inicio: '08:00', hora_fin: '10:00' },
+                { dia_semana: 2, hora_inicio: 123, hora_fin: '12:00' },
+                { dia_semana: 3, hora_inicio: '14:00', hora_fin: true },
+            ],
+        };
+
+        const response = await request(app)
+            .post('/api/salas')
+            .send(salaData);
+
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe("Horarios mal formateados.");
+    });
+
     it('Debe manejar un error y devolver estado 500', async () => {
         jest.spyOn(Salas, 'create').mockImplementation(() => {
             throw new Error('Simulated error');  // Simular un error en la creación de la sala

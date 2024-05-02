@@ -60,10 +60,10 @@ export const deleteMaterialOfUser = async (req, res) => {
         // Verificar cuántas filas fueron afectadas
         if (deletedCount > 0) {
             //console.log("Material borrado con éxito");
-            res.status(200).send("Material borrado con éxito");  // Operación exitosa
+            res.status(200).json({ message: "Material borrado con éxito" });  // Operación exitosa
         } else {
             //console.log("Material no encontrado");
-            res.status(404).send("Material no encontrado");  // Material no encontrado
+            res.status(404).json({ message: "Material no encontrado" });  // Material no encontrado
         }
     } catch (error) {
         console.error("Error al eliminar material:", error.message);

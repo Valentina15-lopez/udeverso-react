@@ -1,34 +1,34 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/database.js';
-import Salas from './Sala.js';  // Asegúrate de importar el modelo Sala
+import { DataTypes } from 'sequelize'; // Importar el tipo de dato
+import sequelize from '../config/database.js'; // Importar la instancia de la clase Sequelize
+import Salas from './Sala.js';  // Importar el modelo Sala
 
 const HorariosSalas = sequelize.define('HorariosSalas', {
     id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
+        type: DataTypes.INTEGER, // Tipo de dato: INTEGER
+        primaryKey: true, // Clave primaria
+        autoIncrement: true, // Autoincremental
     },
     sala_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: Salas,  // Referencia correcta al modelo Sala
+        type: DataTypes.INTEGER, // Tipo de dato: INTEGER
+        allowNull: false, // No permitir valores nulos
+        references: { // Referencia a otra tabla
+            model: Salas,  // Referencia correcta al modelo Salas
             key: 'id',  // Clave foránea que apunta a `id`
         },
     },
-    dia_semana: {
-        type: DataTypes.INTEGER,
+    dia_semana: { // Día de la semana
+        type: DataTypes.INTEGER, // Tipo de dato: INTEGER
         allowNull: false,  // No permitir valores nulos
     },
-    hora_inicio: {
-        type: DataTypes.TIME,
-        allowNull: false,
+    hora_inicio: { // Hora de inicio
+        type: DataTypes.TIME, // Tipo de dato: TIME
+        allowNull: false, // No permitir valores nulos
     },
-    hora_fin: {
-        type: DataTypes.TIME,
-        allowNull: false,
+    hora_fin: { // Hora de fin
+        type: DataTypes.TIME, // Tipo de dato: TIME
+        allowNull: false, // No permitir valores nulos
     },
-}, {
+}, { // Configuración
     tableName: 'horarios_salas',  // Nombre de la tabla
     timestamps: true,  // Para `createdAt` y `updatedAt`
 });

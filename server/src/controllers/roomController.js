@@ -1,11 +1,11 @@
-import {v4 as uuidV4} from "uuid";
-import sequelize from "../config/database.js";
-import {HorariosSalas, Salas} from "../models/index.js";
+import {v4 as uuidV4} from "uuid"; // Importar la función uuidV4
+import sequelize from "../config/database.js"; // Importar la instancia de la clase Sequelize
+import {HorariosSalas, Salas} from "../models/index.js"; // Importar los modelos HorariosSalas y Salas
 
 export const addRoom = async (req, res) => {
     //console.log("Se llamó al endpoint POST /api/salas con " + JSON.stringify(req.body));
 
-    const { descripcion, horarios } = req.body;
+    const { descripcion, horarios } = req.body; // Extraer la descripción y los horarios
 
     const transaction = await sequelize.transaction();  // Iniciar una transacción
 
@@ -16,9 +16,22 @@ export const addRoom = async (req, res) => {
             { transaction }
         );
 
+        // Validación básica para horarios
+        if (!Array.isArray(horarios)) {
+            return res.status(400).json({ message: "El formato de horarios debe ser un array." });
+        }
+
         // Insertar los horarios para esta sala dentro de la transacción
         for (const horario of horarios) {
             const { dia_semana, hora_inicio, hora_fin } = horario;
+
+            if (
+                typeof dia_semana !== "number" ||
+                typeof hora_inicio !== "string" ||
+                typeof hora_fin !== "string"
+            ) { // Validar los tipos de datos
+                return res.status(400).json({ message: "Horarios mal formateados." });
+            }
 
             await HorariosSalas.create(
                 {
@@ -53,7 +66,7 @@ export const updateSchedules = async (req, res) => {
 
         // Validación básica para horarios
         if (!Array.isArray(horarios)) {
-            throw new Error("El formato de horarios debe ser un array.");
+            return res.status(400).json({ message: "El formato de horarios debe ser un array." });
         }
 
         // Eliminar los horarios existentes para la sala dentro de la transacción
@@ -70,8 +83,8 @@ export const updateSchedules = async (req, res) => {
                 typeof dia_semana !== "number" ||
                 typeof hora_inicio !== "string" ||
                 typeof hora_fin !== "string"
-            ) {
-                throw new Error("Horarios mal formateados.");
+            ) { // Validar los tipos de datos
+                return res.status(400).json({ message: "Horarios mal formateados." });
             }
 
             // Crear nuevos registros de horarios dentro de la transacción
@@ -100,7 +113,7 @@ export const deleteRoom = async (req, res) => {
     const transaction = await sequelize.transaction();  // Iniciar una transacción
 
     try {
-        const salaId = parseInt(req.params.salaId, 10);
+        const salaId = parseInt(req.params.salaId, 10);// Convertir a número
 
         // Verificar si la sala existe
         const sala = await Salas.findOne({
@@ -110,7 +123,7 @@ export const deleteRoom = async (req, res) => {
 
         if (!sala) {
             await transaction.rollback();  // Revertir la transacción si la sala no se encuentra
-            return res.status(404).send("Sala no encontrada");
+            return res.status(404).json({ message: "Sala no encontrada" });
         }
 
         // Eliminar horarios asociados a la sala
@@ -134,8 +147,6 @@ export const deleteRoom = async (req, res) => {
         res.status(500).json({ message: "Error al borrar la sala" });
     }
 };
-
-
 
 export const getAllRooms = async (req, res) => {
     try {

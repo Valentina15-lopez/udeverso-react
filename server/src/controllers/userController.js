@@ -7,28 +7,28 @@ const secretKey = "miClaveSecreta";
 
 export const checkAuth = (req, res) => {
     //console.log("Se llamo al endpoint GET /api/checkAuth con " + JSON.stringify(req.body));
-    const token = req.cookies.sessionToken;
-    if (!token) {
+    const token = req.cookies.sessionToken; // Obtener el token de la cookie
+    if (!token) { // Si no hay token
         return res.sendStatus(401);
     }
 
-    jwt.verify(token, secretKey, (err, decoded) => {
+    jwt.verify(token, secretKey, (err, decoded) => { // Verificar el token
         if (err) {
-            return res.sendStatus(403);
+            return res.sendStatus(403); // Si hay un error en el token
         }
-        res.sendStatus(200);
+        res.sendStatus(200); // Si el token es válido
     });
 };
 
 export const login = async (req, res) => {
     //console.log('Se llamó al endpoint POST /login con ' + JSON.stringify(req.body));
-    const { nombreUsuario, contrasena } = req.body;
+    const { nombreUsuario, contrasena } = req.body; // Obtener los datos del cuerpo de la petición
 
     try {
         // Usar Sequelize para encontrar al usuario por el nombre de usuario
         const usuario = await Usuarios.findOne({ where: { usuario: nombreUsuario } });
 
-        if (!usuario) {
+        if (!usuario) { // Si no se encontró el usuario
             //console.log("Usuario no encontrado");
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
@@ -36,7 +36,7 @@ export const login = async (req, res) => {
         // Verificar si la contraseña ingresada coincide con la almacenada
         const contrasenaValida = await bcrypt.compare(contrasena, usuario.contrasenia);
 
-        if (!contrasenaValida) {
+        if (!contrasenaValida) { // Si la contraseña no coincide
             //console.log("Contraseña incorrecta");
             return res.status(401).json({ message: 'Contraseña incorrecta' });
         }
@@ -60,10 +60,10 @@ export const login = async (req, res) => {
 
 export const createUser = async (req, res) => {
     //console.log("Se llamó al endpoint POST /api/users con " + JSON.stringify(req.body));
-    const { usuario, contrasenia, nombre_para_mostrar, avatar_id, correo, es_estudiante } = req.body;
+    const { usuario, contrasenia, nombre_para_mostrar, avatar_id, correo, es_estudiante } = req.body; // Obtener los datos del cuerpo de la petición
 
     try {
-        const saltRounds = 10;
+        const saltRounds = 10; // Número de rondas para el algoritmo de encriptación
         const hashContrasenia = await bcrypt.hash(contrasenia, saltRounds);  // Encriptar la contraseña
 
         // Crear el nuevo usuario usando el modelo Usuario
@@ -89,12 +89,6 @@ export const getAllUsers = async (req, res) => {
     try {
         // Obtener todos los usuarios usando Sequelize
         const users = await Usuarios.findAll();  // Devuelve todos los registros
-
-        /*
-        const users = await Usuario.findAll({
-            order: [['usuario', 'ASC']],  // Ordena por el campo `usuario` en orden ascendente
-        });
-         */
 
         res.status(200).json(users);  // Respuesta con la lista de usuarios
     } catch (error) {
@@ -136,30 +130,30 @@ export const updateUser = async (req, res) => {
             avatar_id,
             correo,
             es_estudiante,
-        } = req.body;
+        } = req.body; // Campos a actualizar
 
         // Crear un objeto con los campos a actualizar
         const updateData = {};
 
-        if (nombre_para_mostrar !== undefined) {
+        if (nombre_para_mostrar !== undefined) { // Si se proporciona el campo `nombre_para_mostrar`
             updateData.nombre_para_mostrar = nombre_para_mostrar;
         }
 
-        if (avatar_id !== undefined) {
+        if (avatar_id !== undefined) { // Si se proporciona el campo `avatar_id`
             updateData.avatar_id = avatar_id;
         }
 
-        if (correo !== undefined) {
+        if (correo !== undefined) { // Si se proporciona el campo `correo`
             updateData.correo = correo;
         }
 
-        if (es_estudiante !== undefined) {
+        if (es_estudiante !== undefined) { // Si se proporciona el campo `es_estudiante`
             const esEstudianteBoolean = es_estudiante === '1' || es_estudiante === 'true';
             updateData.es_estudiante = esEstudianteBoolean;
         }
 
-        if (Object.keys(updateData).length === 0) {
-            return res.status(400).json({ message: "Nada para actualizar" });  // Si no hay campos para actualizar
+        if (Object.keys(updateData).length === 0) { // Verificar si hay campos para actualizar
+            return res.status(400).json({ message: "Nada para actualizar" });
         }
 
         // Actualizar el usuario usando Sequelize
@@ -168,7 +162,7 @@ export const updateUser = async (req, res) => {
             returning: true,  // Devuelve el registro actualizado
         });
 
-        if (updatedCount === 0) {
+        if (updatedCount === 0) { // Verificar si se actualizó algún registro
             return res.status(404).json({ message: "Usuario no encontrado" });  // Si no se encuentra el usuario
         }
 
