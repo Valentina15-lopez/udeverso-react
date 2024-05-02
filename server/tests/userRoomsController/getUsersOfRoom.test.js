@@ -24,10 +24,9 @@ describe('Endpoint GET /api/salas/:salaId/usuarios', () => {
         await Usuarios.destroy({ where: {} });
     });
 
-    // Cerrar el servidor y limpiar datos después de cada prueba
-    afterEach(async () => {
+    afterEach(async () => { // Después de cada prueba
         jest.restoreAllMocks();  // Restablecer todos los mocks
-        if (server && server.listening) {
+        if (server && server.listening) { // Si el servidor está corriendo
             await server.close();  // Cerrar el servidor para liberar el puerto
         }
 
@@ -38,40 +37,40 @@ describe('Endpoint GET /api/salas/:salaId/usuarios', () => {
 
     });
 
-    it('Debe devolver los usuarios asociados a una sala', async () => {
-        const sala = await Salas.create({ descripcion: 'Sala de Prueba' });
-        const usuario = await Usuarios.create({ usuario: 'usuario1', contrasenia: '1234' });
+    it('Debe devolver los usuarios asociados a una sala', async () => { // Prueba para obtener los usuarios asociados a una sala
+        const sala = await Salas.create({ descripcion: 'Sala de Prueba' }); // Crear una sala
+        const usuario = await Usuarios.create({ usuario: 'usuario1', contrasenia: '1234' }); // Crear un usuario
 
-        await UsuariosSalas.create({ sala_id: sala.id, user_id: usuario.usuario });
+        await UsuariosSalas.create({ sala_id: sala.id, user_id: usuario.usuario }); // Crear la relación
 
-        const response = await request(app)
-            .get(`/api/salas/${sala.id}/users`)
-            .expect(200);
+        const response = await request(app) // Hacer una solicitud GET
+            .get(`/api/salas/${sala.id}/users`) // Endpoint para obtener usuarios de la sala
+            .expect(200); // Esperar estado 200
 
         expect(Array.isArray(response.body)).toBe(true);  // Debería ser un array
         expect(response.body.length).toBe(1);  // Debería tener un usuario
         expect(response.body[0].usuario).toBe('usuario1');  // Verificar el nombre del usuario
     });
 
-    it('Debe devolver un array vacío si no hay usuarios asociados a la sala', async () => {
-        const sala = await Salas.create({ descripcion: 'Sala Vacía' });
+    it('Debe devolver un array vacío si no hay usuarios asociados a la sala', async () => { // Prueba para sala vacía
+        const sala = await Salas.create({ descripcion: 'Sala Vacía' }); // Crear una sala
 
-        const response = await request(app)
-            .get(`/api/salas/${sala.id}/users`)
-            .expect(200);
+        const response = await request(app) // Hacer una solicitud GET
+            .get(`/api/salas/${sala.id}/users`) // Endpoint para obtener usuarios de la sala
+            .expect(200); // Esperar estado 200
 
         expect(Array.isArray(response.body)).toBe(true);  // Debería ser un array
         expect(response.body.length).toBe(0);  // No debería tener usuarios
     });
 
-    it('Debe devolver 500 si ocurre un error interno', async () => {
-        jest.spyOn(UsuariosSalas, 'findAll').mockImplementation(() => {
+    it('Debe devolver 500 si ocurre un error interno', async () => { // Prueba para error interno
+        jest.spyOn(UsuariosSalas, 'findAll').mockImplementation(() => { // Espiar el método findAll
             throw new Error('Simulated error');  // Simular un error
         });
 
-        const response = await request(app)
-            .get('/api/salas/1/users')
-            .expect(500);
+        const response = await request(app) // Hacer una solicitud GET
+            .get('/api/salas/1/users') // Endpoint para obtener usuarios de la sala
+            .expect(500); // Esperar estado 500
 
         expect(response.body.message).toBe("Error al obtener usuarios de la sala.");  // Mensaje de error esperado
     });

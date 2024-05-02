@@ -1,34 +1,34 @@
-import request from 'supertest';
+import request from 'supertest'; // Importa el módulo supertest
 import {app} from '../../index.js';  // Importa tu aplicación Express
-import Usuarios from '../../src/models/Usuarios.js';
-import http from 'http';
-import portfinder from "portfinder";
+import Usuarios from '../../src/models/Usuarios.js'; // Importa el modelo Usuarios
+import http from 'http'; // Importa el módulo http
+import portfinder from "portfinder"; // Importa el módulo portfinder
 
-describe('Endpoint GET /api/users', () => {
-    let server;
+describe('Endpoint GET /api/users', () => { // Grupo de pruebas para el endpoint GET /api/users
+    let server; // Variable para el servidor Express
 
     // Configurar el servidor antes de las pruebas
-    beforeEach(async () => {
-        if (server && server.listening) {
+    beforeEach(async () => { // Antes de cada prueba
+        if (server && server.listening) { // Si el servidor está corriendo
             await server.close();  // Cerrar el servidor si está corriendo
         }
 
-        server = http.createServer(app);
-        const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 });
-        console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint Endpoint GET /api/users.");
-        await server.listen(PORT);
+        server = http.createServer(app); // Crear el servidor Express
+        const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 }); // Buscar un puerto disponible
+        console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint Endpoint GET /api/users."); // Mostrar el puerto usado
+        await server.listen(PORT); // Iniciar el servidor en el puerto encontrado
     });
 
-    afterEach(async () => {
+    afterEach(async () => { // Después de cada prueba
         jest.restoreAllMocks();  // Restablecer todos los mocks
-        if (server && server.listening) {
+        if (server && server.listening) { // Si el servidor está corriendo
             await server.close();  // Cierra el servidor para liberar el puerto
         }
         await Usuarios.destroy({ where: {} });  // Limpiar datos de prueba
 
     });
 
-    it('Debe devolver todos los usuarios con estado 200', async () => {
+    it('Debe devolver todos los usuarios con estado 200', async () => { // Prueba para obtener todos los usuarios
         // Crear usuarios de ejemplo para la prueba
         await Usuarios.bulkCreate([
             {
@@ -48,8 +48,8 @@ describe('Endpoint GET /api/users', () => {
         ]);
 
         // Hacer una solicitud GET para obtener todos los usuarios
-        const response = await request(app)
-            .get('/api/users')
+        const response = await request(app) // Realizar la solicitud
+            .get('/api/users') // Hacer una solicitud GET a /api/users
             .expect(200);  // Esperar estado 200
 
         // Verificar que se devolvieron dos usuarios
@@ -60,10 +60,10 @@ describe('Endpoint GET /api/users', () => {
         expect(response.body[1].usuario).toBe('usuario2');
     });
 
-    it('Debe devolver 500 si hay un error interno', async () => {
+    it('Debe devolver 500 si hay un error interno', async () => { // Prueba para error interno
         // Simular un error en el modelo
-        jest.spyOn(Usuarios, 'findAll').mockImplementation(() => {
-            throw new Error('Simulated error');
+        jest.spyOn(Usuarios, 'findAll').mockImplementation(() => { // Espiar el método findAll
+            throw new Error('Simulated error'); // Simular un error interno
         });
 
         // Solicitar el endpoint GET /api/users y guardar la respuesta

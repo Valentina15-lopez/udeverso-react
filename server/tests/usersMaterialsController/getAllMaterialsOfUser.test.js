@@ -1,44 +1,44 @@
-import request from 'supertest';
-import {app} from '../../index.js';  // Tu aplicación Express
+import request from 'supertest'; // Importa el módulo supertest
+import {app} from '../../index.js'; // Importar la aplicación Express
 import UsuariosMateriales from '../../src/models/UsuariosMateriales.js';  // Modelo de materiales
-import http from 'http';
-import Usuarios from "../../src/models/Usuarios.js";
-import portfinder from "portfinder";
+import http from 'http'; // Importa el módulo http
+import Usuarios from "../../src/models/Usuarios.js"; // Modelo de Usuarios
+import portfinder from "portfinder"; // Importa el módulo portfinder
 
-describe('Endpoint GET /api/users/:usuario/material', () => {
-    let server;
+describe('Endpoint GET /api/users/:usuario/material', () => { // Grupo de pruebas para el endpoint GET /api/users/:usuario/material
+    let server; // Variable para el servidor Express
 
-    beforeEach(async () => {
-        if (server && server.listening) {
+    beforeEach(async () => { // Configurar el servidor antes de las pruebas
+        if (server && server.listening) { // Si el servidor está corriendo
             await server.close();  // Cerrar el servidor si está corriendo
         }
 
         server = http.createServer(app);  // Crear el servidor
-        const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 });
-        console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint GET /api/users/:usuario/material.");
-        await server.listen(PORT);
+        const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 }); // Buscar un puerto disponible
+        //console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint GET /api/users/:usuario/material.");
+        await server.listen(PORT); // Iniciar el servidor en el puerto encontrado
 
         await UsuariosMateriales.destroy({ where: {} });  // Limpiar la tabla de materiales
-        await Usuarios.destroy({ where: {} });
+        await Usuarios.destroy({ where: {} }); // Limpiar la tabla de usuarios
     });
 
-    afterEach(async () => {
+    afterEach(async () => { // Después de cada prueba
         jest.restoreAllMocks();  // Restablecer todos los mocks
-        if (server && server.listening) {
+        if (server && server.listening) { // Si el servidor está corriendo
             await server.close();  // Cerrar el servidor
         }
 
         try {
             await UsuariosMateriales.destroy({ where: {} });  // Limpiar la tabla de materiales
-            await Usuarios.destroy({ where: {} })
+            await Usuarios.destroy({ where: {} }) // Limpiar la tabla de usuarios
         } catch (error) {
-            console.error('Error al limpiar datos:', error);
+            console.error('Error al limpiar datos:', error); // Manejar errores
         }
 
     });
 
-    it('Debe devolver todos los materiales de un usuario', async () => {
-        const user = await Usuarios.create({ usuario: 'usuario1', contrasenia: '1234' });
+    it('Debe devolver todos los materiales de un usuario', async () => { // Prueba para obtener todos los materiales de un usuario
+        const user = await Usuarios.create({ usuario: 'usuario1', contrasenia: '1234' }); // Crear un usuario
         // Crear materiales de prueba para un usuario
         await UsuariosMateriales.create({
             usuario: user.usuario,
@@ -47,6 +47,7 @@ describe('Endpoint GET /api/users/:usuario/material', () => {
             material: Buffer.from('contenido 1'),
         });
 
+        // Crear un segundo material
         await UsuariosMateriales.create({
             usuario: user.usuario,
             nombre: 'material2',
@@ -54,7 +55,7 @@ describe('Endpoint GET /api/users/:usuario/material', () => {
             material: Buffer.from('contenido 2'),
         });
 
-        const response = await request(app)
+        const response = await request(app) // Hacer una solicitud GET
             .get('/api/users/usuario1/material')  // Solicitud para obtener materiales
             .expect(200);  // Debería responder con estado 200
 
@@ -63,12 +64,12 @@ describe('Endpoint GET /api/users/:usuario/material', () => {
         expect(response.body[1].nombre).toBe('material2');  // Verificar nombre del segundo material
     });
 
-    it('Debe devolver 500 si ocurre un error interno', async () => {
-        jest.spyOn(UsuariosMateriales, 'findAll').mockImplementation(() => {
+    it('Debe devolver 500 si ocurre un error interno', async () => { // Prueba para error interno
+        jest.spyOn(UsuariosMateriales, 'findAll').mockImplementation(() => { // Espiar el método findAll
             throw new Error('Simulated error');  // Simular error interno
         });
 
-        const response = await request(app)
+        const response = await request(app) // Hacer una solicitud GET
             .get('/api/users/usuario1/material')  // Solicitud para obtener materiales
             .expect(500);  // Debería responder con estado 500
 

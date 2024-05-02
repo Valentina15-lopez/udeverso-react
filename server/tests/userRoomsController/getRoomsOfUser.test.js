@@ -1,31 +1,31 @@
-import request from 'supertest';
-import {app} from '../../index.js';  // Tu aplicación Express
+import request from 'supertest'; // Importa el módulo supertest
+import {app} from '../../index.js';  // Importa tu aplicación Express
 import Salas from '../../src/models/Sala.js';  // Modelo de Salas
 import UsuariosSalas from '../../src/models/UsuariosSalas.js';  // Relación Usuario-Salas
 import Usuarios from '../../src/models/Usuarios.js';  // Modelo de Usuarios
-import http from 'http';
-import portfinder from "portfinder";
+import http from 'http'; // Importa el módulo http
+import portfinder from "portfinder"; // Importa el módulo portfinder
 
-describe('Endpoint GET /api/users/:userId/salas', () => {
-    let server;
+describe('Endpoint GET /api/users/:userId/salas', () => { // Grupo de pruebas para el endpoint GET /api/users/:userId/salas
+    let server; // Variable para el servidor Express
 
     // Configurar el servidor antes de las pruebas
-    beforeEach(async () => {
-        if (server && server.listening) {
+    beforeEach(async () => { // Antes de cada prueba
+        if (server && server.listening) { // Si el servidor está corriendo
             await server.close();  // Cerrar el servidor si está corriendo
         }
 
-        server = http.createServer(app);
-        const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 });
-        console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint GET /api/users/:userId/salas.");
-        await server.listen(PORT);
-        await UsuariosSalas.destroy({ where: {} });
-        await Salas.destroy({ where: {} });
-        await Usuarios.destroy({ where: {} });
+        server = http.createServer(app); // Crear el servidor Express
+        const PORT = await portfinder.getPortPromise({ startPort: 8000, stopPort: 9000 }); // Buscar un puerto disponible
+        //console.log("Usando el puerto " + PORT + " para las pruebas de Endpoint GET /api/users/:userId/salas.");
+        await server.listen(PORT); // Iniciar el servidor en el puerto encontrado
+        await UsuariosSalas.destroy({ where: {} }); // Limpiar la tabla de usuarios-salas
+        await Salas.destroy({ where: {} }); // Limpiar la tabla de salas
+        await Usuarios.destroy({ where: {} }); // Limpiar la tabla de usuarios
     });
 
     // Cerrar el servidor y limpiar después de cada prueba
-    afterEach(async () => {
+    afterEach(async () => { // Después de cada prueba
         jest.restoreAllMocks();  // Restablecer todos los mocks
         if (server && server.listening) {
             await server.close();  // Cerrar el servidor para liberar el puerto
