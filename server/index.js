@@ -9,6 +9,8 @@ import usersRoomsRoutes from "./src/routes/usersRoomsRoutes.js";
 import userMaterialsRoutes from "./src/routes/userMaterialsRoutes.js";
 import logger from "./src/middleware/logger.js";
 import sequelize from "./src/config/database.js";
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocs from "./src/config/swagger.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -87,8 +89,8 @@ sequelize.authenticate()
         process.exit(1);  // Termina la aplicación si no se puede conectar
     });
 
-// server/index.js
-// ...
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 const startServer = () => {
     const PORT = process.env.PORT || 3001;
     server.listen(PORT, () => {
@@ -96,4 +98,4 @@ const startServer = () => {
     });
 };
 
-export { app, startServer };
+export { app, startServer};
