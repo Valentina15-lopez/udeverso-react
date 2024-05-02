@@ -1,15 +1,15 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/database.js';
+import { DataTypes } from 'sequelize'; // Importar el tipo de dato
+import sequelize from '../config/database.js'; // Importar la instancia de la clase Sequelize
 
 const Salas = sequelize.define('Salas', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+    id: { // ID
+        type: DataTypes.INTEGER, // Tipo de dato: INTEGER
+        primaryKey: true, // Clave primaria
+        autoIncrement: true // Autoincremental
     },
-    descripcion: {
-        type: DataTypes.TEXT,
-        allowNull: false
+    descripcion: { // Descripción
+        type: DataTypes.TEXT, // Tipo de dato: TEXT
+        allowNull: false // No permitir valores nulos
     }
 },{
     tableName:"salas", //nombre de la tabla

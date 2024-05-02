@@ -1,23 +1,23 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/database.js';
+import { DataTypes } from 'sequelize'; // Importar el tipo de dato
+import sequelize from '../config/database.js'; // Importar la instancia de la clase Sequelize
 
 const Usuarios = sequelize.define('Usuarios', {
-    usuario: {
-        type: DataTypes.STRING,
-        primaryKey: true
+    usuario: { // ID
+        type: DataTypes.STRING, // Tipo de dato: STRING
+        primaryKey: true // Clave primaria
     },
-    contrasenia: {
-        type: DataTypes.STRING
+    contrasenia: { // Contraseña
+        type: DataTypes.STRING // Tipo de dato: STRING
     },
-    nombre_para_mostrar: {
-        type: DataTypes.STRING
+    nombre_para_mostrar: { // Nombre para mostrar
+        type: DataTypes.STRING // Tipo de dato: STRING
     },
-    correo: {
-        type: DataTypes.STRING,
-        unique: true  // Esto garantiza que el correo no se duplique
+    correo: { // Correo
+        type: DataTypes.STRING, // Tipo de dato: STRING
+        unique: true  // Valores únicos
     },
-    es_estudiante: {
-        type: DataTypes.BOOLEAN
+    es_estudiante: { // Es estudiante
+        type: DataTypes.BOOLEAN // Tipo de dato: BOOLEAN
     }
 },{
     tableName:"users", //nombre de la tabla

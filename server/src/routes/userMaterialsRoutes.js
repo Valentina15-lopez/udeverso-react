@@ -1,23 +1,22 @@
-import express from "express";
-import multer from 'multer';
+import express from "express"; //importamos express
+import multer from 'multer'; //importamos multer
 import {
     addMaterialToUser,
     deleteMaterialOfUser,
     getAllMaterialsOfUser
-} from "../controllers/usersMaterialsController.js";
+} from "../controllers/usersMaterialsController.js"; //importamos los controladores
 
-const router = express.Router();
+const router = express.Router(); //creamos el router
 
 // Configuración básica de multer para almacenar archivos en la memoria
-const storage = multer.memoryStorage(); // Puedes almacenar archivos en la memoria o en el sistema de archivos
-const upload = multer({ storage }); // Aquí puedes agregar restricciones adicionales como límites de tamaño, tipos de archivos, etc.
+const storage = multer.memoryStorage(); // Almacenar en memoria
+const upload = multer({ storage }); // Configurar multer con la opción de almacenamiento
 
-//agregar material a una sala
+//ruta para agregar material a usuario
 router.post("/api/users/material", upload.single('archivo'), addMaterialToUser); // 'archivo' es el nombre del campo que esperas recibir
-//obtener todos los materiales de usuario
+//ruta para obtener todos los materiales de un usuario
 router.get("/api/users/:usuario/material", getAllMaterialsOfUser);
-//borrar material de usuario
+//ruta para borrar material de usuario
 router.delete("/api/users/:usuario/material/:nombre",deleteMaterialOfUser);
-
 
 export default router;

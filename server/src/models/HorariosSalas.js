@@ -3,12 +3,12 @@ import sequelize from '../config/database.js'; // Importar la instancia de la cl
 import Salas from './Sala.js';  // Importar el modelo Sala
 
 const HorariosSalas = sequelize.define('HorariosSalas', {
-    id: {
+    id: { // ID
         type: DataTypes.INTEGER, // Tipo de dato: INTEGER
         primaryKey: true, // Clave primaria
         autoIncrement: true, // Autoincremental
     },
-    sala_id: {
+    sala_id: { // ID de la sala
         type: DataTypes.INTEGER, // Tipo de dato: INTEGER
         allowNull: false, // No permitir valores nulos
         references: { // Referencia a otra tabla

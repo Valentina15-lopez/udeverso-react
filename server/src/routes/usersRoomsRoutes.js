@@ -1,21 +1,20 @@
-import express from "express";
+import express from "express"; //importamos express
 import {
     addUserToRoom,
     deleteUserFromRoom,
     getRoomsOfUser,
     getUsersOfRoom
-} from "../controllers/usersRoomsController.js";
+} from "../controllers/usersRoomsController.js"; //importamos los controladores
 
-const router = express.Router();
+const router = express.Router(); //creamos el router
 
-// Asignar usuario a salas
+//ruta para agregar usuario a sala
 router.post("/api/users/:userId/salas",addUserToRoom);
-// Eliminar asignación de usuario a sala
+//ruta para borrar usuario de sala
 router.delete("/api/users/:userId/salas/:salaId",deleteUserFromRoom);
-// Obtener todas las salas de un usuario
+//ruta para obtener todas las salas de un usuario
 router.get("/api/users/:userId/salas",getRoomsOfUser);
-// Obtener todos los usuarios de una sala
+//ruta para obtener todos los usuarios de una sala
 router.get("/api/salas/:salaId/users",getUsersOfRoom);
-
 
 export default router;

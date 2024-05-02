@@ -1,17 +1,17 @@
-import express from "express";
-import {addRoom, deleteRoom, getAllRooms, getRoom, updateSchedules} from "../controllers/roomController.js";
+import express from "express"; //importamos express
+import {addRoom, deleteRoom, getAllRooms, getRoom, updateSchedules} from "../controllers/roomController.js"; //importamos los controladores
 
-const router = express.Router();
+const router = express.Router(); //creamos el router
 
-//agregar sala
+//ruta para agregar sala
 router.post("/api/salas",addRoom);
-//modificar horarios
+//ruta para modificar horarios
 router.put("/api/salas/:salaId/horarios",updateSchedules);
-//borrar sala
+//ruta para borrar sala
 router.delete("/api/salas/:salaId", deleteRoom);
-//obtener todas las salas
+//ruta para obtener todas las salas
 router.get("/api/salas", getAllRooms);
-//obtener sala
+//ruta para obtener una sala
 router.get("/api/salas/:salaId",getRoom);
 
 
