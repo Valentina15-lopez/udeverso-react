@@ -36,7 +36,7 @@ describe('Endpoint DELETE /api/salas/:salaId', () => { // Grupo de pruebas para 
             .delete('/api/salas/999')  // Asumimos que la sala 999 no existe
             .expect(404); // Esperamos un estado 404
 
-        expect(response.text).toBe("Sala no encontrada");  // Verifica el mensaje de error
+        expect(response.body.message).toBe("Sala no encontrada");  // Verifica el mensaje de error
     });
 
     it('Debe eliminar la sala y sus horarios exitosamente', async () => { // Prueba para eliminar sala y horarios
@@ -48,7 +48,7 @@ describe('Endpoint DELETE /api/salas/:salaId', () => { // Grupo de pruebas para 
             .delete(`/api/salas/${sala.id}`)  // Eliminar la sala
             .expect(200); // Esperamos un estado 200
 
-        expect(response.text).toBe("Sala y horarios eliminados exitosamente");  // Verifica la respuesta
+        expect(response.body.message).toBe("Sala y horarios eliminados exitosamente");  // Verifica la respuesta
 
         // Verificar que la sala y sus horarios fueron eliminados
         const salaCheck = await Salas.findOne({ where: { id: sala.id } }); // Buscar la sala

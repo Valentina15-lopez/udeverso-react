@@ -140,7 +140,7 @@ export const deleteRoom = async (req, res) => {
 
         await transaction.commit();  // Confirmar la transacción
 
-        res.status(200).send("Sala y horarios eliminados exitosamente");  // Respuesta exitosa
+        res.status(200).json({message: "Sala y horarios eliminados exitosamente"});  // Respuesta exitosa
     } catch (error) {
         await transaction.rollback();  // Revertir la transacción en caso de error
         console.error("Error al borrar la sala:", error.message);
