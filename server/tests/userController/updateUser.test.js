@@ -35,6 +35,7 @@ describe('Endpoint PUT /api/users/:usuario', () => { // Grupo de pruebas para el
             contrasenia: 'password1',
             nombre_para_mostrar: 'Usuario Uno',
             correo: 'usuario1@example.com',
+            avatar_id: 'avatar1',
             es_estudiante: true,
         });
 
@@ -44,11 +45,13 @@ describe('Endpoint PUT /api/users/:usuario', () => { // Grupo de pruebas para el
             .send({
                 nombre_para_mostrar: 'Usuario Actualizado',
                 es_estudiante: false,
+                avatar_id: 'avatar2',
             });
 
         expect(response.status).toBe(200);  // Verificar que el estado es 200
         expect(response.body.nombre_para_mostrar).toBe('Usuario Actualizado');  // Verificar actualización
         expect(response.body.es_estudiante).toBe(false);  // Verificar campo booleano
+        expect(response.body.avatar_id).toBe('avatar2');  // Verificar campo de avatar
     });
 
     it('Debe devolver 404 si el usuario no se encuentra', async () => { // Prueba para usuario inexistente

@@ -76,4 +76,18 @@ describe('Endpoint POST /login', () => { // Grupo de pruebas para el endpoint PO
         const decoded = jwt.verify(response.body.token, secretKey); // Decodificar el token
         expect(decoded.userId).toBe('usuarioTest'); // Verificar el ID del usuario
     });
+
+    it('Debe devolver 500 si ocurre un error interno', async () => { // Prueba para error interno
+        // Simular un error interno al buscar un usuario
+        jest.spyOn(Usuarios, 'findOne').mockImplementation(() => { // Espiar el método findOne
+            throw new Error('Simulated database error');  // Simular un error de base de datos
+        });
+
+        const response = await request(app)  // Hacer una solicitud POST
+            .post('/login')  // Hacer una solicitud POST a /login
+            .send({ nombreUsuario: 'usuarioTest', contrasena: 'password123' });  // Enviar datos de usuario
+
+        expect(response.status).toBe(500);  // Esperar estado 500
+        expect(response.body.message).toBe("Error interno del servidor");  // Mensaje esperado
+    });
 });

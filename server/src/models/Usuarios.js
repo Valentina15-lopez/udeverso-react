@@ -12,6 +12,9 @@ const Usuarios = sequelize.define('Usuarios', {
     nombre_para_mostrar: { // Nombre para mostrar
         type: DataTypes.STRING // Tipo de dato: STRING
     },
+    avatar_id: { // ID del avatar
+        type: DataTypes.STRING // Tipo de dato: STRING
+    },
     correo: { // Correo
         type: DataTypes.STRING, // Tipo de dato: STRING
         unique: true  // Valores únicos
