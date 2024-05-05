@@ -6,7 +6,9 @@ import NotFound from "./pages/NotFound";
 import ListUsers from "./pages/ListUsers";
 import ModifyUsers from "./pages/ModifyUsers";
 import CreateUsers from "./pages/CreateUsers";
+import DeleteUsers from "./pages/DeleteUsers";
 import Material from "./pages/Material";
+import ListMaterials from "./pages/ListMaterials";
 import axios from "axios";
 import { Navigate, useLocation } from "react-router-dom";
 import { Join } from "./components/Streaming/Join";
@@ -69,12 +71,20 @@ const routes = [
     element: <ProtectedRoute element={<ModifyUsers />} />,
   },
   {
+    path: "/abm/deleteUsers",
+    element: <ProtectedRoute element={<DeleteUsers />} />,
+  },
+  {
     path: "/abm/createUsers",
     element: <ProtectedRoute element={<CreateUsers />} />,
   },
   {
     path: "/abm/material",
     element: <ProtectedRoute element={<Material />} />,
+  },
+  {
+    path: "/abm/listMaterials",
+    element: <ProtectedRoute element={<ListMaterials />} />,
   },
   {
     path: "/", // Redirige la ruta raíz al menú

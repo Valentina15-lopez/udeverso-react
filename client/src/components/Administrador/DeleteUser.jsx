@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const UserList = () => {
+const DeleteUser = () => {
     const [usuarios, setUsuarios] = useState([]);
     const [formData, setFormData] = useState({
         usuario: "",
@@ -64,10 +64,22 @@ const UserList = () => {
         });
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.delete(
+                `http://localhost:3001/api/users/${formData.usuario}`
+            );
+            console.log("Usuarios.js borrado exitosamente");
+        } catch (error) {
+            console.error("Error al borrar el usuario:", error);
+        }
+    };
+
     return (
         <div>
-            <h1>Ver datos de usuario</h1>
-            <form>
+            <h1>Borrar usuario</h1>
+            <form onSubmit={handleSubmit}>
                 <label>
                     Usuario:
                     <select name="usuario"
@@ -87,27 +99,30 @@ const UserList = () => {
                     <input type="text"
                            name="nombre_para_mostrar"
                            value={formData.nombre_para_mostrar}
+                           onChange={handleChange}
                            readOnly={true}
                     />
                 </label>
                 <br/>
                 <label>
                     Avatar_id:
-                    <input type="text" name="sala" value={formData.avatar_id} readOnly={true}/>
+                    <input type="text" name="sala" value={formData.avatar_id} onChange={handleChange} readOnly={true}/>
                 </label>
                 <br/>
                 <label>
                     Correo:
-                    <input type="email" name="correo" value={formData.correo} readOnly={true} />
+                    <input type="email" name="correo" value={formData.correo} onChange={handleChange} readOnly={true}/>
                 </label>
                 <br/>
                 <label>
                     Es Estudiante:
-                    <input type="text" name="es_estudiante" value={formData.es_estudiante} readOnly={true}/>
+                    <input type="text" name="es_estudiante" value={formData.es_estudiante} onChange={handleChange} readOnly={true}/>
                 </label>
+                <br/>
+                <button type="submit">Borrar</button>
             </form>
         </div>
     );
 };
 
-export default UserList;
+export default DeleteUser;

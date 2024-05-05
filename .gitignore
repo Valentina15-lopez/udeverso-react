@@ -1,3 +1,7 @@
-
+.idea
 client/node_modules
 server/node_modules
+server/.scannerwork
+server/coverage
+server/.env.production
+server/.env.test

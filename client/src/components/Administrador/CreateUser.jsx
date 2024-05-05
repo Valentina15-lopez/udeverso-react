@@ -6,7 +6,7 @@ const CreateUser = () => {
     usuario: "",
     contrasenia: "",
     nombre_para_mostrar: "",
-    sala: "",
+    avatar_id: "",
     correo: "",
     es_estudiante: "",
   });
@@ -58,8 +58,8 @@ const CreateUser = () => {
         </label>
         <br />
         <label>
-          Sala:
-          <input type="text" name="sala" onChange={handleChange} />
+          avatar_id:
+          <input type="text" name="avatar_id" onChange={handleChange} />
         </label>
         <br />
         <label>
