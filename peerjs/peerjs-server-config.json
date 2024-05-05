@@ -1,0 +1,6 @@
+{
+  "port": 9000,
+  "key": "peerjs",
+  "path": "/",
+  "debug": true
+}

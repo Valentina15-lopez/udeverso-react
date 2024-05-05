@@ -1,8 +1,8 @@
 import { Server } from "socket.io";
 import express from "express";
-import http from "http";
+//import http from "http";
+import https from "https";
 import { v4 as uuidV4 } from "uuid";
-import mongoose from "mongoose";
 import cors from "cors";
 import multer from "multer";
 import pkg from "pg";
@@ -10,30 +10,43 @@ import bcrypt from "bcrypt"; // Importa el módulo bcrypt
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 
+
+import fs from "fs";
+
+// Lee los archivos del certificado y la clave privada
+const privateKey = fs.readFileSync('privkey.pem', 'utf8');
+const certificate = fs.readFileSync('fullchain.pem', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
+
+
 const { Pool } = pkg;
 
 const secretKey = "miClaveSecreta";
 
 const app = express();
 
-const server = http.createServer(app);
-const usersList = [];
+//const server = http.createServer(app);
+const server = https.createServer(credentials, app);
+
 export const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Reemplaza esto con la URL de tu aplicación React
+    origin: "*",
+    methods: ["GET", "POST"],
     credentials: true, // Habilitar el intercambio de cookies y otros datos de autenticación
   },
 });
+
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://metaversoude2.ddns.net:3000",
     methods: ["GET", "POST"], // Métodos HTTP permitidos
     credentials: true,
   })
 );
 
 app.use(cookieParser());
+const usersList = [];
 
 // Configurar la conexión a la base de datos PostgreSQL
 const pool = new Pool({
@@ -220,17 +233,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Ruta para redirigir a AulaVirtual con un ID generado
-app.get("/aulavirtual", (req, res) => {
-  const roomId = uuidV4(); // Genera un ID único
-  res.redirect(`/aulavirtual/${roomId}`);
-});
-
-// Ruta para servir la página de React
-app.get("/aulavirtual/:roomId", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/build", "index.html"));
-});
-
 const generateRandomPosition = () => {
   return [Math.random() * 3, 0, Math.random() * 3];
 };
@@ -239,39 +241,88 @@ const generateRandomHexColor = () => {
   return "#" + Math.floor(Math.random() * 16777215).toString(16);
 };
 
+const rooms = {};
+const chats = {};
+
+const roomHandler = (socket) => {
+  const createRoom = () => {
+    const roomId = uuidV4();
+    rooms[roomId] = {};
+    socket.emit("room-created", { roomId });
+    console.log("user created the room");
+  };
+
+  const joinRoom = ({ roomId, peerId, userName }) => {
+    if (!rooms[roomId]) rooms[roomId] = {};
+    if (!chats[roomId]) chats[roomId] = [];
+    socket.emit("get-messages", chats[roomId]);
+    console.log("user joined the room", roomId, peerId, userName);
+    rooms[roomId][peerId] = { peerId, userName };
+    socket.join(roomId);
+    socket.to(roomId).emit("user-joined", { peerId, userName });
+    socket.emit("get-users", {
+      roomId,
+      participants: rooms[roomId],
+    });
+
+    socket.on("disconnect", () => {
+      console.log("user left the room", peerId);
+      leaveRoom({ roomId, peerId });
+    });
+  };
+
+  const leaveRoom = ({ peerId, roomId }) => {
+    socket.to(roomId).emit("user-disconnected", peerId);
+  };
+
+  const startSharing = ({ peerId, roomId }) => {
+    console.log({ roomId, peerId });
+    socket.to(roomId).emit("user-started-sharing", peerId);
+  };
+
+  const stopSharing = (roomId) => {
+    socket.to(roomId).emit("user-stopped-sharing");
+  };
+
+  const addMessage = (roomId, message) => {
+    console.log({ message });
+    if (chats[roomId]) {
+      chats[roomId].push(message);
+    } else {
+      chats[roomId] = [message];
+    }
+    socket.to(roomId).emit("add-message", message);
+  };
+
+  const changeName = ({ peerId, userName, roomId }) => {
+    if (rooms[roomId] && rooms[roomId][peerId]) {
+      rooms[roomId][peerId].userName = userName;
+      socket.to(roomId).emit("name-changed", { peerId, userName });
+    }
+  };
+
+  socket.on("create-room", createRoom);
+  socket.on("join-room", joinRoom);
+  socket.on("start-sharing", startSharing);
+  socket.on("stop-sharing", stopSharing);
+  socket.on("send-message", addMessage);
+  socket.on("change-name", changeName);
+};
+
 io.on("connection", (socket) => {
   usersList.push({
     id: socket.id,
+    roomId: null,
     position: generateRandomPosition(),
     hairColor: generateRandomHexColor(),
     topColor: generateRandomHexColor(),
     bottomColor: generateRandomHexColor(),
   });
   io.emit("usersList", usersList);
-
-  socket.on("join-room", (roomId, userId) => {
-    socket.join(roomId);
-    socket.to(roomId).broadcast.emit("user-connected", userId);
-
-    socket.on("disconnect", () => {
-      socket.to(roomId).broadcast.emit("user-disconnected", userId);
-    });
-  });
-
-  socket.on("move", (position) => {
-    const character = usersList.find((character) => character.id === socket.id);
-    character.position = position;
-    io.emit("usersList", usersList);
-  });
-
+  console.log("a user connected");
+  roomHandler(socket);
   socket.on("disconnect", () => {
     console.log("user disconnected");
-
-    usersList.splice(
-      usersList.findIndex((character) => character.id === socket.id),
-      1
-    );
-    io.emit("usersList", usersList);
   });
 });
 
