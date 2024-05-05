@@ -15,7 +15,7 @@ const CreateMaterial = () => {
     const loadUserData = async () => {
       try {
         const response = await axios.get(
-          `https://metaversoude2.ddns.net:3001/api/users/${userId}`
+          `http://localhost:3001/api/users/${userId}`
         );
         const userData = response.data;
         setFormData({
@@ -52,7 +52,7 @@ const CreateMaterial = () => {
       formDataToSend.append("archivo", formData.archivo); // Agregamos el archivo al FormData
 
       await axios.post(
-        "https://metaversoude2.ddns.net:5000/api/users/material",
+        "http://localhost:5000/api/users/material",
         formDataToSend,
         {
           headers: {

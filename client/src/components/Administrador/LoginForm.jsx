@@ -11,7 +11,7 @@ const LoginForm = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("https://metaversoude2.ddns.net:3001/login", {
+      const response = await fetch("http://localhost:3001/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

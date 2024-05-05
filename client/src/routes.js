@@ -19,7 +19,7 @@ const ProtectedRoute = ({ element }) => {
     const checkAuth = async () => {
       try {
         const response = await axios.get(
-          "https://metaversoude2.ddns.net:3001/api/checkAuth",
+          "http://localhost:3001/api/checkAuth",
           {
             withCredentials: true,
           }

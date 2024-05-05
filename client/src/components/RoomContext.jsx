@@ -54,8 +54,8 @@ export const RoomProvider = ({ children }) => {
   const [connections, setConnections] = useState({});
 
   const peer = new Peer(userId, {
-    host: "metaversoude2.ddns.net",   
-    port:"9000",   
+    host: "localhost",   
+    port:"3002",   
     path: "/",
 
   });

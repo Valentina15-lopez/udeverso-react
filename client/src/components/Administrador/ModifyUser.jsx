@@ -5,7 +5,7 @@ const ModifyUser = ({ user }) => {
   const [newUsername, setNewUsername] = useState(user.username);
   const onUpdate = async () => {
     try {
-      await axios.put(`https://metaversoude2.ddns.net:3001/api/users/${user.id}`, {
+      await axios.put(`http://localhost:3001/api/users/${user.id}`, {
         username: newUsername,
       });
       onUpdate(user.id, newUsername);
@@ -17,7 +17,7 @@ const ModifyUser = ({ user }) => {
 
   const onDelete = async () => {
     try {
-      await axios.delete(`https://metaversoude2.ddns.net:3001/api/users/${user.id}`);
+      await axios.delete(`http://localhost:3001/api/users/${user.id}`);
       onDelete(user.id);
       console.log("Usuario eliminado exitosamente");
     } catch (error) {
