@@ -18,7 +18,7 @@ import {
 } from "@react-three/drei";
 import * as THREE from "three";
 import { CubeCamera } from "@react-three/drei";
-import { SocketContext, socket, userAtom } from "./ContexProvider";
+import { socket, userAtom } from "./ContexProvider";
 import { useAtom } from "jotai";
 import { Avatar } from "./Avatar";
 import { useLoader } from "@react-three/fiber";
@@ -54,28 +54,6 @@ const AulaScene = () => {
       window.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
-
-  const handleAvatarMovement = () => {
-    users.forEach((avatar) => {
-      const speed = 0.1;
-      if (keysPressed["ArrowUp"] || keysPressed["KeyW"]) {
-        avatar.position[2] -= speed;
-      }
-      if (keysPressed["ArrowDown"] || keysPressed["KeyS"]) {
-        avatar.position[2] += speed;
-      }
-      if (keysPressed["ArrowLeft"] || keysPressed["KeyA"]) {
-        avatar.position[0] -= speed;
-      }
-      if (keysPressed["ArrowRight"] || keysPressed["KeyD"]) {
-        avatar.position[0] += speed;
-      }
-    });
-  };
-
-  useFrame(() => {
-    handleAvatarMovement();
-  });
 
   const ref = useRef();
 

@@ -1,6 +1,7 @@
 import express from "express";
-import http from "http";
-import { Server } from "socket.io";
+//import http from "http";
+import https from "https";
+import { v4 as uuidV4 } from "uuid";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import userRoutes from "./src/routes/userRoutes.js";
@@ -14,6 +15,45 @@ import swaggerDocs from "./src/config/swagger.js";
 
 const app = express();
 const server = http.createServer(app);
+
+
+
+import fs from "fs";
+
+// Lee los archivos del certificado y la clave privada
+const privateKey = fs.readFileSync('privkey.pem', 'utf8');
+const certificate = fs.readFileSync('fullchain.pem', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
+
+
+const { Pool } = pkg;
+
+const secretKey = "miClaveSecreta";
+
+const app = express();
+
+//const server = http.createServer(app);
+const server = https.createServer(credentials, app);
+
+export const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+    credentials: true, // Habilitar el intercambio de cookies y otros datos de autenticación
+  },
+});
+
+app.use(express.json());
+app.use(
+  cors({
+    origin: "https://metaversoude2.ddns.net:3000",
+    methods: ["GET", "POST"], // Métodos HTTP permitidos
+    credentials: true,
+  })
+);
+
+app.use(cookieParser());
+const usersList = [];
 
 const io = new Server(server, {
     cors: {
@@ -41,42 +81,89 @@ const generateRandomHexColor = () => {
     return "#" + Math.floor(Math.random() * 16777215).toString(16);
 };
 
-const usersList = [];
+const rooms = {};
+const chats = {};
 
-io.on("connection", (socket) => {
-    usersList.push({
-        id: socket.id,
-        position: generateRandomPosition(),
-        hairColor: generateRandomHexColor(),
-        topColor: generateRandomHexColor(),
-        bottomColor: generateRandomHexColor(),
-    });
-    io.emit("usersList", usersList);
+const roomHandler = (socket) => {
+  const createRoom = () => {
+    const roomId = uuidV4();
+    rooms[roomId] = {};
+    socket.emit("room-created", { roomId });
+    console.log("user created the room");
+  };
 
-    socket.on("join-room", (roomId, userId) => {
-        socket.join(roomId);
-        socket.to(roomId).broadcast.emit("user-connected", userId);
-
-        socket.on("disconnect", () => {
-            socket.to(roomId).broadcast.emit("user-disconnected", userId);
-        });
-    });
-
-    socket.on("move", (position) => {
-        const character = usersList.find((character) => character.id === socket.id);
-        character.position = position;
-        io.emit("usersList", usersList);
+  const joinRoom = ({ roomId, peerId, userName }) => {
+    if (!rooms[roomId]) rooms[roomId] = {};
+    if (!chats[roomId]) chats[roomId] = [];
+    socket.emit("get-messages", chats[roomId]);
+    console.log("user joined the room", roomId, peerId, userName);
+    rooms[roomId][peerId] = { peerId, userName };
+    socket.join(roomId);
+    socket.to(roomId).emit("user-joined", { peerId, userName });
+    socket.emit("get-users", {
+      roomId,
+      participants: rooms[roomId],
     });
 
     socket.on("disconnect", () => {
-        console.log("user disconnected");
-
-        usersList.splice(
-            usersList.findIndex((character) => character.id === socket.id),
-            1
-        );
-        io.emit("usersList", usersList);
+      console.log("user left the room", peerId);
+      leaveRoom({ roomId, peerId });
     });
+  };
+
+  const leaveRoom = ({ peerId, roomId }) => {
+    socket.to(roomId).emit("user-disconnected", peerId);
+  };
+
+  const startSharing = ({ peerId, roomId }) => {
+    console.log({ roomId, peerId });
+    socket.to(roomId).emit("user-started-sharing", peerId);
+  };
+
+  const stopSharing = (roomId) => {
+    socket.to(roomId).emit("user-stopped-sharing");
+  };
+
+  const addMessage = (roomId, message) => {
+    console.log({ message });
+    if (chats[roomId]) {
+      chats[roomId].push(message);
+    } else {
+      chats[roomId] = [message];
+    }
+    socket.to(roomId).emit("add-message", message);
+  };
+
+  const changeName = ({ peerId, userName, roomId }) => {
+    if (rooms[roomId] && rooms[roomId][peerId]) {
+      rooms[roomId][peerId].userName = userName;
+      socket.to(roomId).emit("name-changed", { peerId, userName });
+    }
+  };
+
+  socket.on("create-room", createRoom);
+  socket.on("join-room", joinRoom);
+  socket.on("start-sharing", startSharing);
+  socket.on("stop-sharing", stopSharing);
+  socket.on("send-message", addMessage);
+  socket.on("change-name", changeName);
+};
+
+io.on("connection", (socket) => {
+  usersList.push({
+    id: socket.id,
+    roomId: null,
+    position: generateRandomPosition(),
+    hairColor: generateRandomHexColor(),
+    topColor: generateRandomHexColor(),
+    bottomColor: generateRandomHexColor(),
+  });
+  io.emit("usersList", usersList);
+  console.log("a user connected");
+  roomHandler(socket);
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
 });
 
 // Autenticar la conexión a la base de datos antes de iniciar el servidor

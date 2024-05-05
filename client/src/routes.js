@@ -11,6 +11,7 @@ import Material from "./pages/Material";
 import ListMaterials from "./pages/ListMaterials";
 import axios from "axios";
 import { Navigate, useLocation } from "react-router-dom";
+import { Join } from "./components/Streaming/Join";
 
 const ProtectedRoute = ({ element }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -20,7 +21,7 @@ const ProtectedRoute = ({ element }) => {
     const checkAuth = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3001/api/checkAuth",
+          "https://metaversoude2.ddns.net:3001/api/checkAuth",
           {
             withCredentials: true,
           }
@@ -52,6 +53,10 @@ const routes = [
   {
     path: "/aulavirtual/:roomId", // Agrega el parámetro de ruta para el ID
     element: <ProtectedRoute element={<AulaVirtual />} />,
+  },
+  {
+    path: "/aulavirtual", // Agrega el parámetro de ruta para el ID
+    element: <ProtectedRoute element={<Join />} />,
   },
   {
     path: "/abm",

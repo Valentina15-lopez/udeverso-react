@@ -18,8 +18,8 @@ const CreateUser = () => {
     e.preventDefault();
     try {
       // Si no existe el ID del usuario, es una solicitud de inserción
-      await axios.post("http://localhost:3001/api/users", formData);
-      console.log("Usuarios.js creado exitosamente");
+      await axios.post("https://metaversoude2.ddns.net:3001/api/users", formData);
+      console.log("Usuario creado exitosamente");
     } catch (error) {
       if (error.response) {
         // La solicitud fue realizada y el servidor respondió con un código de estado que no está en el rango 2xx
