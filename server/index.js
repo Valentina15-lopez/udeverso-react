@@ -12,7 +12,7 @@ import logger from "./src/middleware/logger.js";
 import sequelize from "./src/config/database.js";
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocs from "./src/config/swagger.js";
-
+import { Server } from "socket.io";
 
 
 
@@ -25,7 +25,7 @@ const certificate = fs.readFileSync('fullchain.pem', 'utf8');
 const credentials = { key: privateKey, cert: certificate };
 
 
-const { Pool } = pkg;
+
 
 const secretKey = "miClaveSecreta";
 
@@ -54,15 +54,9 @@ app.use(
 app.use(cookieParser());
 const usersList = [];
 
-const io = new Server(server, {
-    cors: {
-        origin: "http://localhost:3000",
-        credentials: true,
-    },
-});
 
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+
 app.use(cookieParser());
 
 app.use(logger); // Middleware global
