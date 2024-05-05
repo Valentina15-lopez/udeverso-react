@@ -13,8 +13,7 @@ import sequelize from "./src/config/database.js";
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocs from "./src/config/swagger.js";
 
-const app = express();
-const server = http.createServer(app);
+
 
 
 
