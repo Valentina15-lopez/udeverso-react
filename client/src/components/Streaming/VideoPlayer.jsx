@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-export const VideoPlayer = ({ stream, userId }) => {
+export const VideoPlayer = ({ stream }) => {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -9,15 +9,13 @@ export const VideoPlayer = ({ stream, userId }) => {
     }
   }, [stream]);
 
-  const isMyStream = stream && stream.id === userId; // Suponiendo que stream tiene un atributo 'id'
-
   return (
     <video
       data-testid="peer-video"
       style={{ width: "100%" }}
       ref={videoRef}
       autoPlay
-      muted={!isMyStream} // Se silencia si no es tu propio stream
+      muted={false} // Se silencia si no es tu propio stream
     />
   );
 };
