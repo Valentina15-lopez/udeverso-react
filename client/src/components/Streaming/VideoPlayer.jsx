@@ -15,7 +15,7 @@ export const VideoPlayer = ({ stream }) => {
       style={{ width: "100%" }}
       ref={videoRef}
       autoPlay
-      muted={true}
+      muted={false} // Se silencia si no es tu propio stream
     />
   );
 };

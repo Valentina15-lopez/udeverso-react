@@ -18,7 +18,7 @@ const CreateUser = () => {
     e.preventDefault();
     try {
       // Si no existe el ID del usuario, es una solicitud de inserción
-      await axios.post("http://localhost:3001/api/users", formData);
+      await axios.post("https://metaversoude2.ddns.net:3001/api/users", formData);
       console.log("Usuario creado exitosamente");
     } catch (error) {
       if (error.response) {

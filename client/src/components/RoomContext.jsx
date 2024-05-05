@@ -68,7 +68,15 @@ fs.readFileSync('fullchain.pem', 'utf8');
   const [me, setMe] = useState(peer);
 
   useEffect(() => {
-    
+    socket.emit("change-name", { peerId: userId, userName, roomId });
+  }, [userName, userId, roomId]);
+
+  useEffect(() => {
+    const peer = new Peer(userId, {
+      host: "metaversoude2.ddns.net",
+      port: 9000,
+      path: "/",
+    });
     setMe(peer);
 
     try {

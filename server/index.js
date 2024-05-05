@@ -1,7 +1,8 @@
 import { Server } from "socket.io";
 import express from "express";
-import http from "http";
-//import https from "https";
+
+//import http from "http";
+import https from "https";
 import { v4 as uuidV4 } from "uuid";
 import cors from "cors";
 import multer from "multer";
@@ -18,15 +19,23 @@ const credentials = { key: privateKey, cert: certificate };
 
 */
 
+
+import fs from "fs";
+
+// Lee los archivos del certificado y la clave privada
+const privateKey = fs.readFileSync('privkey.pem', 'utf8');
+const certificate = fs.readFileSync('fullchain.pem', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
+
+
 const { Pool } = pkg;
 
 const secretKey = "miClaveSecreta";
 
 const app = express();
 
-const server = http.createServer(app);
-// Crea un servidor HTTPS utilizando los certificados
-//const server = https.createServer(credentials, app);
+//const server = http.createServer(app);
+const server = https.createServer(credentials, app);
 
 export const io = new Server(server, {
   cors: {
@@ -39,7 +48,7 @@ export const io = new Server(server, {
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://metaversoude2.ddns.net:3000",
     methods: ["GET", "POST"], // Métodos HTTP permitidos
     credentials: true,
   })
