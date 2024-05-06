@@ -43,7 +43,8 @@ export const Room = () => {
         >
           {screenSharingId !== userId && (
             <div>
-              <VideoPlayer stream={stream} />
+              {console.log("entro en screenSharingId !== userId")}
+              <VideoPlayer stream={stream} isOwnStream={true} />
               <NameInput />
             </div>
           )}
@@ -52,7 +53,8 @@ export const Room = () => {
             .filter((peer) => !!peer.stream)
             .map((peer) => (
               <div key={peer.peerId}>
-                <VideoPlayer stream={peer.stream} />
+                {console.log("entro en array de peer")}
+                <VideoPlayer stream={peer.stream} isOwnStream={false} />
                 <div>{peer.userName}</div>
               </div>
             ))}

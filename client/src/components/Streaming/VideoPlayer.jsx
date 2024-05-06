@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-export const VideoPlayer = ({ stream }) => {
+export const VideoPlayer = ({ stream, isOwnStream }) => {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export const VideoPlayer = ({ stream }) => {
       style={{ width: "100%" }}
       ref={videoRef}
       autoPlay
-      muted={false} // Se silencia si no es tu propio stream
+      muted={isOwnStream} // Se silencia si no es tu propio stream
     />
   );
 };
