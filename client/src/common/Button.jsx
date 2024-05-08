@@ -1,10 +1,4 @@
-export const Button = ({
-  children,
-  onClick,
-  testId,
-  className, // Cambiado a opcional
-  type = "submit",
-}) => {
+export const Button = ({ children, onClick, testId, type = "submit" }) => {
   return (
     <button
       type={type}
