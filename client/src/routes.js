@@ -13,6 +13,7 @@ import LoadingSpinner from "../src/components/LoadingSpinner";
 import axios from "axios";
 import { Navigate, useLocation } from "react-router-dom";
 import { Join } from "./components/Streaming/Join";
+import MenuDocente from "./pages/MenuDocente";
 
 const ProtectedRoute = ({ element }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -61,7 +62,7 @@ const routes = [
   },
   {
     path: "/abm",
-    element: <ProtectedRoute element={<Abm />} />,
+    element: <Abm />,
   },
   {
     path: "/abm/listUsers",
@@ -98,6 +99,10 @@ const routes = [
   {
     path: "/*",
     element: <NotFound />,
+  },
+  {
+    path: "/MenuDocente*",
+    element: <ProtectedRoute element={<MenuDocente />} />,
   },
 ];
 

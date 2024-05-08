@@ -4,9 +4,10 @@ import Header from "../src/components/Header";
 import Footer from "../src/components/Footer";
 import { AuthProvider } from "./components/AuthContext";
 import routes from "./routes";
-import { RoomProvider } from "../src/components/RoomContext";
+import { RoomProvider } from "../src/context/RoomContext";
 import { UserProvider } from "./context/UserContext";
 import "./App.css";
+import { ChatProvider } from "./context/ChatContext";
 
 function App() {
   const element = useRoutes(routes);
@@ -26,7 +27,9 @@ export default function Root() {
       <BrowserRouter>
         <UserProvider>
           <RoomProvider>
-            <App />
+            <ChatProvider>
+              <App />
+            </ChatProvider>
           </RoomProvider>
         </UserProvider>
       </BrowserRouter>

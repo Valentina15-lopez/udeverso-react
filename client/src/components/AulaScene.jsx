@@ -3,7 +3,7 @@ import { Environment, OrbitControls } from "@react-three/drei";
 
 import * as THREE from "three";
 import { CubeCamera } from "@react-three/drei";
-import { socket, userAtom } from "./ContexProvider";
+import { socket, userAtom } from "../context/ContexProvider";
 import { useAtom } from "jotai";
 import { Avatar } from "./Avatar";
 import { useLoader } from "@react-three/fiber";

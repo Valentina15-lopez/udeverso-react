@@ -14,7 +14,7 @@ import {
   removePeerStreamAction,
   addAllPeersAction,
 } from "../reducers/peerActions";
-import { SocketContext } from "../components/ContexProvider";
+import { SocketContext } from "../context/ContexProvider";
 import { UserContext } from "../context/UserContext";
 
 // Creación del contexto de la sala

@@ -1,6 +1,6 @@
 import { NameInput } from "../../common/Name";
 import { Button } from "../../common/Button";
-import { socket } from "../ContexProvider";
+import { socket } from "../../context/ContexProvider";
 
 export const Join = () => {
   const createRoom = () => {
