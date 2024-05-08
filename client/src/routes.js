@@ -9,6 +9,7 @@ import CreateUsers from "./pages/CreateUsers";
 import DeleteUsers from "./pages/DeleteUsers";
 import Material from "./pages/Material";
 import ListMaterials from "./pages/ListMaterials";
+import LoadingSpinner from "../src/components/LoadingSpinner";
 import axios from "axios";
 import { Navigate, useLocation } from "react-router-dom";
 import { Join } from "./components/Streaming/Join";
@@ -39,7 +40,7 @@ const ProtectedRoute = ({ element }) => {
   }, []);
 
   if (isCheckingAuth) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
 
   if (!isAuthenticated) {

@@ -10,9 +10,10 @@ import "./App.css";
 
 function App() {
   const element = useRoutes(routes);
+  const pageTitle = element.title; // Obtener el título de la ruta actual
   return (
     <div className="flex flex-col min-h-screen h-screen">
-      <Header />
+      <Header title={pageTitle} />
       <div className="flex-1 overflow-y-auto bg-blue-100">{element}</div>
       <Footer />
     </div>

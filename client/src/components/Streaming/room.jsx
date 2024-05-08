@@ -29,16 +29,15 @@ export const Room = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="bg-red-500 p-4 text-white">Room id {roomId}</div>
       <div className="flex grow">
         {screenSharingVideo && (
-          <div className="w-4/5 pr-4">
+          <div className="w-2/5 pr-4">
             <VideoPlayer stream={screenSharingVideo} />
           </div>
         )}
         <div
           className={`grid gap-4 ${
-            screenSharingVideo ? "w-1/5 grid-col-1" : "grid-cols-4"
+            screenSharingVideo ? "w-1/5 grid-cols-2" : "grid-cols-3"
           }`}
         >
           {screenSharingId !== userId && (

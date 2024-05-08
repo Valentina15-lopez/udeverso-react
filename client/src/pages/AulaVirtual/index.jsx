@@ -18,17 +18,23 @@ const AulaVirtual = () => {
 
   // Renderizar la página de AulaVirtual con el ID de la sala
   return (
-    <div>
-      <h1>Udeverso - Aula Virtual</h1>
-      <Canvas
-        frameloop="demand"
-        dpr={[1, 1.5]}
-        shadows
-        camera={{ near: 0.1, far: 40, fov: 75 }}
-      >
-        <AulaScene />
-      </Canvas>
-      <Room />
+    <div className="h-screen flex flex-col">
+      <div className="flex-1 flex">
+        <div className="w-3/4">
+          <Canvas
+            frameloop="demand"
+            dpr={[1, 1.5]}
+            shadows
+            camera={{ near: 0.1, far: 40, fov: 75 }}
+            className="w-full h-full"
+          >
+            <AulaScene />
+          </Canvas>
+        </div>
+        <div className="w-1/4">
+          <Room />
+        </div>
+      </div>
     </div>
   );
 };

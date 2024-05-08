@@ -1,21 +1,6 @@
-import React, {
-  useRef,
-  useEffect,
-  useState,
-  useMemo,
-  useContext,
-  useLayoutEffect,
-} from "react";
-import { Environment, OrbitControls, useCursor } from "@react-three/drei";
-import { createRoot } from "react-dom/client";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Stats } from "@react-three/drei";
-import {
-  Box,
-  useGLTF,
-  useBoxProjectedEnv,
-  BakeShadows,
-} from "@react-three/drei";
+import React from "react";
+import { Environment, OrbitControls } from "@react-three/drei";
+
 import * as THREE from "three";
 import { CubeCamera } from "@react-three/drei";
 import { socket, userAtom } from "./ContexProvider";
@@ -23,48 +8,16 @@ import { useAtom } from "jotai";
 import { Avatar } from "./Avatar";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { useControls } from "leva";
 import modeloGlb from "../assets/modeloAula3.glb";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
   const [users] = useAtom(userAtom);
-  const [keysPressed, setKeysPressed] = useState({});
-
-  const { up, scale, ...config } = useControls({
-    up: { value: -0.5, min: -10, max: 10 },
-    scale: { value: 27, min: 0, max: 50 },
-    roughness: { value: 0.06, min: 0, max: 0.15, step: 0.001 },
-    envMapIntensity: { value: 1, min: 0, max: 5 },
-  });
-  const projection = useBoxProjectedEnv([0, up, 0], [scale, scale, scale]);
-  const handleKeyDown = (event) => {
-    setKeysPressed((prev) => ({ ...prev, [event.code]: true }));
-  };
-
-  const handleKeyUp = (event) => {
-    setKeysPressed((prev) => ({ ...prev, [event.code]: false }));
-  };
-
-  useLayoutEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-    };
-  }, []);
-
-  const ref = useRef();
-
-  const [onFloor, setOnFloor] = useState(false);
-  useCursor(onFloor);
 
   return (
     <>
       <fog attach="fog" args={["purple", 0, 130]} />
       <ambientLight intensity={0.1} />
-      <OrbitControls />
       <group position={[0, -1, 0]}>
         <primitive object={gltf.scene} />
         <CubeCamera
@@ -91,8 +44,6 @@ const AulaScene = () => {
                 metalness={0.0}
                 normalScale={[0.25, -0.25]}
                 color="#aaa"
-                {...projection}
-                {...config}
               />
             </mesh>
           )}

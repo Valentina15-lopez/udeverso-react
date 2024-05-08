@@ -16,7 +16,9 @@ const ModifyUser = () => {
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const response = await axios.get("https://metaversoude2.ddns.net:3001/api/users");
+        const response = await axios.get(
+          "https://metaversoude2.ddns.net:3001/api/users"
+        );
         setUsuarios(response.data);
       } catch (error) {
         console.error("Error al cargar los usuarios:", error);
@@ -29,13 +31,14 @@ const ModifyUser = () => {
   // Cargar datos del usuario seleccionado
   useEffect(() => {
     const loadUserData = async () => {
-      if (formData.usuario) { // Solo cargar si hay un usuario seleccionado
+      if (formData.usuario) {
+        // Solo cargar si hay un usuario seleccionado
         console.log("Usuarios.js seleccionado:", formData.usuario); // Añadir este console.log
         try {
           const response = await axios.get(
-              `https://metaversoude2.ddns.net:3001/api/users/${formData.usuario}`
+            `https://metaversoude2.ddns.net:3001/api/users/${formData.usuario}`
           );
-          
+
           const userData = response.data;
           // Actualizar formData con los datos del usuario
           setFormData({
@@ -49,7 +52,7 @@ const ModifyUser = () => {
         } catch (error) {
           console.error("Error al cargar datos del usuario:", error);
         }
-      }else{
+      } else {
         console.log("No hay usuario seleccionado."); // Añadir este console.log
       }
     };
@@ -70,61 +73,93 @@ const ModifyUser = () => {
     try {
       console.log("Enviando datos:", formData); // Agregar console.log para verificar qué se envía
       await axios.put(
-          `https://metaversoude2.ddns.net:3001/api/users/${formData.usuario}`,
-          formData
+        `https://metaversoude2.ddns.net:3001/api/users/${formData.usuario}`,
+        formData
       );
       console.log("Usuarios.js modificado exitosamente");
-
     } catch (error) {
       console.error("Error al modificar el usuario:", error);
     }
   };
 
   return (
-      <div>
-        <h1>Modificar usuario</h1>
-        <form onSubmit={handleSubmit}>
-          <label>
+    <div className="flex justify-center items-center min-h-screen">
+      <div className="max-w-md w-full bg-white rounded-md shadow-md overflow-hidden my-8">
+        <h1 className="text-2xl font-semibold text-center py-4 bg-gray-800 text-white">
+          Modificar usuario
+        </h1>
+        <form onSubmit={handleSubmit} className="p-4">
+          <label className="block mb-2">
             Usuario:
-            <select name="usuario"
-                    value={formData.usuario}
-                    onChange={handleChange}>
+            <select
+              name="usuario"
+              value={formData.usuario}
+              onChange={handleChange}
+              className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            >
               <option value="">Seleccionar usuario</option>
               {usuarios.map((usuario) => (
-                  <option key={usuario.usuario} value={usuario.usuario}>
-                    {usuario.usuario}
-                  </option>
+                <option key={usuario.usuario} value={usuario.usuario}>
+                  {usuario.usuario}
+                </option>
               ))}
             </select>
           </label>
-          <br/>
-          <label>
+          <label className="block mb-2">
             Nombre para mostrar:
-            <input type="text"
-                   name="nombre_para_mostrar"
-                   value={formData.nombre_para_mostrar}
-                   onChange={handleChange}
+            <input
+              type="text"
+              name="nombre_para_mostrar"
+              value={formData.nombre_para_mostrar}
+              onChange={handleChange}
+              className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
             />
           </label>
-          <br/>
-          <label>
-            Avatar_id:
-            <input type="text" name="sala" value={formData.avatar_id} onChange={handleChange}/>
+          <label className="block mb-2">
+            Avatar ID:
+            <input
+              type="text"
+              name="avatar_id"
+              value={formData.avatar_id}
+              onChange={handleChange}
+              className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            />
           </label>
-          <br/>
-          <label>
+          <label className="block mb-2">
             Correo:
-            <input type="email" name="correo" value={formData.correo} onChange={handleChange}/>
+            <input
+              type="email"
+              name="correo"
+              value={formData.correo}
+              onChange={handleChange}
+              className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            />
           </label>
-          <br/>
-          <label>
+          <label className="block mb-2">
             Es Estudiante:
-            <input type="text" name="es_estudiante" value={formData.es_estudiante} onChange={handleChange}/>
+            <input
+              type="text"
+              name="es_estudiante"
+              value={formData.es_estudiante}
+              onChange={handleChange}
+              className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            />
           </label>
-          <br/>
-          <button type="submit">Modificar</button>
+          <button
+            type="submit"
+            className="w-full bg-indigo-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-600 transition duration-300"
+          >
+            Modificar
+          </button>
+          <button
+            type="reset"
+            className="w-full mt-2.5 bg-indigo-300 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-600 transition duration-300"
+          >
+            Volver al inicio
+          </button>
         </form>
       </div>
+    </div>
   );
 };
 
