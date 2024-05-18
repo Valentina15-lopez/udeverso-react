@@ -1,6 +1,5 @@
 import React, { useState, useLayoutEffect, useRef } from "react";
 import { Environment, OrbitControls } from "@react-three/drei";
-import { useControls } from "@react-three/xr";
 import * as THREE from "three";
 import { CubeCamera, useBoxProjectedEnv } from "@react-three/drei";
 import { socket, userAtom } from "../context/ContexProvider";
@@ -32,14 +31,6 @@ const AulaScene = () => {
     firstAvatarPosition,
     setFirstAvatarPosition,
   ]); // Mostrar los usuarios actuales majito, se muestra cada vez que se actuliza la escena
-
-  const { up, scale, ...config } = useControls({
-    up: { value: -0.5, min: -10, max: 10 },
-    scale: { value: 27, min: 0, max: 50 },
-    roughness: { value: 0.06, min: 0, max: 0.15, step: 0.001 },
-    envMapIntensity: { value: 1, min: 0, max: 5 },
-  });
-  const projection = useBoxProjectedEnv([0, up, 0], [scale, scale, scale]);
 
   /* majito2 vieja
   const handleKeyDown = (event) => {
