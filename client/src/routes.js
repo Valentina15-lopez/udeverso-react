@@ -6,10 +6,14 @@ import NotFound from "./pages/NotFound";
 import ListUsers from "./pages/ListUsers";
 import ModifyUsers from "./pages/ModifyUsers";
 import CreateUsers from "./pages/CreateUsers";
+import DeleteUsers from "./pages/DeleteUsers";
 import Material from "./pages/Material";
+import ListMaterials from "./pages/ListMaterials";
+import LoadingSpinner from "../src/components/LoadingSpinner";
 import axios from "axios";
 import { Navigate, useLocation } from "react-router-dom";
 import { Join } from "./components/Streaming/Join";
+import MenuDocente from "./pages/MenuDocente";
 
 const ProtectedRoute = ({ element }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -37,7 +41,7 @@ const ProtectedRoute = ({ element }) => {
   }, []);
 
   if (isCheckingAuth) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
 
   if (!isAuthenticated) {
@@ -69,12 +73,20 @@ const routes = [
     element: <ProtectedRoute element={<ModifyUsers />} />,
   },
   {
+    path: "/abm/deleteUsers",
+    element: <ProtectedRoute element={<DeleteUsers />} />,
+  },
+  {
     path: "/abm/createUsers",
     element: <ProtectedRoute element={<CreateUsers />} />,
   },
   {
     path: "/abm/material",
     element: <ProtectedRoute element={<Material />} />,
+  },
+  {
+    path: "/abm/listMaterials",
+    element: <ProtectedRoute element={<ListMaterials />} />,
   },
   {
     path: "/", // Redirige la ruta raíz al menú
@@ -87,6 +99,10 @@ const routes = [
   {
     path: "/*",
     element: <NotFound />,
+  },
+  {
+    path: "/MenuDocente*",
+    element: <ProtectedRoute element={<MenuDocente />} />,
   },
 ];
 

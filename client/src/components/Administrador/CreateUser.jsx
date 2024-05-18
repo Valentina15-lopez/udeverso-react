@@ -6,7 +6,7 @@ const CreateUser = () => {
     usuario: "",
     contrasenia: "",
     nombre_para_mostrar: "",
-    sala: "",
+    avatar_id: "",
     correo: "",
     es_estudiante: "",
   });
@@ -18,7 +18,10 @@ const CreateUser = () => {
     e.preventDefault();
     try {
       // Si no existe el ID del usuario, es una solicitud de inserción
-      await axios.post("https://metaversoude2.ddns.net:3001/api/users", formData);
+      await axios.post(
+        "https://metaversoude2.ddns.net:3001/api/users",
+        formData
+      );
       console.log("Usuario creado exitosamente");
     } catch (error) {
       if (error.response) {
@@ -35,45 +38,80 @@ const CreateUser = () => {
   };
 
   return (
-    <div>
-      <h1>Insertar Usuario</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Usuario:
-          <input type="text" name="usuario" onChange={handleChange} />
-        </label>
-        <br />
-        <label>
-          Contrasenia:
-          <input type="text" name="contrasenia" onChange={handleChange} />
-        </label>
-        <br />
-        <label>
-          Nombre para mostrar:
-          <input
-            type="text"
-            name="nombre_para_mostrar"
-            onChange={handleChange}
-          />
-        </label>
-        <br />
-        <label>
-          Sala:
-          <input type="text" name="sala" onChange={handleChange} />
-        </label>
-        <br />
-        <label>
-          Correo:
-          <input type="email" name="correo" onChange={handleChange} />
-        </label>
-        <br />
-        <label>
-          Es_Estudiante:
-          <input type="text" name="es_estudiante" onChange={handleChange} />
-        </label>
-        <br />
-        <button type="submit">Enviar</button>
-      </form>
+    <div className="flex justify-center items-center min-h-screen">
+      <div className="max-w-md w-full bg-white rounded-md shadow-md overflow-hidden my-8">
+        <h1 className="text-2xl font-semibold text-center py-4 bg-gray-800 text-white">
+          Insertar Usuario
+        </h1>
+        <form onSubmit={handleSubmit} className="p-4">
+          <label className="block mb-2">
+            Usuario:
+            <input
+              type="text"
+              name="usuario"
+              onChange={handleChange}
+              className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            />
+          </label>
+          <label className="block mb-2">
+            Contraseña:
+            <input
+              type="password"
+              name="contrasenia"
+              onChange={handleChange}
+              className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            />
+          </label>
+          <label className="block mb-2">
+            Nombre para mostrar:
+            <input
+              type="text"
+              name="nombre_para_mostrar"
+              onChange={handleChange}
+              className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            />
+          </label>
+          <label className="block mb-2">
+            Avatar ID:
+            <input
+              type="text"
+              name="avatar_id"
+              onChange={handleChange}
+              className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            />
+          </label>
+          <label className="block mb-2">
+            Correo:
+            <input
+              type="email"
+              name="correo"
+              onChange={handleChange}
+              className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            />
+          </label>
+          <label className="block mb-2">
+            Es Estudiante:
+            <input
+              type="text"
+              name="es_estudiante"
+              onChange={handleChange}
+              className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            />
+          </label>
+          <button
+            type="submit"
+            className="w-full bg-indigo-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-600 transition duration-300"
+          >
+            Enviar
+          </button>
+          <button
+            type="reset"
+            className="w-full mt-2.5 bg-indigo-300 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-600 transition duration-300"
+          >
+            Volver al inicio
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

@@ -1,21 +1,10 @@
-import classNames from "classnames";
-
-export const Button = ({
-  children,
-  onClick,
-  testId,
-  className, // Cambiado a opcional
-  type = "submit",
-}) => {
+export const Button = ({ children, onClick, testId, type = "submit" }) => {
   return (
     <button
       type={type}
       data-testid={testId}
       onClick={onClick}
-      className={classNames(
-        "bg-rose-400 p-2 rounded-lg hover:bg-rose-600 text-white",
-        className || "" // Asegurando que className no sea undefined
-      )}
+      className="w-full py-2 px-8 text-xl bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
     >
       {children}
     </button>

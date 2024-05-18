@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { ContextProvider } from "../src/components/ContexProvider";
+import { ContextProvider } from "../src/context/ContexProvider";
 import App from "./App";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
