@@ -17,6 +17,8 @@ import {
 import { SocketContext } from "../context/ContexProvider";
 import { UserContext } from "../context/UserContext";
 
+
+
 // Creación del contexto de la sala
 export const RoomContext = createContext({
   peers: {},
@@ -30,7 +32,7 @@ export const RoomProvider = ({ children }) => {
   const { socket } = useContext(SocketContext);
   const navigate = useNavigate();
   const { userName, userId } = useContext(UserContext);
-  const [me, setMe] = useState();
+  
   const [stream, setStream] = useState();
   const [screenStream, setScreenStream] = useState();
   const [peers, dispatch] = useReducer(peersReducer, {});
@@ -51,52 +53,19 @@ export const RoomProvider = ({ children }) => {
 
   const [connections, setConnections] = useState({});
 
-  useEffect(() => {
-    if (!me) return;
+  const peer = new Peer(userId, {
+    host: "localhost",   
+    port:"3002",   
+    path: "/",
 
-    me.on("connection", (conn) => {
-      // Almacenar la nueva conexión en el estado
-      setConnections((prevConnections) => ({
-        ...prevConnections,
-        [conn.peer]: conn,
-      }));
-    });
+  });
 
-    return () => {
-      me.off("connection");
-    };
-  }, [me]);
+/*
+fs.readFileSync('privkey.pem', 'utf8');
+fs.readFileSync('fullchain.pem', 'utf8');
+*/
 
-  const switchStream = (stream) => {
-    setScreenSharingId(me?.id || "");
-    Object.values(connections).forEach((connection) => {
-      const videoTrack = stream
-        ?.getTracks()
-        .find((track) => track.kind === "video");
-      connection.peerConnection
-        .getSenders()
-        .find((sender) => sender.track.kind === "video")
-        .replaceTrack(videoTrack)
-        .catch((err) => console.error(err));
-    });
-  };
-
-  const shareScreen = () => {
-    if (screenSharingId) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
-        .then(switchStream);
-    } else {
-      navigator.mediaDevices.getDisplayMedia({}).then((stream) => {
-        switchStream(stream);
-        setScreenStream(stream);
-      });
-    }
-  };
-
-  const nameChangedHandler = ({ peerId, userName }) => {
-    dispatch(addPeerNameAction(peerId, userName));
-  };
+  const [me, setMe] = useState(peer);
 
   useEffect(() => {
     socket.emit("change-name", { peerId: userId, userName, roomId });
@@ -108,7 +77,6 @@ export const RoomProvider = ({ children }) => {
       port: 9000,
       path: "/",
     });
-
     setMe(peer);
 
     try {
@@ -116,6 +84,8 @@ export const RoomProvider = ({ children }) => {
         .getUserMedia({ video: true, audio: true })
         .then((stream) => {
           setStream(stream);
+          console.log(stream);
+          console.log(peer);
         });
     } catch (error) {
       console.error(error);
@@ -141,6 +111,47 @@ export const RoomProvider = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+
+
+  const shareScreen = () => {
+    if (screenSharingId) {
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then(switchStream);
+    } else {
+      navigator.mediaDevices.getDisplayMedia({}).then((stream) => {
+        switchStream(stream);
+        setScreenStream(stream);
+      });
+    }
+  };
+
+  const nameChangedHandler = ({ peerId, userName }) => {
+    dispatch(addPeerNameAction(peerId, userName));
+  };
+
+  useEffect(() => {
+    socket.emit("change-name", { peerId: userId, userName, roomId });
+  }, [userName, userId, roomId]);
+
+
+  useEffect(() => {
+    if (!me) return;
+
+    me.on("connection", (conn) => {
+      // Almacenar la nueva conexión en el estado
+      setConnections((prevConnections) => ({
+        ...prevConnections,
+        [conn.peer]: conn,
+      }));
+    });
+
+    return () => {
+      me.off("connection");
+    };
+  }, [me]);
+
+
   useEffect(() => {
     if (screenSharingId) {
       socket.emit("start-sharing", { peerId: screenSharingId, roomId });
@@ -164,7 +175,8 @@ export const RoomProvider = ({ children }) => {
       dispatch(addPeerNameAction(peerId, name));
     });
 
-    me.on("call", (call) => {
+
+    socket.on("call", (call) => {
       const { userName } = call.metadata;
       dispatch(addPeerNameAction(call.peer, userName));
       call.answer(stream);
@@ -177,6 +189,22 @@ export const RoomProvider = ({ children }) => {
       socket.off("user-joined");
     };
   }, [me, stream, userName]);
+
+  const switchStream = (stream) => {
+    setScreenSharingId(me?.id || "");
+    Object.values(connections).forEach((connection) => {
+      const videoTrack = stream
+        ?.getTracks()
+        .find((track) => track.kind === "video");
+      connection.peerConnection
+        .getSenders()
+        .find((sender) => sender.track.kind === "video")
+        .replaceTrack(videoTrack)
+        .catch((err) => console.error(err));
+    });
+  };
+
+
 
   return (
     <RoomContext.Provider

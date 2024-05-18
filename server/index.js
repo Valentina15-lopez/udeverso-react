@@ -1,4 +1,5 @@
 import express from "express";
+
 //import http from "http";
 import https from "https";
 import { v4 as uuidV4 } from "uuid";
@@ -10,22 +11,16 @@ import usersRoomsRoutes from "./src/routes/usersRoomsRoutes.js";
 import userMaterialsRoutes from "./src/routes/userMaterialsRoutes.js";
 import logger from "./src/middleware/logger.js";
 import sequelize from "./src/config/database.js";
-import swaggerUi from 'swagger-ui-express';
+import swaggerUi from "swagger-ui-express";
 import swaggerDocs from "./src/config/swagger.js";
 import { Server } from "socket.io";
-
-
-
 
 import fs from "fs";
 
 // Lee los archivos del certificado y la clave privada
-const privateKey = fs.readFileSync('privkey.pem', 'utf8');
-const certificate = fs.readFileSync('fullchain.pem', 'utf8');
+const privateKey = fs.readFileSync("privkey.pem", "utf8");
+const certificate = fs.readFileSync("fullchain.pem", "utf8");
 const credentials = { key: privateKey, cert: certificate };
-
-
-
 
 const secretKey = "miClaveSecreta";
 
@@ -54,7 +49,6 @@ app.use(
 app.use(cookieParser());
 const usersList = [];
 
-
 app.use(express.json());
 
 app.use(cookieParser());
@@ -67,11 +61,11 @@ app.use(usersRoomsRoutes); // Conecta rutas de usuarios y salas
 app.use(userMaterialsRoutes); // Conecta rutas de usuarios y materiales
 
 const generateRandomPosition = () => {
-    return [Math.random() * 3, 0, Math.random() * 3];
+  return [Math.random() * 3, 0, Math.random() * 3];
 };
 
 const generateRandomHexColor = () => {
-    return "#" + Math.floor(Math.random() * 16777215).toString(16);
+  return "#" + Math.floor(Math.random() * 16777215).toString(16);
 };
 
 const rooms = {};
@@ -160,22 +154,23 @@ io.on("connection", (socket) => {
 });
 
 // Autenticar la conexión a la base de datos antes de iniciar el servidor
-sequelize.authenticate()
-    .then(() => {
-        console.log("Conexión a la base de datos exitosa");
-    })
-    .catch((error) => {
-        console.error("Error al conectarse a la base de datos:", error.message);
-        process.exit(1);  // Termina la aplicación si no se puede conectar
-    });
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("Conexión a la base de datos exitosa");
+  })
+  .catch((error) => {
+    console.error("Error al conectarse a la base de datos:", error.message);
+    process.exit(1); // Termina la aplicación si no se puede conectar
+  });
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 const startServer = () => {
-    const PORT = process.env.PORT || 3001;
-    server.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-    });
+  const PORT = process.env.PORT || 3001;
+  server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 };
 
-export { app, startServer};
+export { app, startServer };
