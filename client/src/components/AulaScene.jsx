@@ -1,24 +1,20 @@
-import React, { useState, useLayoutEffect, useRef } from "react";
+import React, { useState, useLayoutEffect, useContext } from "react";
 import { Environment, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-import { CubeCamera, useBoxProjectedEnv } from "@react-three/drei";
-import { socket, userAtom } from "../context/ContexProvider";
-import { useAtom } from "jotai";
+import { CubeCamera } from "@react-three/drei";
+import { socket } from "../context/ContexProvider";
 import { Avatar } from "./Avatar";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import modeloGlb from "../assets/modeloAula3.glb";
+import { UserContext } from "../context/UserContext";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
-  //const [users] = useAtom(userAtom); // majo2
-
-  const [users, setUsers] = useState([
-    { id: "user1", position: [0, 0, 0], hairColor: "brown" }, // Ejemplo de usuarios
-  ]);
+  const { usersList } = useContext(UserContext); // majo2
 
   const [firstAvatarPosition, setFirstAvatarPosition] = useState(
-    new THREE.Vector3(...users[0].position)
+    new THREE.Vector3(...usersList[0].position)
   ); //majito
   const [keysPressed, setKeysPressed] = useState({}); //majito
   const [avatarPosition, setAvatarPosition] = useState(
@@ -26,7 +22,7 @@ const AulaScene = () => {
   ); //majito2
   const currentUserID = "ID_del_usuario_actual"; // Debes obtener este valor de alguna parte //majito2
 
-  console.log("Usuarios actuales:", users); // Mostrar los usuarios actuales majito, se muestra cada vez que se actuliza la escena
+  console.log("Usuarios actuales:", usersList); // Mostrar los usuarios actuales majito, se muestra cada vez que se actuliza la escena
   console.log("PRIMER AVATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR", [
     firstAvatarPosition,
     setFirstAvatarPosition,
@@ -110,25 +106,21 @@ const AulaScene = () => {
             </mesh>
           )}
         </CubeCamera>
-        {users.map(
-          (
-            user,
-            index //majo2
-          ) => (
-            <Avatar
-              key={user.id}
-              //position={new THREE.Vector3(user.position[0], 0, user.position[2])}
-              position={
-                index === 0
-                  ? firstAvatarPosition
-                  : new THREE.Vector3(...user.position)
-              } //majo2
-              hairColor={user.hairColor}
-              topColor={user.topColor}
-              bottomColor={user.bottomColor}
-            />
-          )
-        )}
+        {usersList.map((user) => (
+          <Avatar
+            key={user.id}
+            //position={new THREE.Vector3(user.position[0], 0, user.position[2])}
+            // position={
+            //   index === 0
+            //     ? firstAvatarPosition
+            //     : new THREE.Vector3(...user.position)
+            // } //majo2
+            position={user.position}
+            hairColor={user.hairColor}
+            topColor={user.topColor}
+            bottomColor={user.bottomColor}
+          />
+        ))}
       </group>
       <OrbitControls minPolarAngle={Math.PI / 2} maxPolarAngle={Math.PI / 2} />
       {/* tener en cuenta que es una url externa */}

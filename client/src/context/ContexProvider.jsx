@@ -6,6 +6,7 @@ const SocketContext = createContext();
 
 export const userAtom = atom([]);
 export const roomAtom = atom([]);
+//export const socket = io("http://localhost:3001");
 export const socket = io("https://metaversoude2.ddns.net:3001");
 
 const ContextProvider = ({ children }) => {
@@ -24,10 +25,6 @@ const ContextProvider = ({ children }) => {
 
     socket.on("hello", () => {
       console.log("Received hello from server");
-    });
-
-    socket.on("usersList", (value) => {
-      setUser(value);
     });
 
     socket.on("rooms", (value) => {

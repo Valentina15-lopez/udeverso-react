@@ -17,8 +17,6 @@ import {
 import { SocketContext } from "../context/ContexProvider";
 import { UserContext } from "../context/UserContext";
 
-
-
 // Creación del contexto de la sala
 export const RoomContext = createContext({
   peers: {},
@@ -32,7 +30,7 @@ export const RoomProvider = ({ children }) => {
   const { socket } = useContext(SocketContext);
   const navigate = useNavigate();
   const { userName, userId } = useContext(UserContext);
-  
+
   const [stream, setStream] = useState();
   const [screenStream, setScreenStream] = useState();
   const [peers, dispatch] = useReducer(peersReducer, {});
@@ -54,13 +52,13 @@ export const RoomProvider = ({ children }) => {
   const [connections, setConnections] = useState({});
 
   const peer = new Peer(userId, {
-    host: "localhost",   
-    port:"3002",   
+    // host: "localhost",
+    host: "metaversoude2.ddns.net",
+    port: "9000",
     path: "/",
-
   });
 
-/*
+  /*
 fs.readFileSync('privkey.pem', 'utf8');
 fs.readFileSync('fullchain.pem', 'utf8');
 */
@@ -73,6 +71,7 @@ fs.readFileSync('fullchain.pem', 'utf8');
 
   useEffect(() => {
     const peer = new Peer(userId, {
+      //host: "localhost",
       host: "metaversoude2.ddns.net",
       port: 9000,
       path: "/",
@@ -111,8 +110,6 @@ fs.readFileSync('fullchain.pem', 'utf8');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
-
   const shareScreen = () => {
     if (screenSharingId) {
       navigator.mediaDevices
@@ -134,7 +131,6 @@ fs.readFileSync('fullchain.pem', 'utf8');
     socket.emit("change-name", { peerId: userId, userName, roomId });
   }, [userName, userId, roomId]);
 
-
   useEffect(() => {
     if (!me) return;
 
@@ -150,7 +146,6 @@ fs.readFileSync('fullchain.pem', 'utf8');
       me.off("connection");
     };
   }, [me]);
-
 
   useEffect(() => {
     if (screenSharingId) {
@@ -174,7 +169,6 @@ fs.readFileSync('fullchain.pem', 'utf8');
       });
       dispatch(addPeerNameAction(peerId, name));
     });
-
 
     socket.on("call", (call) => {
       const { userName } = call.metadata;
@@ -203,8 +197,6 @@ fs.readFileSync('fullchain.pem', 'utf8');
         .catch((err) => console.error(err));
     });
   };
-
-
 
   return (
     <RoomContext.Provider

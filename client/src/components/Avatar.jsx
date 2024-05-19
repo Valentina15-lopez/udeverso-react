@@ -5,7 +5,7 @@ import { SkeletonUtils } from "three-stdlib";
 import { useKeyPress } from "./useKeyPress"; // Importa el hook useKeyPress
 import * as THREE from "three"; // Importa THREE para utilizar Vectores
 
-const MOVEMENT_SPEED = 0.1;//0.032;
+const MOVEMENT_SPEED = 0.1; //0.032;
 
 export function Avatar({
   hairColor = "green",
@@ -32,19 +32,17 @@ export function Avatar({
 
   const initialRotation = useRef(); // Almaceno la rotación inicial
 
-
   const moveAvatar = (direction) => {
     const newPosition = group.current.position.clone().add(direction);
     group.current.position.copy(newPosition);
     setAnimation("CharacterArmature|Run");
   };
 
+  useEffect(() => {
+    initialRotation.current = group.current.rotation.clone(); // Almacena la rotación inicial
+  }, []);
 
- useEffect(() => {
-  initialRotation.current = group.current.rotation.clone(); // Almacena la rotación inicial
-}, []);
-
- // Detecta las teclas presionadas
+  // Detecta las teclas presionadas
   const moveForward = useKeyPress("s");
   const moveBackward = useKeyPress("w");
   const moveLeft = useKeyPress("a");
@@ -52,19 +50,19 @@ export function Avatar({
 
   useFrame(() => {
     let moveDirection = new THREE.Vector3();
-    
+
     if (moveForward) {
       moveDirection.z = -1;
     } else if (moveBackward) {
       moveDirection.z = 1;
     }
-    
+
     if (moveLeft) {
       moveDirection.x = -1;
     } else if (moveRight) {
       moveDirection.x = 1;
     }
-    
+
     if (moveDirection.length() > 0) {
       moveDirection.normalize();
       const newRotation = Math.atan2(moveDirection.x, moveDirection.z);
