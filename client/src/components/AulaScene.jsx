@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect, useContext } from "react";
-import { Environment, OrbitControls } from "@react-three/drei";
+import { Environment, OrbitControls, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { CubeCamera } from "@react-three/drei";
 import { socket } from "../context/ContexProvider";
@@ -8,10 +8,17 @@ import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import modeloGlb from "../assets/modeloAula3.glb";
 import { UserContext } from "../context/UserContext";
+import { VideoScreen } from "./Streaming/VideoScreen";
+import { RoomContext } from "../context/RoomContext";
+import { useThree } from "react-three-fiber";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
-  const { usersList } = useContext(UserContext); // majo2
+  const { usersList, userId } = useContext(UserContext);
+  const { scene } = useThree();
+  const { screenStream, peers, screenSharingId } = useContext(RoomContext);
+  const screenSharingVideo =
+    screenSharingId === userId ? screenStream : peers[screenSharingId]?.stream;
 
   const [firstAvatarPosition, setFirstAvatarPosition] = useState(
     new THREE.Vector3(...usersList[0].position)
@@ -87,23 +94,44 @@ const AulaScene = () => {
           far={1000}
         >
           {(texture) => (
-            <mesh
-              receiveShadow
-              position={[-13.68, -0.467, 17.52]}
-              scale={0.02}
-              geometry={gltf.nodes.PisoAula.geometry}
-              onClick={(e) => socket.emit("move", [e.point.x, 0, e.point.z])}
-              dispose={null}
-            >
-              <meshStandardMaterial
-                map={gltf.materials.piso.map}
-                normalMap={gltf.materials.piso.normalMap}
-                envMap={texture}
-                metalness={0.0}
-                normalScale={[0.25, -0.25]}
-                color="#aaa"
-              />
-            </mesh>
+            <>
+              <mesh
+                receiveShadow
+                position={[-13.68, -0.467, 17.52]}
+                scale={0.02}
+                geometry={gltf.nodes.PisoAula.geometry}
+                onClick={(e) => socket.emit("move", [e.point.x, 0, e.point.z])}
+                dispose={null}
+              >
+                <meshStandardMaterial
+                  map={gltf.materials.piso.map}
+                  normalMap={gltf.materials.piso.normalMap}
+                  envMap={texture}
+                  metalness={0.0}
+                  normalScale={[0.25, -0.25]}
+                  color="#aaa"
+                />
+              </mesh>
+              <mesh receiveShadow geometry={gltf.nodes.Pizarron.geometry}>
+                <meshStandardMaterial
+                  map={gltf.materials.pizarronmaterial.map}
+                  normalMap={gltf.materials.pizarronmaterial.normalMap}
+                  envMap={texture}
+                  metalness={0.0}
+                  normalScale={[0.25, -0.25]}
+                  color="#aaa"
+                >
+                  <Html
+                    transform
+                    className="w-full h-full"
+                    rotation-y={-Math.PI / 2}
+                    position={[-35, 0, 0]}
+                  >
+                    <VideoScreen stream={screenStream} />
+                  </Html>
+                </meshStandardMaterial>
+              </mesh>
+            </>
           )}
         </CubeCamera>
         {usersList.map((user) => (

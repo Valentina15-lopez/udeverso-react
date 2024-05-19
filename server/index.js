@@ -1,7 +1,7 @@
 import express from "express";
 
-//import http from "http";
-import https from "https";
+import http from "http";
+//import https from "https";
 import { v4 as uuidV4 } from "uuid";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -26,8 +26,8 @@ const secretKey = "miClaveSecreta";
 
 const app = express();
 
-//const server = http.createServer(app);
-const server = https.createServer(credentials, app);
+const server = http.createServer(app);
+//const server = https.createServer(credentials, app);
 
 export const io = new Server(server, {
   cors: {
@@ -40,10 +40,10 @@ export const io = new Server(server, {
 app.use(express.json());
 app.use(
   cors({
-    //origin: "http://localhost:3000",
-    origin: "https://metaversoude2.ddns.net:3000",
+    origin: "http://localhost:3000",
+    //origin: "https://metaversoude2.ddns.net:3000",
     methods: ["GET", "POST"], // Métodos HTTP permitidos
-    credentials: true,
+    //credentials: true,
   })
 );
 

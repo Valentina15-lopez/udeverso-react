@@ -5,7 +5,7 @@ import { SkeletonUtils } from "three-stdlib";
 import { useKeyPress } from "./useKeyPress"; // Importa el hook useKeyPress
 import * as THREE from "three"; // Importa THREE para utilizar Vectores
 
-const MOVEMENT_SPEED = 0.1; //0.032;
+const MOVEMENT_SPEED = 0.2; //0.032;
 
 export function Avatar({
   hairColor = "green",

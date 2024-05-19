@@ -54,7 +54,7 @@ const ProtectedRoute = ({ element }) => {
 const routes = [
   {
     path: "/aulavirtual/:roomId", // Agrega el parámetro de ruta para el ID
-    element: <ProtectedRoute element={<AulaVirtual />} />,
+    element: <AulaVirtual />,
   },
   {
     path: "/aulavirtual", // Agrega el parámetro de ruta para el ID
