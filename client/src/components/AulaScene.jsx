@@ -124,7 +124,7 @@ const AulaScene = () => {
                   <Html
                     transform
                     className="w-full h-full"
-                    rotation-y={-Math.PI / 2}
+                    rotation-y={Math.PI / 2}
                     position={[-35, 0, 0]}
                   >
                     <VideoScreen stream={screenStream} />
