@@ -2,7 +2,6 @@ import sequelize from "../config/database.js";
 import {Salas, UsuariosSalas, Usuarios} from "../models/index.js";
 
 export const addUserToRoom = async (req, res) => {
-    //console.log("Se llamó al endpoint POST /api/users/:userId/salas con " + JSON.stringify(req.body));
 
     const transaction = await sequelize.transaction();  // Iniciar una transacción
 
@@ -30,7 +29,6 @@ export const addUserToRoom = async (req, res) => {
         }
 
         await transaction.commit();  // Confirmar la transacción
-        //console.log("Usuario asignado a las salas exitosamente.");
         return res.status(201).json({ message: "Usuario asignado a las salas exitosamente." }); // Operación exitosa
     } catch (error) {
         await transaction.rollback();  // Revertir la transacción en caso de error
@@ -52,10 +50,8 @@ export const deleteUserFromRoom = async (req, res) => {
         });
 
         if (deletedCount > 0) {
-            //console.log("Usuario eliminado de la sala.");
             return res.status(200).json({ message: "Usuario eliminado de la sala." }); // Operación exitosa
         } else {
-            //console.log("No se encontró la relación entre usuario y sala.");
             return res.status(404).json({message: "No se encontró la relación entre usuario y sala."}); // No encontrado
         }
     } catch (error) {

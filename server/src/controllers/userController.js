@@ -6,7 +6,6 @@ import jwt from "jsonwebtoken";
 const secretKey = "miClaveSecreta";
 
 export const checkAuth = (req, res) => {
-    //console.log("Se llamo al endpoint GET /api/checkAuth con " + JSON.stringify(req.body));
     const token = req.cookies.sessionToken; // Obtener el token de la cookie
     if (!token) { // Si no hay token
         return res.sendStatus(401);
@@ -21,7 +20,6 @@ export const checkAuth = (req, res) => {
 };
 
 export const login = async (req, res) => {
-    //console.log('Se llamó al endpoint POST /login con ' + JSON.stringify(req.body));
     const { nombreUsuario, contrasena } = req.body; // Obtener los datos del cuerpo de la petición
 
     try {
@@ -29,7 +27,6 @@ export const login = async (req, res) => {
         const usuario = await Usuarios.findOne({ where: { usuario: nombreUsuario } });
 
         if (!usuario) { // Si no se encontró el usuario
-            //console.log("Usuario no encontrado");
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
@@ -37,7 +34,6 @@ export const login = async (req, res) => {
         const contrasenaValida = await bcrypt.compare(contrasena, usuario.contrasenia);
 
         if (!contrasenaValida) { // Si la contraseña no coincide
-            //console.log("Contraseña incorrecta");
             return res.status(401).json({ message: 'Contraseña incorrecta' });
         }
 
@@ -51,7 +47,6 @@ export const login = async (req, res) => {
 
         // Enviar la respuesta con información del usuario (o solo el token, según tu preferencia)
         res.status(200).json({ usuario, token });
-        //console.log("Respuesta enviada con informacion del usuario y token");
     } catch (error) {
         console.error('Error al autenticar usuario:', error);
         res.status(500).json({ message: 'Error interno del servidor' });
@@ -59,7 +54,6 @@ export const login = async (req, res) => {
 };
 
 export const createUser = async (req, res) => {
-    //console.log("Se llamó al endpoint POST /api/users con " + JSON.stringify(req.body));
     const { usuario, contrasenia, nombre_para_mostrar, avatar_id, correo, es_estudiante } = req.body; // Obtener los datos del cuerpo de la petición
 
     try {
@@ -84,8 +78,6 @@ export const createUser = async (req, res) => {
 };
 
 export const getAllUsers = async (req, res) => {
-    //console.log("Se llamó al endpoint GET /api/users con " + JSON.stringify(req.body));
-
     try {
         // Obtener todos los usuarios usando Sequelize
         const users = await Usuarios.findAll();  // Devuelve todos los registros
@@ -98,8 +90,6 @@ export const getAllUsers = async (req, res) => {
 };
 
 export const getUser = async (req, res) => {
-    //console.log("Se llamó al endpoint GET /api/users/:id con " + JSON.stringify(req.body));
-
     try {
         const id = req.params.id;  // Obtener el identificador del usuario desde la URL
 
@@ -121,7 +111,6 @@ export const getUser = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-    //console.log("Se llamó al endpoint PUT /api/users/:usuario con " + JSON.stringify(req.body));
     const { usuario } = req.params;  // El usuario a actualizar
 
     try {
@@ -174,8 +163,6 @@ export const updateUser = async (req, res) => {
 };
 
 export const deleteUser = async (req, res) => {
-    //console.log("Se llamó al endpoint DELETE /api/users/:usuario con " + JSON.stringify(req.body));
-
     try {
         const { usuario } = req.params;  // Obtener el ID del usuario a eliminar
 
