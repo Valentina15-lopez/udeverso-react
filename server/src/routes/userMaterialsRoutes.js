@@ -9,9 +9,12 @@ import {
 const router = express.Router(); //creamos el router
 
 // Configuración básica de multer para almacenar archivos en la memoria
-const storage = multer.memoryStorage(); // Almacenar en memoria
-const upload = multer({ storage }); // Configurar multer con la opción de almacenamiento
-
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 1 * 1024 * 1024, // limit to 1MB
+    },
+});
 /**
  * @swagger
  * components:
