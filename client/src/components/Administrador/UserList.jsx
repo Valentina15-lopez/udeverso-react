@@ -58,7 +58,6 @@ const UserList = () => {
   }, [formData.usuario]); // Dependencia en el cambio del usuario seleccionado
 
   const handleChange = (e) => {
-    //console.log("Cambio en el formulario:", e.target.name, e.target.value); // Agregar console.log para depuración
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,

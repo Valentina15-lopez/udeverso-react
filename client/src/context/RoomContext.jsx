@@ -79,17 +79,18 @@ fs.readFileSync('fullchain.pem', 'utf8');
     });
     setMe(peer);
 
-    try {
-      navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
-        .then((stream) => {
-          setStream(stream);
-          console.log(stream);
-          console.log(peer);
-        });
-    } catch (error) {
-      console.error(error);
+    async function getMedia() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        setStream(stream);
+        console.log(stream);
+        console.log(peer);
+      } catch (error) {
+        console.error(error);
+      }
     }
+
+    getMedia();
 
     socket.on("room-created", enterRoom);
     socket.on("get-users", getUsers);

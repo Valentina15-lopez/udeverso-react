@@ -61,7 +61,7 @@ const ListMaterial = () => {
   };
 
   const deleteMaterial = async (material) => {
-    const { nombre, ext, material: content } = material;
+    const { nombre} = material;
 
     try {
       const response = await axios.delete(
@@ -100,7 +100,7 @@ const ListMaterial = () => {
           {materiales.length > 0 && (
             <ul>
               {materiales.map((material, index) => (
-                <li key={index} className="mb-2">
+                <li key={material.nombre} className="mb-2">
                   {material.nombre}.{material.ext}
                   <button
                     type="button"

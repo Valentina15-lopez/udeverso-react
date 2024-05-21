@@ -1,9 +1,7 @@
-import React, { useState, useLayoutEffect, useRef } from "react";
-import { Environment, OrbitControls } from "@react-three/drei";
+import React, { useState, useLayoutEffect} from "react";
+import {CubeCamera,  Environment, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-import { CubeCamera, useBoxProjectedEnv } from "@react-three/drei";
-import { socket, userAtom } from "../context/ContexProvider";
-import { useAtom } from "jotai";
+import { socket} from "../context/ContexProvider";
 import { Avatar } from "./Avatar";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
@@ -11,56 +9,14 @@ import modeloGlb from "../assets/modeloAula3.glb";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
-  //const [users] = useAtom(userAtom); // majo2
-
-  const [users, setUsers] = useState([
-    { id: "user1", position: [0, 0, 0], hairColor: "brown" }, // Ejemplo de usuarios
-  ]);
 
   const [firstAvatarPosition, setFirstAvatarPosition] = useState(
     new THREE.Vector3(...users[0].position)
   ); //majito
   const [keysPressed, setKeysPressed] = useState({}); //majito
-  const [avatarPosition, setAvatarPosition] = useState(
-    new THREE.Vector3(0, 0, 0)
-  ); //majito2
-  const currentUserID = "ID_del_usuario_actual"; // Debes obtener este valor de alguna parte //majito2
-
-  console.log("Usuarios actuales:", users); // Mostrar los usuarios actuales majito, se muestra cada vez que se actuliza la escena
-  console.log("PRIMER AVATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR", [
-    firstAvatarPosition,
-    setFirstAvatarPosition,
-  ]); // Mostrar los usuarios actuales majito, se muestra cada vez que se actuliza la escena
-
-  /* majito2 vieja
-  const handleKeyDown = (event) => {
-    setKeysPressed((prev) => ({ ...prev, [event.code]: true }));
-  };
-  */
 
   const handleKeyDown = (event) => {
     setKeysPressed((prev) => ({ ...prev, [event.code]: true }));
-
-    switch (event.code) {
-      case "KeyW":
-        console.log("UBICACION w");
-        //setFirstAvatarPosition(prev => new THREE.Vector3(prev.x, prev.y, prev.z - 15));
-        break;
-      case "KeyS":
-        console.log("UBICACION s");
-        //setFirstAvatarPosition(prev => new THREE.Vector3(prev.x, prev.y, prev.z + 15));
-        break;
-      case "KeyA":
-        console.log("UBICACION a");
-        //setFirstAvatarPosition(prev => new THREE.Vector3(prev.x - 15, prev.y, prev.z));
-        break;
-      case "KeyD":
-        //setFirstAvatarPosition(prev => new THREE.Vector3(prev.x + 15, prev.y, prev.z));
-        console.log("UBICACION d");
-        break;
-      default:
-        break;
-    }
   };
 
   const handleKeyUp = (event) => {
@@ -117,7 +73,6 @@ const AulaScene = () => {
           ) => (
             <Avatar
               key={user.id}
-              //position={new THREE.Vector3(user.position[0], 0, user.position[2])}
               position={
                 index === 0
                   ? firstAvatarPosition
