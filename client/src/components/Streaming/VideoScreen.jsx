@@ -12,7 +12,7 @@ export const VideoScreen = ({ stream }) => {
   return (
     <>
       <video
-        data-testid="peer-video"
+        id="screen-video"
         style={{ width: "100%" }}
         ref={videoRef}
         autoPlay
