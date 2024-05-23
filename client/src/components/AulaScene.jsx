@@ -6,11 +6,11 @@ import { socket } from "../context/ContexProvider";
 import { Avatar } from "./Avatar";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import modeloGlb from "../assets/modeloAula3.glb";
+import modeloGlb from "../assets/Aula.glb";
 import { UserContext } from "../context/UserContext";
-import { VideoScreen } from "./Streaming/VideoScreen";
 import { RoomContext } from "../context/RoomContext";
 import { useThree } from "react-three-fiber";
+import { Pizarron } from "./Pizarron";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
@@ -43,27 +43,6 @@ const AulaScene = () => {
 
   const handleKeyDown = (event) => {
     setKeysPressed((prev) => ({ ...prev, [event.code]: true }));
-
-    switch (event.code) {
-      case "KeyW":
-        console.log("UBICACION w");
-        //setFirstAvatarPosition(prev => new THREE.Vector3(prev.x, prev.y, prev.z - 15));
-        break;
-      case "KeyS":
-        console.log("UBICACION s");
-        //setFirstAvatarPosition(prev => new THREE.Vector3(prev.x, prev.y, prev.z + 15));
-        break;
-      case "KeyA":
-        console.log("UBICACION a");
-        //setFirstAvatarPosition(prev => new THREE.Vector3(prev.x - 15, prev.y, prev.z));
-        break;
-      case "KeyD":
-        //setFirstAvatarPosition(prev => new THREE.Vector3(prev.x + 15, prev.y, prev.z));
-        console.log("UBICACION d");
-        break;
-      default:
-        break;
-    }
   };
 
   const handleKeyUp = (event) => {
@@ -112,25 +91,7 @@ const AulaScene = () => {
                   color="#aaa"
                 />
               </mesh>
-              <mesh receiveShadow geometry={gltf.nodes.Pizarron.geometry}>
-                <meshStandardMaterial
-                  map={gltf.materials.pizarronmaterial.map}
-                  normalMap={gltf.materials.pizarronmaterial.normalMap}
-                  envMap={texture}
-                  metalness={0.0}
-                  normalScale={[0.25, -0.25]}
-                  color="#aaa"
-                >
-                  <Html
-                    transform
-                    className="w-full h-full"
-                    rotation-y={Math.PI / 2}
-                    position={[-35, 0, 0]}
-                  >
-                    <VideoScreen stream={screenStream} />
-                  </Html>
-                </meshStandardMaterial>
-              </mesh>
+              <Pizarron />
             </>
           )}
         </CubeCamera>

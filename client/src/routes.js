@@ -58,7 +58,7 @@ const routes = [
   },
   {
     path: "/aulavirtual", // Agrega el parámetro de ruta para el ID
-    element: <ProtectedRoute element={<Join />} />,
+    element: <Join />,
   },
   {
     path: "/abm",
