@@ -97,25 +97,27 @@ const AulaScene = () => {
             </mesh>
           )}
         </CubeCamera>
-        <Physics timeStep="vary">
+        <Physics timeStep="vary" gravity={[0, -9.81, 0]}>
           <KeyboardControls map={keyboardMap}>
-            <Controller maxVelLimit={5}>
-              {users.map((user) => (
+            {users.map((user) => (
+              <RigidBody
+                key={user.id}
+                position={[
+                  user.position[0],
+                  user.position[1],
+                  user.position[2],
+                ]}
+                colliders="ball"
+                restitution={0.2}
+                friction={1}
+              >
                 <Avatar
-                  key={user.id}
-                  position={
-                    new THREE.Vector3(
-                      user.position[0],
-                      user.position[1],
-                      user.position[2]
-                    )
-                  }
                   hairColor={user.hairColor}
                   topColor={user.topColor}
                   bottomColor={user.bottomColor}
                 />
-              ))}
-            </Controller>
+              </RigidBody>
+            ))}
           </KeyboardControls>
         </Physics>
       </group>
