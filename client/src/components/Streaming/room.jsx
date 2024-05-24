@@ -41,11 +41,7 @@ export const Room = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex grow">
-        <div
-          className={`grid gap-4 ${
-            screenSharingVideo ? "w-1/5 grid-cols-2" : "grid-cols-3"
-          }`}
-        >
+        <div className={`grid gap-4 `}>
           {screenSharingId !== userId && (
             <div>
               <VideoPlayer stream={stream} isOwnStream={true} />
@@ -64,11 +60,6 @@ export const Room = () => {
         </div>
         {chat.isChatOpen && <Chat />}
       </div>
-      {screenSharingVideo && (
-        <div className="w-4/5 pr-4">
-          <VideoPlayer stream={screenSharingVideo} />
-        </div>
-      )}
       <div className="fixed bottom-0 right-0 mr-16 mb-16 gap-3">
         <div className="flex gap-3">
           <ShareScreenButton onClick={shareScreen} />
