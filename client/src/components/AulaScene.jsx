@@ -26,7 +26,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RoomContext } from "../context/RoomContext";
 import { UserContext } from "../context/UserContext";
 import modeloGlb from "../assets/modeloAula3.glb";
-import VideoPĺayer from "../components/Streaming/VideoPlayer";
+import { VideoPĺayer } from "../components/Streaming/VideoPlayer";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
