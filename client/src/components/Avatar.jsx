@@ -2,7 +2,10 @@ import { useAnimations, useGLTF } from "@react-three/drei";
 import { useFrame, useGraph } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { SkeletonUtils } from "three-stdlib";
-const MOVEMENT_SPEED = 0.032;
+import { useKeyPress } from "./useKeyPress"; // Importa el hook useKeyPress
+import * as THREE from "three"; // Importa THREE para utilizar Vectores
+
+const MOVEMENT_SPEED = 0.1; //0.032;
 
 export function Avatar({
   hairColor = "green",
@@ -59,7 +62,9 @@ export function Avatar({
               geometry={nodes.Casual_Body_1.geometry}
               material={materials.White}
               skeleton={nodes.Casual_Body_1.skeleton}
-            />
+            >
+              <meshStandardMaterial color={topColor} />
+            </skinnedMesh>
             <skinnedMesh
               name="Casual_Body_2"
               geometry={nodes.Casual_Body_2.geometry}
@@ -93,7 +98,9 @@ export function Avatar({
               geometry={nodes.Casual_Head_2.geometry}
               material={materials.Hair_Blond}
               skeleton={nodes.Casual_Head_2.skeleton}
-            />
+            >
+              <meshStandardMaterial color={hairColor} />
+            </skinnedMesh>
             <skinnedMesh
               name="Casual_Head_3"
               geometry={nodes.Casual_Head_3.geometry}
@@ -114,7 +121,9 @@ export function Avatar({
             skeleton={nodes.Casual_Legs.skeleton}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
-          />
+          >
+            <meshStandardMaterial color={bottomColor} />
+          </skinnedMesh>
         </group>
       </group>
     </group>
