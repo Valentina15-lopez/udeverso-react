@@ -44,13 +44,11 @@ const AulaVirtual = () => {
             camera={{ near: 0.1, far: 40, fov: 75 }}
             className="w-full h-full z-0"
           >
-            <Physics timeStep="vary">
-              <KeyboardControls map={keyboardMap}>
-                <Controller maxVelLimit={5}>
-                  <AulaScene />
-                </Controller>
-              </KeyboardControls>
-            </Physics>
+            <KeyboardControls map={keyboardMap}>
+              <Controller maxVelLimit={5}>
+                <AulaScene />
+              </Controller>
+            </KeyboardControls>
           </Canvas>
         </div>
         <div className="w-1/4 ">
