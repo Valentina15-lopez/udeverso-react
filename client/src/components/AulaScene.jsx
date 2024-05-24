@@ -66,6 +66,7 @@ const AulaScene = () => {
         {users.map((user) => (
           <Avatar
             key={user.id}
+            user={user}
             position={
               new THREE.Vector3(
                 user.position[0],

@@ -9,13 +9,12 @@ import { socket } from "./../context/ContexProvider";
 const MOVEMENT_SPEED = 0.1; //0.032;
 
 export function Avatar({
+  user,
   hairColor = "green",
   topColor = "pink",
   bottomColor = "brown",
   ...props
 }) {
-  const position = useMemo(() => props.position, []);
-
   const group = useRef();
   const { scene, materials, animations } = useGLTF("/models/AnimatedWoman.glb");
 
@@ -38,7 +37,7 @@ export function Avatar({
     group.current.position.copy(newPosition);
     setAnimation("CharacterArmature|Run");
     // Enviar la nueva posición al servidor a través del socket
-    socket.emit("move", { position: newPosition.toArray() });
+    socket.emit("move", { id: user.id, position: newPosition.toArray() });
   };
 
   useEffect(() => {
@@ -92,7 +91,12 @@ export function Avatar({
   });
 
   return (
-    <group ref={group} {...props} position={position} dispose={null}>
+    <group
+      ref={group}
+      {...props}
+      position={new THREE.Vector3(...user.position)}
+      dispose={null}
+    >
       <group name="Root_Scene">
         <group name="RootNode">
           <group
