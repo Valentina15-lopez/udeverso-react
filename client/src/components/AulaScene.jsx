@@ -26,7 +26,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RoomContext } from "../context/RoomContext";
 import { UserContext } from "../context/UserContext";
 import modeloGlb from "../assets/modeloAula3.glb";
-import { VideoPĺayer } from "../components/Streaming/VideoPlayer";
+import { VideoScreen } from "../components/Streaming/VideoScreen";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
@@ -76,7 +76,7 @@ const AulaScene = () => {
           rotation-y={Math.PI / 2}
           position={[-35, 0, 0]}
         >
-          <VideoPĺayer stream={screenStream} />
+          <VideoScreen stream={screenStream} />
         </Html>
         {users.map((user) => (
           <Avatar
