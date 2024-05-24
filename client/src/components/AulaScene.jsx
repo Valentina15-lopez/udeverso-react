@@ -6,7 +6,7 @@ import React, {
   useContext,
   useLayoutEffect,
 } from "react";
-import { Environment, OrbitControls, useCursor, Grid } from "@react-three/drei";
+import { Environment, OrbitControls, Html } from "@react-three/drei";
 import { createRoot } from "react-dom/client";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
@@ -23,12 +23,19 @@ import { useAtom } from "jotai";
 import { Avatar } from "./Avatar";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { RoomContext } from "../context/RoomContext";
+import { UserContext } from "../context/UserContext";
 import modeloGlb from "../assets/modeloAula3.glb";
+import VideoPĺayer from "../components/Streaming/VideoPlayer";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
   const [users] = useAtom(userAtom);
   console.log(users);
+  const { screenStream, peers, screenSharingId } = useContext(RoomContext);
+  const { userId } = useContext(UserContext);
+  const screenSharingVideo =
+    screenSharingId === userId ? screenStream : peers[screenSharingId]?.stream;
 
   return (
     <>
@@ -63,6 +70,14 @@ const AulaScene = () => {
             </mesh>
           )}
         </CubeCamera>
+        <Html
+          transform
+          className="w-full h-full"
+          rotation-y={Math.PI / 2}
+          position={[-35, 0, 0]}
+        >
+          <VideoPĺayer stream={screenStream} />
+        </Html>
         {users.map((user) => (
           <Avatar
             key={user.id}
