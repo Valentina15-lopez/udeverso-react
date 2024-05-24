@@ -108,6 +108,7 @@ const AulaScene = () => {
                 friction={1}
               >
                 <Avatar
+                  key={user.id}
                   hairColor={user.hairColor}
                   topColor={user.topColor}
                   bottomColor={user.bottomColor}
