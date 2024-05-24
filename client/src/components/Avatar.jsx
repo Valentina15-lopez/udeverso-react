@@ -30,46 +30,16 @@ export function Avatar({
     return () => actions[animation]?.fadeOut(0.32);
   }, [animation]);
 
-  const initialRotation = useRef(); // Almaceno la rotación inicial
-
-
-  const moveAvatar = (direction) => {
-    const newPosition = group.current.position.clone().add(direction);
-    group.current.position.copy(newPosition);
-    setAnimation("CharacterArmature|Run");
-  };
-
-
- useEffect(() => {
-  initialRotation.current = group.current.rotation.clone(); // Almacena la rotación inicial
-}, []);
-
- // Detecta las teclas presionadas
-  const moveForward = useKeyPress("s");
-  const moveBackward = useKeyPress("w");
-  const moveLeft = useKeyPress("a");
-  const moveRight = useKeyPress("d");
-
+ 
   useFrame(() => {
-    let moveDirection = new THREE.Vector3();
-    
-    if (moveForward) {
-      moveDirection.z = -1;
-    } else if (moveBackward) {
-      moveDirection.z = 1;
-    }
-    
-    if (moveLeft) {
-      moveDirection.x = -1;
-    } else if (moveRight) {
-      moveDirection.x = 1;
-    }
-    
-    if (moveDirection.length() > 0) {
-      moveDirection.normalize();
-      const newRotation = Math.atan2(moveDirection.x, moveDirection.z);
-      group.current.rotation.y = newRotation;
-      moveAvatar(moveDirection.multiplyScalar(MOVEMENT_SPEED));
+    if (group.current.position.distanceTo(props.position) > 0.1) {
+      const direction = group.current.position
+        .clone()
+        .sub(props.position)
+        .normalize()
+        .multiplyScalar(MOVEMENT_SPEED);
+      group.current.position.sub(direction);
+      group.current.lookAt(props.position);
       setAnimation("CharacterArmature|Run");
     } else {
       setAnimation("CharacterArmature|Idle");
