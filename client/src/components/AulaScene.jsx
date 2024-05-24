@@ -12,6 +12,8 @@ import {
   useCursor,
   KeyboardControls,
 } from "@react-three/drei";
+import { Physics, RigidBody } from "@react-three/rapier";
+
 import { createRoot } from "react-dom/client";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
@@ -95,25 +97,27 @@ const AulaScene = () => {
             </mesh>
           )}
         </CubeCamera>
-        <KeyboardControls map={keyboardMap}>
-          <Controller maxVelLimit={5}>
-            {users.map((user) => (
-              <Avatar
-                key={user.id}
-                position={
-                  new THREE.Vector3(
-                    user.position[0],
-                    user.position[1],
-                    user.position[2]
-                  )
-                }
-                hairColor={user.hairColor}
-                topColor={user.topColor}
-                bottomColor={user.bottomColor}
-              />
-            ))}
-          </Controller>
-        </KeyboardControls>
+        <Physics timeStep="vary">
+          <KeyboardControls map={keyboardMap}>
+            <Controller maxVelLimit={5}>
+              {users.map((user) => (
+                <Avatar
+                  key={user.id}
+                  position={
+                    new THREE.Vector3(
+                      user.position[0],
+                      user.position[1],
+                      user.position[2]
+                    )
+                  }
+                  hairColor={user.hairColor}
+                  topColor={user.topColor}
+                  bottomColor={user.bottomColor}
+                />
+              ))}
+            </Controller>
+          </KeyboardControls>
+        </Physics>
       </group>
 
       <OrbitControls minPolarAngle={Math.PI / 2} maxPolarAngle={Math.PI / 2} />
