@@ -2,19 +2,17 @@ import { useAnimations, useGLTF } from "@react-three/drei";
 import { useFrame, useGraph } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { SkeletonUtils } from "three-stdlib";
-import { useKeyPress } from "./useKeyPress"; // Importa el hook useKeyPress
 import * as THREE from "three"; // Importa THREE para utilizar Vectores
 
 const MOVEMENT_SPEED = 0.1; //0.032;
 
 export function Avatar({
+  user,
   hairColor = "green",
   topColor = "pink",
   bottomColor = "brown",
   ...props
 }) {
-  const position = useMemo(() => props.position, []);
-
   const group = useRef();
   const { scene, materials, animations } = useGLTF("/models/AnimatedWoman.glb");
 
@@ -43,23 +41,37 @@ export function Avatar({
   }, []);
 
   // Detecta las teclas presionadas
-  const moveForward = useKeyPress("s");
-  const moveBackward = useKeyPress("w");
-  const moveLeft = useKeyPress("a");
-  const moveRight = useKeyPress("d");
+  const [keysPressed, setKeysPressed] = useState({});
+
+  const handleKeyDown = (event) => {
+    setKeysPressed((prev) => ({ ...prev, [event.code]: true }));
+  };
+
+  const handleKeyUp = (event) => {
+    setKeysPressed((prev) => ({ ...prev, [event.code]: false }));
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   useFrame(() => {
     let moveDirection = new THREE.Vector3();
 
-    if (moveForward) {
+    if (keysPressed["KeyW"]) {
       moveDirection.z = -1;
-    } else if (moveBackward) {
+    } else if (keysPressed["KeyS"]) {
       moveDirection.z = 1;
     }
 
-    if (moveLeft) {
+    if (keysPressed["KeyA"]) {
       moveDirection.x = -1;
-    } else if (moveRight) {
+    } else if (keysPressed["KeyD"]) {
       moveDirection.x = 1;
     }
 
@@ -75,7 +87,12 @@ export function Avatar({
   });
 
   return (
-    <group ref={group} {...props} position={position} dispose={null}>
+    <group
+      ref={group}
+      {...props}
+      position={new THREE.Vector3(...user.position)}
+      dispose={null}
+    >
       <group name="Root_Scene">
         <group name="RootNode">
           <group

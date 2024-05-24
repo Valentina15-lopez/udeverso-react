@@ -29,23 +29,6 @@ const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
   const [users] = useAtom(userAtom);
   console.log(users);
-  const [keysPressed, setKeysPressed] = useState({});
-
-  const handleKeyDown = (event) => {
-    setKeysPressed((prev) => ({ ...prev, [event.code]: true }));
-  };
-  const handleKeyUp = (event) => {
-    setKeysPressed((prev) => ({ ...prev, [event.code]: false }));
-  };
-
-  useLayoutEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-    };
-  }, []);
 
   return (
     <>
@@ -81,19 +64,7 @@ const AulaScene = () => {
           )}
         </CubeCamera>
         {users.map((user) => (
-          <Avatar
-            key={user.id}
-            position={
-              new THREE.Vector3(
-                user.position[0],
-                user.position[1],
-                user.position[2]
-              )
-            }
-            hairColor={user.hairColor}
-            topColor={user.topColor}
-            bottomColor={user.bottomColor}
-          />
+          <Avatar key={user.id} user={user} />
         ))}
       </group>
       <OrbitControls minPolarAngle={Math.PI / 2} maxPolarAngle={Math.PI / 2} />
