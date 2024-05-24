@@ -11,9 +11,10 @@ import {
   OrbitControls,
   useCursor,
   KeyboardControls,
+  CubeCamera,
 } from "@react-three/drei";
 import { Physics, RigidBody } from "@react-three/rapier";
-import { Canvas, useLoader, CubeCamera } from "@react-three/fiber";
+import { Canvas, useLoader } from "@react-three/fiber";
 import { socket, userAtom } from "./../context/ContexProvider";
 import { useAtom } from "jotai";
 import { Avatar } from "./Avatar";
