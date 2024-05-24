@@ -15,6 +15,8 @@ export function Avatar({
   bottomColor = "brown",
   ...props
 }) {
+  const position = useMemo(() => props.position, []);
+
   const group = useRef();
   const { scene, materials, animations } = useGLTF("/models/AnimatedWoman.glb");
 
@@ -91,7 +93,7 @@ export function Avatar({
   });
 
   return (
-    <group ref={group} {...props} position={user.position} dispose={null}>
+    <group ref={group} {...props} position={position} dispose={null}>
       <group name="Root_Scene">
         <group name="RootNode">
           <group
