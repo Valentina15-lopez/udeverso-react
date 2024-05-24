@@ -64,7 +64,19 @@ const AulaScene = () => {
           )}
         </CubeCamera>
         {users.map((user) => (
-          <Avatar key={user.id} user={user} />
+          <Avatar
+            key={user.id}
+            position={
+              new THREE.Vector3(
+                user.position[0],
+                user.position[1],
+                user.position[2]
+              )
+            }
+            hairColor={user.hairColor}
+            topColor={user.topColor}
+            bottomColor={user.bottomColor}
+          />
         ))}
       </group>
       <OrbitControls minPolarAngle={Math.PI / 2} maxPolarAngle={Math.PI / 2} />
