@@ -45,9 +45,7 @@ const AulaVirtual = () => {
             className="w-full h-full z-0"
           >
             <KeyboardControls map={keyboardMap}>
-              <Controller maxVelLimit={5}>
-                <AulaScene />
-              </Controller>
+              <AulaScene />
             </KeyboardControls>
           </Canvas>
         </div>
