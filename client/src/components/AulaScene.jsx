@@ -76,7 +76,7 @@ const AulaScene = () => {
           rotation-y={Math.PI / 2}
           position={[-35, 0, 0]}
         >
-          <VideoScreen stream={screenStream} />
+          <VideoScreen stream={screenSharingVideo} />
         </Html>
         {users.map((user) => (
           <Avatar
