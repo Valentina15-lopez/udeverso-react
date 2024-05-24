@@ -80,7 +80,6 @@ const AulaScene = () => {
             </mesh>
           )}
         </CubeCamera>
-        <Grid infiniteGrid fadeDistance={50} fadeStrength={5} />
         {users.map((user) => (
           <Avatar
             key={user.id}
