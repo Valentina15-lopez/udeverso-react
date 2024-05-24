@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { SkeletonUtils } from "three-stdlib";
 import { useKeyPress } from "./useKeyPress"; // Importa el hook useKeyPress
 import * as THREE from "three"; // Importa THREE para utilizar Vectores
+import { socket } from "./../context/ContexProvider";
 
 const MOVEMENT_SPEED = 0.1; //0.032;
 
@@ -30,21 +31,49 @@ export function Avatar({
     return () => actions[animation]?.fadeOut(0.32);
   }, [animation]);
 
+  const moveAvatar = (direction) => {
+    const newPosition = group.current.position.clone().add(direction);
+    group.current.position.copy(newPosition);
+    socket.emit("move", [newPosition]);
+    setAnimation("CharacterArmature|Run");
+  };
+  const initialRotation = useRef(); // Almaceno la rotación inicial
+
+  useEffect(() => {
+    initialRotation.current = group.current.rotation.clone(); // Almacena la rotación inicial
+  }, []);
+
+  // Detecta las teclas presionadas
+  const moveForward = useKeyPress("s");
+  const moveBackward = useKeyPress("w");
+  const moveLeft = useKeyPress("a");
+  const moveRight = useKeyPress("d");
+
   useFrame(() => {
-    if (group.current.position.distanceTo(props.position) > 0.1) {
-      const direction = group.current.position
-        .clone()
-        .sub(props.position)
-        .normalize()
-        .multiplyScalar(MOVEMENT_SPEED);
-      group.current.position.sub(direction);
-      group.current.lookAt(props.position);
+    let moveDirection = new THREE.Vector3();
+
+    if (moveForward) {
+      moveDirection.z = -1;
+    } else if (moveBackward) {
+      moveDirection.z = 1;
+    }
+
+    if (moveLeft) {
+      moveDirection.x = -1;
+    } else if (moveRight) {
+      moveDirection.x = 1;
+    }
+
+    if (moveDirection.length() > 0) {
+      moveDirection.normalize();
+      const newRotation = Math.atan2(moveDirection.x, moveDirection.z);
+      group.current.rotation.y = newRotation;
+      moveAvatar(moveDirection.multiplyScalar(MOVEMENT_SPEED));
       setAnimation("CharacterArmature|Run");
     } else {
       setAnimation("CharacterArmature|Idle");
     }
   });
-
   return (
     <group ref={group} {...props} position={position} dispose={null}>
       <group name="Root_Scene">

@@ -23,17 +23,29 @@ import { useAtom } from "jotai";
 import { Avatar } from "./Avatar";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { useControls } from "leva";
 import modeloGlb from "../assets/modeloAula3.glb";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
   const [users] = useAtom(userAtom);
   console.log(users);
-  const ref = useRef();
+  const [keysPressed, setKeysPressed] = useState({});
 
-  const [onFloor, setOnFloor] = useState(false);
-  useCursor(onFloor);
+  const handleKeyDown = (event) => {
+    setKeysPressed((prev) => ({ ...prev, [event.code]: true }));
+  };
+  const handleKeyUp = (event) => {
+    setKeysPressed((prev) => ({ ...prev, [event.code]: false }));
+  };
+
+  useLayoutEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   return (
     <>
@@ -56,9 +68,6 @@ const AulaScene = () => {
               position={[-13.68, -0.467, 17.52]}
               scale={0.02}
               geometry={gltf.nodes.PisoAula.geometry}
-              onClick={(e) => socket.emit("move", [e.point.x, 0, e.point.z])}
-              onPointerEnter={() => setOnFloor(true)}
-              onPointerLeave={() => setOnFloor(false)}
             >
               <meshStandardMaterial
                 map={gltf.materials.piso.map}
