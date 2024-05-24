@@ -39,7 +39,6 @@ export function Avatar({
     group.current.position.copy(newPosition);
     setAnimation("CharacterArmature|Run");
     // Enviar la nueva posición al servidor a través del socket
-    socket.emit("move", newPosition);
   };
 
   useEffect(() => {
@@ -51,10 +50,12 @@ export function Avatar({
 
   const handleKeyDown = (event) => {
     setKeysPressed((prev) => ({ ...prev, [event.code]: true }));
+    console.log(event.code);
   };
 
   const handleKeyUp = (event) => {
     setKeysPressed((prev) => ({ ...prev, [event.code]: false }));
+    console.log(event.code);
   };
 
   useEffect(() => {
