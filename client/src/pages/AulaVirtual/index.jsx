@@ -19,14 +19,7 @@ import { useAtom } from "jotai";
 const AulaVirtual = () => {
   const [users] = useAtom(userAtom);
   const { roomId } = useParams(); // Obtiene el ID de la sala de los parámetros de ruta
-  const keyboardMap = [
-    { name: "forward", keys: ["ArrowUp", "KeyW"] },
-    { name: "backward", keys: ["ArrowDown", "KeyS"] },
-    { name: "leftward", keys: ["ArrowLeft", "KeyA"] },
-    { name: "rightward", keys: ["ArrowRight", "KeyD"] },
-    { name: "jump", keys: ["Space"] },
-    { name: "run", keys: ["Shift"] },
-  ];
+
   // Lógica de redirección aquí, por ejemplo, redirigir a / si no hay ID de sala
   if (!roomId) {
     return <Navigate to="/" />;
@@ -44,9 +37,7 @@ const AulaVirtual = () => {
             camera={{ near: 0.1, far: 40, fov: 75 }}
             className="w-full h-full z-0"
           >
-            <KeyboardControls map={keyboardMap}>
-              <AulaScene />
-            </KeyboardControls>
+            <AulaScene />
           </Canvas>
         </div>
         <div className="w-1/4 ">

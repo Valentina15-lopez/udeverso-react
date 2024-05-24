@@ -6,10 +6,18 @@ import React, {
   useContext,
   useLayoutEffect,
 } from "react";
-import { Environment, OrbitControls, useCursor, Grid } from "@react-three/drei";
+import {
+  Environment,
+  OrbitControls,
+  useCursor,
+  KeyboardControls,
+} from "@react-three/drei";
 import { createRoot } from "react-dom/client";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
+
+import Controller from "ecctrl";
+
 import {
   Box,
   useGLTF,
@@ -31,6 +39,14 @@ const AulaScene = () => {
   const [users] = useAtom(userAtom);
   console.log(users);
   const ref = useRef();
+  const keyboardMap = [
+    { name: "forward", keys: ["ArrowUp", "KeyW"] },
+    { name: "backward", keys: ["ArrowDown", "KeyS"] },
+    { name: "leftward", keys: ["ArrowLeft", "KeyA"] },
+    { name: "rightward", keys: ["ArrowRight", "KeyD"] },
+    { name: "jump", keys: ["Space"] },
+    { name: "run", keys: ["Shift"] },
+  ];
 
   useEffect(() => {
     console.log("Socket:", socket);
@@ -79,23 +95,27 @@ const AulaScene = () => {
             </mesh>
           )}
         </CubeCamera>
-        <Grid infiniteGrid fadeDistance={50} fadeStrength={5} />
-        {users.map((user) => (
-          <Avatar
-            key={user.id}
-            position={
-              new THREE.Vector3(
-                user.position[0],
-                user.position[1],
-                user.position[2]
-              )
-            }
-            hairColor={user.hairColor}
-            topColor={user.topColor}
-            bottomColor={user.bottomColor}
-          />
-        ))}
+        <KeyboardControls map={keyboardMap}>
+          <Controller maxVelLimit={5}>
+            {users.map((user) => (
+              <Avatar
+                key={user.id}
+                position={
+                  new THREE.Vector3(
+                    user.position[0],
+                    user.position[1],
+                    user.position[2]
+                  )
+                }
+                hairColor={user.hairColor}
+                topColor={user.topColor}
+                bottomColor={user.bottomColor}
+              />
+            ))}
+          </Controller>
+        </KeyboardControls>
       </group>
+
       <OrbitControls minPolarAngle={Math.PI / 2} maxPolarAngle={Math.PI / 2} />
       {/* tener en cuenta que es una url externa */}
       <Environment
