@@ -6,7 +6,7 @@ import React, {
   useContext,
   useLayoutEffect,
 } from "react";
-import { Environment, OrbitControls, useCursor,Grid} from "@react-three/drei";
+import { Environment, OrbitControls, useCursor, Grid } from "@react-three/drei";
 import { createRoot } from "react-dom/client";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Stats } from "@react-three/drei";
@@ -29,10 +29,17 @@ import modeloGlb from "../assets/modeloAula3.glb";
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
   const [users] = useAtom(userAtom);
-  console.log(users)
+  console.log(users);
   const ref = useRef();
 
+  useEffect(() => {
+    console.log("Socket:", socket);
+  }, []);
 
+  const handleMeshClick = (e) => {
+    console.log("Mesh clicked:", e.point);
+    socket.emit("move", [e.point.x, 0, e.point.z]);
+  };
   const [onFloor, setOnFloor] = useState(false);
   useCursor(onFloor);
 
@@ -51,13 +58,13 @@ const AulaScene = () => {
           near={1}
           far={1000}
         >
-          {(texture) =>(          
+          {(texture) => (
             <mesh
               receiveShadow
               position={[-13.68, -0.467, 17.52]}
               scale={0.02}
               geometry={gltf.nodes.PisoAula.geometry}
-              onClick={(e) => socket.emit("move", [e.point.x, 0, e.point.z])}
+              onClick={handleMeshClick}
               onPointerEnter={() => setOnFloor(true)}
               onPointerLeave={() => setOnFloor(false)}
             >
@@ -68,10 +75,8 @@ const AulaScene = () => {
                 metalness={0.0}
                 normalScale={[0.25, -0.25]}
                 color="#aaa"
-         
               />
             </mesh>
-           
           )}
         </CubeCamera>
         <Grid infiniteGrid fadeDistance={50} fadeStrength={5} />
@@ -84,7 +89,7 @@ const AulaScene = () => {
                 user.position[1],
                 user.position[2]
               )
-            }           
+            }
             hairColor={user.hairColor}
             topColor={user.topColor}
             bottomColor={user.bottomColor}
