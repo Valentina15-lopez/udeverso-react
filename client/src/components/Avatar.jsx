@@ -2,24 +2,21 @@ import { useAnimations, useGLTF } from "@react-three/drei";
 import { useFrame, useGraph } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { SkeletonUtils } from "three-stdlib";
-import { useKeyPress } from "./useKeyPress"; // Importa el hook useKeyPress
-import * as THREE from "three"; // Importa THREE para utilizar Vectores
+import * as THREE from "three";
 
-const MOVEMENT_SPEED = 0.1;//0.032;
+const MOVEMENT_SPEED = 0.1;
 
 export function Avatar({
   hairColor = "green",
   topColor = "pink",
   bottomColor = "brown",
+  targetPosition,
   ...props
 }) {
-  const position = useMemo(() => props.position, []);
-
   const group = useRef();
   const { scene, materials, animations } = useGLTF("/models/AnimatedWoman.glb");
 
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
-
   const { nodes } = useGraph(clone);
 
   const { actions } = useAnimations(animations, group);
@@ -30,16 +27,25 @@ export function Avatar({
     return () => actions[animation]?.fadeOut(0.32);
   }, [animation]);
 
- 
   useFrame(() => {
-    if (group.current.position.distanceTo(props.position) > 0.1) {
-      const direction = group.current.position
+    if (!targetPosition) {
+      return;
+    }
+
+    const target = new THREE.Vector3(
+      targetPosition[0],
+      targetPosition[1],
+      targetPosition[2]
+    );
+
+    if (group.current.position.distanceTo(target) > 0.1) {
+      const direction = target
         .clone()
-        .sub(props.position)
+        .sub(group.current.position)
         .normalize()
         .multiplyScalar(MOVEMENT_SPEED);
-      group.current.position.sub(direction);
-      group.current.lookAt(props.position);
+      group.current.position.add(direction);
+      group.current.lookAt(target);
       setAnimation("CharacterArmature|Run");
     } else {
       setAnimation("CharacterArmature|Idle");
@@ -47,7 +53,12 @@ export function Avatar({
   });
 
   return (
-    <group ref={group} {...props} position={position} dispose={null}>
+    <group
+      ref={group}
+      {...props}
+      position={props.position ?? [0, 0, 0]}
+      dispose={null}
+    >
       <group name="Root_Scene">
         <group name="RootNode">
           <group

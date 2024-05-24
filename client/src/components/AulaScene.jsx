@@ -13,34 +13,38 @@ import {
   KeyboardControls,
 } from "@react-three/drei";
 import { Physics, RigidBody } from "@react-three/rapier";
-
-import { createRoot } from "react-dom/client";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Stats } from "@react-three/drei";
-
-import Controller from "ecctrl";
-
-import {
-  Box,
-  useGLTF,
-  useBoxProjectedEnv,
-  BakeShadows,
-} from "@react-three/drei";
-import * as THREE from "three";
-import { CubeCamera } from "@react-three/drei";
+import { Canvas, useLoader, CubeCamera } from "@react-three/fiber";
 import { socket, userAtom } from "./../context/ContexProvider";
 import { useAtom } from "jotai";
 import { Avatar } from "./Avatar";
-import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { useControls } from "leva";
+import * as THREE from "three";
 import modeloGlb from "../assets/modeloAula3.glb";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
   const [users] = useAtom(userAtom);
-  console.log(users);
-  const ref = useRef();
+  const [onFloor, setOnFloor] = useState(false);
+  const [targetPositions, setTargetPositions] = useState({});
+
+  useCursor(onFloor);
+
+  useEffect(() => {
+    console.log("Socket:", socket);
+  }, []);
+
+  const handleMeshClick = (e) => {
+    const newTargetPosition = [e.point.x, 0, e.point.z];
+    console.log("Mesh clicked:", newTargetPosition);
+    socket.emit("move", newTargetPosition);
+    // Set target position for all avatars (or for specific avatars as needed)
+    const newPositions = users.reduce((acc, user) => {
+      acc[user.id] = newTargetPosition;
+      return acc;
+    }, {});
+    setTargetPositions(newPositions);
+  };
+
   const keyboardMap = [
     { name: "forward", keys: ["ArrowUp", "KeyW"] },
     { name: "backward", keys: ["ArrowDown", "KeyS"] },
@@ -50,19 +54,8 @@ const AulaScene = () => {
     { name: "run", keys: ["Shift"] },
   ];
 
-  useEffect(() => {
-    console.log("Socket:", socket);
-  }, []);
-
-  const handleMeshClick = (e) => {
-    console.log("Mesh clicked:", e.point);
-    socket.emit("move", [e.point.x, 0, e.point.z]);
-  };
-  const [onFloor, setOnFloor] = useState(false);
-  useCursor(onFloor);
-
   return (
-    <>
+    <Canvas>
       <fog attach="fog" args={["purple", 0, 130]} />
       <ambientLight intensity={0.1} />
       <OrbitControls />
@@ -102,11 +95,13 @@ const AulaScene = () => {
             {users.map((user) => (
               <RigidBody
                 key={user.id}
-                position={[
-                  user.position[0],
-                  user.position[1],
-                  user.position[2],
-                ]}
+                position={
+                  new THREE.Vector3(
+                    user.position[0] ?? 0,
+                    user.position[1] ?? 0,
+                    user.position[2] ?? 0
+                  )
+                }
                 colliders="ball"
                 restitution={0.2}
                 friction={1}
@@ -115,20 +110,26 @@ const AulaScene = () => {
                   hairColor={user.hairColor}
                   topColor={user.topColor}
                   bottomColor={user.bottomColor}
+                  position={
+                    new THREE.Vector3(
+                      user.position[0] ?? 0,
+                      user.position[1] ?? 0,
+                      user.position[2] ?? 0
+                    )
+                  }
+                  targetPosition={targetPositions[user.id]}
                 />
               </RigidBody>
             ))}
           </KeyboardControls>
         </Physics>
       </group>
-
       <OrbitControls minPolarAngle={Math.PI / 2} maxPolarAngle={Math.PI / 2} />
-      {/* tener en cuenta que es una url externa */}
       <Environment
         files="https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/hdris/noon-grass/noon_grass_1k.hdr"
         background
       />
-    </>
+    </Canvas>
   );
 };
 
