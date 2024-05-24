@@ -12,7 +12,7 @@ export const VideoScreen = ({ stream }) => {
   return (
     <>
       <video
-        id="screen-video"
+        id="video-content"
         style={{ width: "100%" }}
         ref={videoRef}
         autoPlay

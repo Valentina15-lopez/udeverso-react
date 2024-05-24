@@ -3,6 +3,7 @@ import { useFrame, useGraph } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { SkeletonUtils } from "three-stdlib";
 import { useKeyPress } from "./useKeyPress"; // Importa el hook useKeyPress
+import { socket } from "../context/ContexProvider";
 import * as THREE from "three"; // Importa THREE para utilizar Vectores
 
 const MOVEMENT_SPEED = 0.2; //0.032;
@@ -35,6 +36,7 @@ export function Avatar({
   const moveAvatar = (direction) => {
     const newPosition = group.current.position.clone().add(direction);
     group.current.position.copy(newPosition);
+    socket.emit("move", [newPosition]);
     setAnimation("CharacterArmature|Run");
   };
 

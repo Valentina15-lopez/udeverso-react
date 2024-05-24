@@ -1,62 +1,28 @@
 import React, { useState, useLayoutEffect, useContext } from "react";
-import { Environment, OrbitControls, Html } from "@react-three/drei";
+import { Environment, OrbitControls, useCursor } from "@react-three/drei";
 import * as THREE from "three";
 import { CubeCamera } from "@react-three/drei";
-import { socket } from "../context/ContexProvider";
+import { socket, userAtom } from "../context/ContexProvider";
 import { Avatar } from "./Avatar";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import modeloGlb from "../assets/Aula.glb";
 import { UserContext } from "../context/UserContext";
 import { RoomContext } from "../context/RoomContext";
-import { useThree } from "react-three-fiber";
 import { Pizarron } from "./Pizarron";
+import { useAtom } from "jotai";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
+  const [users] = useAtom(userAtom);
   const { usersList, userId } = useContext(UserContext);
-  const { scene } = useThree();
+  const [onFloor, setOnFloor] = useState(false);
+  useCursor(onFloor);
+
+  console.log(usersList);
   const { screenStream, peers, screenSharingId } = useContext(RoomContext);
   const screenSharingVideo =
     screenSharingId === userId ? screenStream : peers[screenSharingId]?.stream;
-
-  const [firstAvatarPosition, setFirstAvatarPosition] = useState(
-    new THREE.Vector3(...usersList[0].position)
-  ); //majito
-  const [keysPressed, setKeysPressed] = useState({}); //majito
-  const [avatarPosition, setAvatarPosition] = useState(
-    new THREE.Vector3(0, 0, 0)
-  ); //majito2
-  const currentUserID = "ID_del_usuario_actual"; // Debes obtener este valor de alguna parte //majito2
-
-  console.log("Usuarios actuales:", usersList); // Mostrar los usuarios actuales majito, se muestra cada vez que se actuliza la escena
-  console.log("PRIMER AVATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR", [
-    firstAvatarPosition,
-    setFirstAvatarPosition,
-  ]); // Mostrar los usuarios actuales majito, se muestra cada vez que se actuliza la escena
-
-  /* majito2 vieja
-  const handleKeyDown = (event) => {
-    setKeysPressed((prev) => ({ ...prev, [event.code]: true }));
-  };
-  */
-
-  const handleKeyDown = (event) => {
-    setKeysPressed((prev) => ({ ...prev, [event.code]: true }));
-  };
-
-  const handleKeyUp = (event) => {
-    setKeysPressed((prev) => ({ ...prev, [event.code]: false }));
-  };
-
-  useLayoutEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-    };
-  }, []);
 
   return (
     <>
@@ -80,6 +46,8 @@ const AulaScene = () => {
                 scale={0.02}
                 geometry={gltf.nodes.PisoAula.geometry}
                 onClick={(e) => socket.emit("move", [e.point.x, 0, e.point.z])}
+                onPointerEnter={() => setOnFloor(true)}
+                onPointerLeave={() => setOnFloor(false)}
                 dispose={null}
               >
                 <meshStandardMaterial
@@ -95,16 +63,16 @@ const AulaScene = () => {
             </>
           )}
         </CubeCamera>
-        {usersList.map((user) => (
+        {users.map((user) => (
           <Avatar
             key={user.id}
-            //position={new THREE.Vector3(user.position[0], 0, user.position[2])}
-            // position={
-            //   index === 0
-            //     ? firstAvatarPosition
-            //     : new THREE.Vector3(...user.position)
-            // } //majo2
-            position={user.position}
+            position={
+              new THREE.Vector3(
+                user.position[0],
+                user.position[1],
+                user.position[2]
+              )
+            }
             hairColor={user.hairColor}
             topColor={user.topColor}
             bottomColor={user.bottomColor}
