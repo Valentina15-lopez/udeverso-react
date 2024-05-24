@@ -91,12 +91,7 @@ export function Avatar({
   });
 
   return (
-    <group
-      ref={group}
-      {...props}
-      position={new THREE.Vector3(...user.position)}
-      dispose={null}
-    >
+    <group ref={group} {...props} position={user.position} dispose={null}>
       <group name="Root_Scene">
         <group name="RootNode">
           <group
