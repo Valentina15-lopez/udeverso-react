@@ -14,7 +14,6 @@ import { useAtom } from "jotai";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
-  const [users] = useAtom(userAtom);
   const { usersList, userId } = useContext(UserContext);
   const [onFloor, setOnFloor] = useState(false);
   useCursor(onFloor);
@@ -63,7 +62,7 @@ const AulaScene = () => {
             </>
           )}
         </CubeCamera>
-        {users.map((user) => (
+        {usersList.map((user) => (
           <Avatar
             key={user.id}
             position={
