@@ -145,8 +145,8 @@ io.on("connection", (socket) => {
     topColor: generateRandomHexColor(),
     bottomColor: generateRandomHexColor(),
   });
-  socket.on("move", (id, position) => {
-    const users = usersList.find((user) => user.id === id);
+  socket.on("move", (position) => {
+    const users = usersList.find((user) => user.id === socket.id);
     users.position = position;
     io.emit("usersList", usersList);
   });

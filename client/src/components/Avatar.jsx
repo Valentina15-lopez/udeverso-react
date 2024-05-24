@@ -39,7 +39,7 @@ export function Avatar({
     group.current.position.copy(newPosition);
     setAnimation("CharacterArmature|Run");
     // Enviar la nueva posición al servidor a través del socket
-    socket.emit("move", { id: user.id, position: newPosition.toArray() });
+    socket.emit("move", newPosition);
   };
 
   useEffect(() => {
