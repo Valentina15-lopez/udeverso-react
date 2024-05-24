@@ -6,54 +6,34 @@ import React, {
   useContext,
   useLayoutEffect,
 } from "react";
+import { Environment, OrbitControls, useCursor, Grid } from "@react-three/drei";
+import { createRoot } from "react-dom/client";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Stats } from "@react-three/drei";
 import {
-  Environment,
-  OrbitControls,
-  useCursor,
-  KeyboardControls,
-  CubeCamera,
+  Box,
+  useGLTF,
+  useBoxProjectedEnv,
+  BakeShadows,
 } from "@react-three/drei";
-import { Physics, RigidBody } from "@react-three/rapier";
-import { Canvas, useLoader } from "@react-three/fiber";
+import * as THREE from "three";
+import { CubeCamera } from "@react-three/drei";
 import { socket, userAtom } from "./../context/ContexProvider";
 import { useAtom } from "jotai";
 import { Avatar } from "./Avatar";
+import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import * as THREE from "three";
+import { useControls } from "leva";
 import modeloGlb from "../assets/modeloAula3.glb";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
   const [users] = useAtom(userAtom);
+  console.log(users);
+  const ref = useRef();
+
   const [onFloor, setOnFloor] = useState(false);
-  const [targetPositions, setTargetPositions] = useState({});
-
   useCursor(onFloor);
-
-  useEffect(() => {
-    console.log("Socket:", socket);
-  }, []);
-
-  const handleMeshClick = (e) => {
-    const newTargetPosition = [e.point.x, 0, e.point.z];
-    console.log("Mesh clicked:", newTargetPosition);
-    socket.emit("move", newTargetPosition);
-    // Set target position for all avatars (or for specific avatars as needed)
-    const newPositions = users.reduce((acc, user) => {
-      acc[user.id] = newTargetPosition;
-      return acc;
-    }, {});
-    setTargetPositions(newPositions);
-  };
-
-  const keyboardMap = [
-    { name: "forward", keys: ["ArrowUp", "KeyW"] },
-    { name: "backward", keys: ["ArrowDown", "KeyS"] },
-    { name: "leftward", keys: ["ArrowLeft", "KeyA"] },
-    { name: "rightward", keys: ["ArrowRight", "KeyD"] },
-    { name: "jump", keys: ["Space"] },
-    { name: "run", keys: ["Shift"] },
-  ];
 
   return (
     <>
@@ -76,7 +56,7 @@ const AulaScene = () => {
               position={[-13.68, -0.467, 17.52]}
               scale={0.02}
               geometry={gltf.nodes.PisoAula.geometry}
-              onClick={handleMeshClick}
+              onClick={(e) => socket.emit("move", [e.point.x, 0, e.point.z])}
               onPointerEnter={() => setOnFloor(true)}
               onPointerLeave={() => setOnFloor(false)}
             >
@@ -91,42 +71,25 @@ const AulaScene = () => {
             </mesh>
           )}
         </CubeCamera>
-        <Physics timeStep="vary" gravity={[0, -9.81, 0]}>
-          <KeyboardControls map={keyboardMap}>
-            {users.map((user) => (
-              <RigidBody
-                key={user.id}
-                position={
-                  new THREE.Vector3(
-                    user.position[0] ?? 0,
-                    user.position[1] ?? 0,
-                    user.position[2] ?? 0
-                  )
-                }
-                colliders="ball"
-                restitution={0.2}
-                friction={1}
-              >
-                <Avatar
-                  key={user.id}
-                  hairColor={user.hairColor}
-                  topColor={user.topColor}
-                  bottomColor={user.bottomColor}
-                  position={
-                    new THREE.Vector3(
-                      user.position[0] ?? 0,
-                      user.position[1] ?? 0,
-                      user.position[2] ?? 0
-                    )
-                  }
-                  targetPosition={targetPositions[user.id]}
-                />
-              </RigidBody>
-            ))}
-          </KeyboardControls>
-        </Physics>
+        <Grid infiniteGrid fadeDistance={50} fadeStrength={5} />
+        {users.map((user) => (
+          <Avatar
+            key={user.id}
+            position={
+              new THREE.Vector3(
+                user.position[0],
+                user.position[1],
+                user.position[2]
+              )
+            }
+            hairColor={user.hairColor}
+            topColor={user.topColor}
+            bottomColor={user.bottomColor}
+          />
+        ))}
       </group>
       <OrbitControls minPolarAngle={Math.PI / 2} maxPolarAngle={Math.PI / 2} />
+      {/* tener en cuenta que es una url externa */}
       <Environment
         files="https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/hdris/noon-grass/noon_grass_1k.hdr"
         background

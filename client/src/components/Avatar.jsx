@@ -2,21 +2,21 @@ import { useAnimations, useGLTF } from "@react-three/drei";
 import { useFrame, useGraph } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { SkeletonUtils } from "three-stdlib";
-import * as THREE from "three";
-
-const MOVEMENT_SPEED = 0.1;
+const MOVEMENT_SPEED = 0.032;
 
 export function Avatar({
   hairColor = "green",
   topColor = "pink",
   bottomColor = "brown",
-  targetPosition,
   ...props
 }) {
+  const position = useMemo(() => props.position, []);
+
   const group = useRef();
   const { scene, materials, animations } = useGLTF("/models/AnimatedWoman.glb");
 
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
+
   const { nodes } = useGraph(clone);
 
   const { actions } = useAnimations(animations, group);
@@ -28,24 +28,14 @@ export function Avatar({
   }, [animation]);
 
   useFrame(() => {
-    if (!targetPosition) {
-      return;
-    }
-
-    const target = new THREE.Vector3(
-      targetPosition[0],
-      targetPosition[1],
-      targetPosition[2]
-    );
-
-    if (group.current.position.distanceTo(target) > 0.1) {
-      const direction = target
+    if (group.current.position.distanceTo(props.position) > 0.1) {
+      const direction = group.current.position
         .clone()
-        .sub(group.current.position)
+        .sub(props.position)
         .normalize()
         .multiplyScalar(MOVEMENT_SPEED);
-      group.current.position.add(direction);
-      group.current.lookAt(target);
+      group.current.position.sub(direction);
+      group.current.lookAt(props.position);
       setAnimation("CharacterArmature|Run");
     } else {
       setAnimation("CharacterArmature|Idle");
@@ -53,12 +43,7 @@ export function Avatar({
   });
 
   return (
-    <group
-      ref={group}
-      {...props}
-      position={props.position ?? [0, 0, 0]}
-      dispose={null}
-    >
+    <group ref={group} {...props} position={position} dispose={null}>
       <group name="Root_Scene">
         <group name="RootNode">
           <group
@@ -74,9 +59,7 @@ export function Avatar({
               geometry={nodes.Casual_Body_1.geometry}
               material={materials.White}
               skeleton={nodes.Casual_Body_1.skeleton}
-            >
-              <meshStandardMaterial color={topColor} />
-            </skinnedMesh>
+            />
             <skinnedMesh
               name="Casual_Body_2"
               geometry={nodes.Casual_Body_2.geometry}
@@ -110,9 +93,7 @@ export function Avatar({
               geometry={nodes.Casual_Head_2.geometry}
               material={materials.Hair_Blond}
               skeleton={nodes.Casual_Head_2.skeleton}
-            >
-              <meshStandardMaterial color={hairColor} />
-            </skinnedMesh>
+            />
             <skinnedMesh
               name="Casual_Head_3"
               geometry={nodes.Casual_Head_3.geometry}
@@ -133,9 +114,7 @@ export function Avatar({
             skeleton={nodes.Casual_Legs.skeleton}
             rotation={[-Math.PI / 2, 0, 0]}
             scale={100}
-          >
-            <meshStandardMaterial color={bottomColor} />
-          </skinnedMesh>
+          />
         </group>
       </group>
     </group>
