@@ -19,8 +19,8 @@ const Usuarios = sequelize.define('Usuarios', {
         type: DataTypes.STRING, // Tipo de dato: STRING
         unique: true  // Valores únicos
     },
-    es_estudiante: { // Es estudiante
-        type: DataTypes.BOOLEAN // Tipo de dato: BOOLEAN
+    rol: { // tipo de usuario
+        type: DataTypes.STRING // Tipo de dato: BOOLEAN
     }
 },{
     tableName:"users", //nombre de la tabla

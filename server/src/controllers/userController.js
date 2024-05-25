@@ -60,7 +60,7 @@ export const login = async (req, res) => {
 
 export const createUser = async (req, res) => {
     //console.log("Se llamó al endpoint POST /api/users con " + JSON.stringify(req.body));
-    const { usuario, contrasenia, nombre_para_mostrar, avatar_id, correo, es_estudiante } = req.body; // Obtener los datos del cuerpo de la petición
+    const { usuario, contrasenia, nombre_para_mostrar, avatar_id, correo, rol } = req.body; // Obtener los datos del cuerpo de la petición
 
     try {
         const saltRounds = 10; // Número de rondas para el algoritmo de encriptación
@@ -73,7 +73,7 @@ export const createUser = async (req, res) => {
             nombre_para_mostrar,
             avatar_id,
             correo,
-            es_estudiante,
+            rol,
         });
 
         res.status(201).json(nuevoUsuario);  // Respuesta con el usuario creado
@@ -129,7 +129,7 @@ export const updateUser = async (req, res) => {
             nombre_para_mostrar,
             avatar_id,
             correo,
-            es_estudiante,
+            rol,
         } = req.body; // Campos a actualizar
 
         // Crear un objeto con los campos a actualizar
@@ -147,9 +147,8 @@ export const updateUser = async (req, res) => {
             updateData.correo = correo;
         }
 
-        if (es_estudiante !== undefined) { // Si se proporciona el campo `es_estudiante`
-            const esEstudianteBoolean = es_estudiante === '1' || es_estudiante === 'true';
-            updateData.es_estudiante = esEstudianteBoolean;
+        if (rol !== undefined) { // Si se proporciona el campo `es_estudiante`
+            updateData.rol = rol;
         }
 
         if (Object.keys(updateData).length === 0) { // Verificar si hay campos para actualizar
