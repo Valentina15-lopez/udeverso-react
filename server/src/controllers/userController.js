@@ -147,7 +147,7 @@ export const updateUser = async (req, res) => {
             updateData.correo = correo;
         }
 
-        if (rol !== undefined) { // Si se proporciona el campo `es_estudiante`
+        if (rol !== undefined) { // Si se proporciona el campo `rol`
             updateData.rol = rol;
         }
 

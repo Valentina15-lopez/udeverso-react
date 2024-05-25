@@ -35,7 +35,7 @@ describe('Endpoint GET /api/users/:id', () => { // Grupo de pruebas para el endp
             contrasenia: 'password1',
             nombre_para_mostrar: 'Usuario Uno',
             correo: 'usuario1@example.com',
-            es_estudiante: true,
+            rol: 'alumno',
         });
 
         // Hacer una solicitud GET para obtener el usuario por ID
@@ -47,6 +47,7 @@ describe('Endpoint GET /api/users/:id', () => { // Grupo de pruebas para el endp
         // Verificar que el usuario devuelto es el correcto
         expect(response.body.usuario).toBe('usuario1');
         expect(response.body.nombre_para_mostrar).toBe('Usuario Uno');
+        expect(response.body.rol).toBe('alumno');
     });
 
     it('Debe devolver 404 si el usuario no se encuentra', async () => { // Prueba para obtener un usuario que no existe

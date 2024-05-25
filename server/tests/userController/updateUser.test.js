@@ -44,13 +44,13 @@ describe('Endpoint PUT /api/users/:usuario', () => { // Grupo de pruebas para el
             .put(`/api/users/${usuario.usuario}`)  // Endpoint para actualizar
             .send({
                 nombre_para_mostrar: 'Usuario Actualizado',
-                es_estudiante: false,
+                rol: 'profesor',
                 avatar_id: 'avatar2',
             });
 
         expect(response.status).toBe(200);  // Verificar que el estado es 200
         expect(response.body.nombre_para_mostrar).toBe('Usuario Actualizado');  // Verificar actualización
-        expect(response.body.rol).toBe('estudiante');  // Verificar campo booleano
+        expect(response.body.rol).toBe('profesor');  // Verificar campo String
         expect(response.body.avatar_id).toBe('avatar2');  // Verificar campo de avatar
     });
 

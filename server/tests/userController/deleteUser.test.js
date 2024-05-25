@@ -35,7 +35,7 @@ describe('Endpoint DELETE /api/users/:usuario', () => { // Grupo de pruebas para
             contrasenia: 'password1', // Contraseña
             nombre_para_mostrar: 'Usuario Uno', // Nombre para mostrar
             correo: 'usuario1@example.com', // Correo
-            es_estudiante: true, // Es estudiante
+            rol: 'alumno', // Es estudiante
         });
 
         // Hacer una solicitud DELETE para eliminar el usuario
