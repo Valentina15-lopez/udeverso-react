@@ -1,23 +1,7 @@
-import React, {
-  useRef,
-  useEffect,
-  useState,
-  useMemo,
-  useContext,
-  useLayoutEffect,
-} from "react";
+import React, { useContext, useState } from "react";
 import { Environment, OrbitControls, Html } from "@react-three/drei";
-import { createRoot } from "react-dom/client";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Stats } from "@react-three/drei";
-import {
-  Box,
-  useGLTF,
-  useBoxProjectedEnv,
-  BakeShadows,
-} from "@react-three/drei";
 import * as THREE from "three";
-import { CubeCamera } from "@react-three/drei";
+import { CubeCamera, useCursor } from "@react-three/drei";
 import { socket, userAtom } from "./../context/ContexProvider";
 import { useAtom } from "jotai";
 import { Avatar } from "./Avatar";
@@ -36,6 +20,9 @@ const AulaScene = () => {
   const { userId } = useContext(UserContext);
   const screenSharingVideo =
     screenSharingId === userId ? screenStream : peers[screenSharingId]?.stream;
+
+  const [onFloor, setOnFloor] = useState(false);
+  useCursor(onFloor);
 
   return (
     <>
@@ -58,14 +45,17 @@ const AulaScene = () => {
               position={[-13.68, -0.467, 17.52]}
               scale={0.02}
               geometry={gltf.nodes.PisoAula.geometry}
+              onClick={(e) => socket.emit("move", [e.point.x, 0, e.point.z])}
+              onPointerEnter={() => setOnFloor(true)}
+              onPointerLeave={() => setOnFloor(false)}
             >
+              <planeGeometry args={[10, 10]} />
               <meshStandardMaterial
                 map={gltf.materials.piso.map}
                 normalMap={gltf.materials.piso.normalMap}
                 envMap={texture}
                 metalness={0.0}
                 normalScale={[0.25, -0.25]}
-                color="#aaa"
               />
             </mesh>
           )}
