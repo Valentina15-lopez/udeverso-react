@@ -45,7 +45,7 @@ const AulaScene = () => {
               receiveShadow
               geometry={gltf.nodes.PisoAula.geometry}
               rotation-x={-Math.PI / 2}
-              position={[0, -0.467, 0]}
+              position-y={-0.001}
               onClick={(e) => socket.emit("move", [e.point.x, 0, e.point.z])}
               onPointerEnter={() => setOnFloor(true)}
               onPointerLeave={() => setOnFloor(false)}
