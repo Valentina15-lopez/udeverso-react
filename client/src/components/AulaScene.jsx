@@ -14,7 +14,7 @@ import { VideoScreen } from "../components/Streaming/VideoScreen";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
-  const [users, setUsers] = useAtom(userAtom);
+  const [users] = useAtom(userAtom);
 
   console.log(users);
   const { screenStream, peers, screenSharingId } = useContext(RoomContext);
@@ -24,24 +24,6 @@ const AulaScene = () => {
 
   const [onFloor, setOnFloor] = useState(false);
   useCursor(onFloor);
-  useEffect(() => {
-    socket.on("move", (newPosition) => {
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.id === userId ? { ...user, position: newPosition } : user
-        )
-      );
-    });
-
-    return () => {
-      socket.off("move");
-    };
-  }, [setUsers, userId]);
-  const handleFloorClick = (e) => {
-    console.log("hago click en la mesh");
-    const newPosition = [e.point.x, 0, e.point.z];
-    socket.emit("move", newPosition);
-  };
 
   return (
     <>
@@ -63,7 +45,9 @@ const AulaScene = () => {
               receiveShadow
               position={[0, -0.467, 0]}
               geometry={gltf.nodes.PisoAula.geometry}
-              onClick={handleFloorClick}
+              rotation-x={-Math.PI / 2}
+              position-y={-0.001}
+              onClick={(e) => socket.emit("move", [e.point.x, 0, e.point.z])}
               onPointerEnter={() => setOnFloor(true)}
               onPointerLeave={() => setOnFloor(false)}
             >
