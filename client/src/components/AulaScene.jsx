@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Environment, OrbitControls, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { CubeCamera, useCursor } from "@react-three/drei";
@@ -14,7 +14,8 @@ import { VideoScreen } from "../components/Streaming/VideoScreen";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
-  const [users] = useAtom(userAtom);
+  const [users, setUsers] = useAtom(userAtom);
+
   console.log(users);
   const { screenStream, peers, screenSharingId } = useContext(RoomContext);
   const { userId } = useContext(UserContext);
@@ -23,6 +24,24 @@ const AulaScene = () => {
 
   const [onFloor, setOnFloor] = useState(false);
   useCursor(onFloor);
+  useEffect(() => {
+    socket.on("move", (newPosition) => {
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === userId ? { ...user, position: newPosition } : user
+        )
+      );
+    });
+
+    return () => {
+      socket.off("move");
+    };
+  }, [setUsers, userId]);
+  const handleFloorClick = (e) => {
+    console.log("hago click en la mesh");
+    const newPosition = [e.point.x, 0, e.point.z];
+    socket.emit("move", newPosition);
+  };
 
   return (
     <>
@@ -45,7 +64,7 @@ const AulaScene = () => {
               position={[-13.68, -0.467, 17.52]}
               scale={0.02}
               geometry={gltf.nodes.PisoAula.geometry}
-              onClick={(e) => socket.emit("move", [e.point.x, 0, e.point.z])}
+              onClick={handleFloorClick}
               onPointerEnter={() => setOnFloor(true)}
               onPointerLeave={() => setOnFloor(false)}
             >
