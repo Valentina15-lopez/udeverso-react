@@ -43,7 +43,6 @@ const AulaScene = () => {
           {(texture) => (
             <mesh
               receiveShadow
-              position={[0, 0, 0]}
               geometry={gltf.nodes.PisoAula.geometry}
               rotation-x={-Math.PI / 2}
               position-y={-0.001}
