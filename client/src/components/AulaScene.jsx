@@ -61,14 +61,15 @@ const AulaScene = () => {
           {(texture) => (
             <mesh
               receiveShadow
-              position={[-13.68, -0.467, 17.52]}
+              position={[0, 0, 0]}
+              rotation={[-Math.PI / 2, 0, 0]}
               scale={0.02}
               geometry={gltf.nodes.PisoAula.geometry}
               onClick={handleFloorClick}
               onPointerEnter={() => setOnFloor(true)}
               onPointerLeave={() => setOnFloor(false)}
             >
-              <planeGeometry args={[10, 10]} />
+              <planeGeometry args={[100, 100]} />
               <meshStandardMaterial
                 map={gltf.materials.piso.map}
                 normalMap={gltf.materials.piso.normalMap}
