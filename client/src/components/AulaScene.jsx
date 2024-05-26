@@ -62,7 +62,6 @@ const AulaScene = () => {
             <mesh
               receiveShadow
               position={[0, -0.467, 0]}
-              rotation={[-Math.PI / 2, 0, 0]}
               geometry={gltf.nodes.PisoAula.geometry}
               onClick={handleFloorClick}
               onPointerEnter={() => setOnFloor(true)}
