@@ -146,10 +146,21 @@ io.on("connection", (socket) => {
     bottomColor: generateRandomHexColor(),
   });
   io.emit("usersList", usersList);
+
+  socket.on("move", (position) => {
+    const users = usersList.find((user) => user.id === socket.id);
+    users.position = position;
+    io.emit("usersList", usersList);
+  });
   console.log("a user connected");
   roomHandler(socket);
   socket.on("disconnect", () => {
     console.log("user disconnected");
+    usersList.splice(
+      usersList.findIndex((user) => user.id === socket.id),
+      1
+    );
+    io.emit("usersList", usersList);
   });
 });
 

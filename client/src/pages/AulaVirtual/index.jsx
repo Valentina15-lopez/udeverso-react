@@ -4,6 +4,15 @@ import AulaScene from "../../components/AulaScene";
 import { Canvas } from "@react-three/fiber";
 import { userAtom } from "../../context/ContexProvider";
 import { Room } from "../../components/Streaming/room";
+import { Physics, RigidBody } from "@react-three/rapier";
+import Controller from "ecctrl";
+
+import {
+  Gltf,
+  Environment,
+  Fisheye,
+  KeyboardControls,
+} from "@react-three/drei";
 
 import { useAtom } from "jotai";
 

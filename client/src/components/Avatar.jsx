@@ -18,7 +18,7 @@ export function Avatar({
   topColor = "pink",
   bottomColor = "brown",
   id,
-  avatarUrl = "https://models.readyplayer.me/6653f65dcf97e5aaac4f98a2.glb",
+  avatarUrl = "https://models.readyplayer.me/64f0265b1db75f90dcfd9e2c.glb",
   ...props
 }) {
   const position = useMemo(() => props.position, []);
