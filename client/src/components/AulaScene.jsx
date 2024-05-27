@@ -39,7 +39,7 @@ const AulaScene = () => {
         <primitive object={gltf.scene} />
         <CubeCamera
           frames={1}
-          position={[0, 0.5, 0]}
+          position={[0, -1, 0]}
           rotation={[0, 0, 0]}
           resolution={2048}
           near={1}
