@@ -35,7 +35,7 @@ const AulaScene = () => {
       <Environment preset="sunset" />
       <ambientLight intensity={0.1} />
       <OrbitControls />
-      <group>
+      <group position={[0, -1, 0]}>
         <primitive object={gltf.scene} />
         <CubeCamera
           frames={1}
