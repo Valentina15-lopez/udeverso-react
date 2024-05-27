@@ -36,14 +36,14 @@ describe('Endpoint GET /api/users', () => { // Grupo de pruebas para el endpoint
                 contrasenia: 'password1',
                 nombre_para_mostrar: 'Usuario Uno',
                 correo: 'usuario1@example.com',
-                es_estudiante: true,
+                rol: 'alumno',
             },
             {
                 usuario: 'usuario2',
                 contrasenia: 'password2',
                 nombre_para_mostrar: 'Usuario Dos',
                 correo: 'usuario2@example.com',
-                es_estudiante: false,
+                rol: 'profesor',
             },
         ]);
 
@@ -57,7 +57,9 @@ describe('Endpoint GET /api/users', () => { // Grupo de pruebas para el endpoint
 
         // Verificar detalles de los usuarios
         expect(response.body[0].usuario).toBe('usuario1');
+        expect(response.body[0].rol).toBe('alumno');
         expect(response.body[1].usuario).toBe('usuario2');
+        expect(response.body[0].rol).toBe('profesor');
     });
 
     it('Debe devolver 500 si hay un error interno', async () => { // Prueba para error interno
