@@ -46,15 +46,6 @@ const CreateMaterial = () => {
       formDataToSend.append("ext", formData.ext);
       formDataToSend.append("archivo", formData.archivo); // Agregar el archivo
 
-      // await axios.post(
-      //   "http://localhost:3001/api/users/material", // Usar el endpoint correcto
-      //   formDataToSend,
-      //   {
-      //     headers: {
-      //       "Content-Type": "multipart/form-data",
-      //     },
-      //   }
-      // );
       await axios.post(
         "https://metaversoude2.ddns.net:3001/api/users/material", // Usar el endpoint correcto
         formDataToSend,
