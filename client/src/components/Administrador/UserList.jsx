@@ -9,7 +9,7 @@ const UserList = () => {
     nombre_para_mostrar: "",
     avatar_id: "",
     correo: "",
-    es_estudiante: "",
+    rol: "",
   });
 
   // Cargar lista de usuarios al inicio
@@ -46,7 +46,7 @@ const UserList = () => {
             nombre_para_mostrar: userData.nombre_para_mostrar || "",
             avatar_id: userData.avatar_id || "",
             correo: userData.correo || "",
-            es_estudiante: userData.es_estudiante || "",
+            rol: userData.rol || "",
           });
         } catch (error) {
           console.error("Error al cargar datos del usuario:", error);
@@ -124,8 +124,8 @@ const UserList = () => {
             Es Estudiante:
             <input
               type="text"
-              name="es_estudiante"
-              value={formData.es_estudiante}
+              name="rol"
+              value={formData.rol}
               readOnly={true}
               className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
             />
