@@ -55,11 +55,7 @@ const AulaScene = () => {
               onPointerEnter={() => setOnFloor(true)}
               onPointerLeave={() => setOnFloor(false)}
             >
-              <planeGeometry
-                args={[10, 10]}
-                rotateX={-Math.PI / 2}
-                position={[0, -0.467, 0]}
-              />
+              <planeGeometry args={[10, 10]} />
               <meshStandardMaterial
                 map={gltf.materials.piso.map}
                 normalMap={gltf.materials.piso.normalMap}
