@@ -33,6 +33,7 @@ export const RoomProvider = ({ children }) => {
   const [me, setMe] = useState();
   const [stream, setStream] = useState();
   const [screenStream, setScreenStream] = useState();
+
   const [peers, dispatch] = useReducer(peersReducer, {});
   const [screenSharingId, setScreenSharingId] = useState("");
   const [roomId, setRoomId] = useState("");
@@ -124,6 +125,35 @@ fs.readFileSync('fullchain.pem', 'utf8');
     }
   };
 
+  const startScreenSharing = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+      });
+      setScreenStream(stream);
+      setScreenSharingId(socket.id);
+
+      // Enviar el stream a otros pares
+      stream.getTracks().forEach((track) => {
+        for (const peerId in peers) {
+          const peerConnection = peers[peerId].peerConnection;
+          peerConnection.addTrack(track, stream);
+        }
+      });
+
+      socket.emit("screen-sharing-start", { id: socket.id });
+    } catch (error) {
+      console.error("Error al compartir pantalla:", error);
+    }
+  };
+
+  const stopScreenSharing = () => {
+    screenStream.getTracks().forEach((track) => track.stop());
+    setScreenStream(null);
+    setScreenSharingId(null);
+    socket.emit("screen-sharing-stop", { id: socket.id });
+  };
+
   useEffect(() => {
     socket.emit("change-name", { peerId: userId, userName, roomId });
   }, [userName, userId, roomId]);
@@ -194,6 +224,24 @@ fs.readFileSync('fullchain.pem', 'utf8');
         .catch((err) => console.error(err));
     });
   };
+  const uploadFile = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("http://tu-servidor/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (!response.ok) {
+        throw new Error("Error al subir el archivo");
+      }
+      const data = await response.json();
+      // Aquí puedes manejar la respuesta del servidor, como actualizar el estado con la URL del archivo subido
+    } catch (error) {
+      console.error("Error al subir el archivo:", error);
+    }
+  };
 
   return (
     <RoomContext.Provider
@@ -205,6 +253,9 @@ fs.readFileSync('fullchain.pem', 'utf8');
         roomId,
         setRoomId,
         screenSharingId,
+        startScreenSharing,
+        stopScreenSharing,
+        uploadFile,
       }}
     >
       {children}

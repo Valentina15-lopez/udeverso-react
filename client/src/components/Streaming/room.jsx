@@ -9,7 +9,7 @@ import { Chat } from "../../components/Streaming/Chat";
 import { RoomContext } from "../../context/RoomContext";
 import { ShareScreenButton } from "./ShareScreenButton";
 import { ChatButton } from "./ChatButton";
-
+import { UploadButton } from "./UploadButton";
 export const Room = () => {
   const { socket } = useContext(SocketContext);
   const { roomId } = useParams();
@@ -61,6 +61,7 @@ export const Room = () => {
         <div className="flex gap-3">
           <ShareScreenButton onClick={shareScreen} />
           <ChatButton onClick={toggleChat} />
+          <UploadButton />
         </div>
       </div>
     </div>
