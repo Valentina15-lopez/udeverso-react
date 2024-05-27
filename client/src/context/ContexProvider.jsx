@@ -6,12 +6,26 @@ const SocketContext = createContext();
 
 export const userAtom = atom([]);
 export const roomAtom = atom([]);
+export const mapAtom = atom(null);
+
 export const socket = io("https://metaversoude2.ddns.net:3001");
 
 const ContextProvider = ({ children }) => {
   const [user, setUser] = useAtom(userAtom);
   const [room, setRoom] = useAtom(roomAtom);
+  const [_map, setMap] = useAtom(mapAtom);
   const [call, setCall] = useState({});
+
+  const onPlayerMove = (value) => {
+    setUser((prev) => {
+      return prev.map((user) => {
+        if (user.id === value.id) {
+          return value;
+        }
+        return user;
+      });
+    });
+  };
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -33,6 +47,7 @@ const ContextProvider = ({ children }) => {
     socket.on("rooms", (value) => {
       setRoom(value);
     });
+    socket.on("playerMove", onPlayerMove);
 
     return () => {
       socket.disconnect();

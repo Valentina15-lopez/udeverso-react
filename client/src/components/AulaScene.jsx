@@ -1,27 +1,23 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { Environment, OrbitControls, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
 import { CubeCamera, useCursor } from "@react-three/drei";
-import { socket, userAtom } from "./../context/ContexProvider";
+import { socket, userAtom, mapAtom } from "./../context/ContexProvider";
 import { useAtom } from "jotai";
+import { useThree } from "@react-three/fiber";
 import { Avatar } from "./Avatar";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { RoomContext } from "../context/RoomContext";
-import { UserContext } from "../context/UserContext";
 import modeloGlb from "../assets/modeloAula3.glb";
-import { VideoScreen } from "../components/Streaming/VideoScreen";
+import { useGrid } from "../hooks/useGrid";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
   const [users] = useAtom(userAtom);
-
-  console.log(users);
-  const { screenStream, peers, screenSharingId } = useContext(RoomContext);
-  const { userId } = useContext(UserContext);
-  const screenSharingVideo =
-    screenSharingId === userId ? screenStream : peers[screenSharingId]?.stream;
-
+  const [map] = useAtom(mapAtom);
+  const controls = useRef();
+  const state = useThree((state) => state);
+  const [items, setItems] = useState(map.items);
   const [onFloor, setOnFloor] = useState(false);
   useCursor(onFloor);
   const handleFloorClick = (e) => {

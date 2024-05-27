@@ -135,6 +135,36 @@ const roomHandler = (socket) => {
   socket.on("send-message", addMessage);
   socket.on("change-name", changeName);
 };
+const items = {
+  washer: {
+    name: "washer",
+    size: [2, 2],
+  },
+  toiletSquare: {
+    name: "toiletSquare",
+    size: [2, 2],
+  },
+};
+const map = {
+  size: [10, 10],
+  gridDivision: 2,
+  items: [
+    // {
+    //   ...items.showerRound,
+    //   gridPosition: [0, 0],
+    // }
+  ],
+};
+
+const grid = new pathfinding.Grid(
+  map.size[0] * map.gridDivision,
+  map.size[1] * map.gridDivision
+);
+const findPath = (start, end) => {
+  const gridClone = grid.clone();
+  const path = finder.findPath(start[0], start[1], end[0], end[1], gridClone);
+  return path;
+};
 
 io.on("connection", (socket) => {
   usersList.push({
@@ -147,11 +177,17 @@ io.on("connection", (socket) => {
   });
   io.emit("usersList", usersList);
 
-  socket.on("move", (position) => {
+  socket.on("move", (from, to) => {
     const users = usersList.find((user) => user.id === socket.id);
+    const path = findPath(from, to);
+    if (!path) {
+      return;
+    }
     users.position = position;
-    io.emit("usersList", usersList);
+    users.path = path;
+    io.emit("playerMove", users);
   });
+
   console.log("a user connected");
   roomHandler(socket);
   socket.on("disconnect", () => {
