@@ -62,8 +62,6 @@ const AulaScene = () => {
               />
               <meshStandardMaterial
                 map={gltf.materials.piso.map}
-                rotateX={-Math.PI / 2}
-                position={[0, -0.467, 0]}
                 normalMap={gltf.materials.piso.normalMap}
                 envMap={texture}
                 metalness={0.0}
@@ -73,7 +71,6 @@ const AulaScene = () => {
         </CubeCamera>
         <mesh
           rotation-x={-Math.PI / 2}
-          position-y={-0.001}
           onClick={(e) => socket.emit("move", [e.point.x, 0, e.point.z])}
           onPointerEnter={() => setOnFloor(true)}
           onPointerLeave={() => setOnFloor(false)}
