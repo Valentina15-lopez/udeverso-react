@@ -50,28 +50,30 @@ const AulaScene = () => {
             <>
               <mesh
                 receiveShadow
-                position={[-13.68, -0.467, 17.52]}
-                scale={0.02}
                 geometry={gltf.nodes.PisoAula.geometry}
+                rotation-x={-Math.PI / 2}
+                position-y={-0.467}
                 onClick={handleFloorClick}
                 onPointerEnter={() => setOnFloor(true)}
                 onPointerLeave={() => setOnFloor(false)}
-                dispose={null}
               >
-                <planeGeometry args={[10, 10]} />
+                <planeGeometry
+                  args={[10, 10]}
+                  rotateX={-Math.PI / 2}
+                  position={[0, -0.467, 0]}
+                />
                 <meshStandardMaterial
                   map={gltf.materials.piso.map}
                   normalMap={gltf.materials.piso.normalMap}
                   envMap={texture}
                   metalness={0.0}
-                  normalScale={[0.25, -0.25]}
-                  color="#aaa"
                 />
               </mesh>
-              <Pizarron />
             </>
           )}
         </CubeCamera>
+        <Pizarron />
+
         {users.map((user) => (
           <Avatar
             key={user.id}
