@@ -38,7 +38,7 @@ describe('Endpoint POST /api/users', () => { // Grupo de pruebas para el endpoin
                 nombre_para_mostrar: 'Nuevo Usuario', // Nombre para mostrar
                 avatar_id: 'avatar1', // ID del avatar
                 correo: 'nuevo@ejemplo.com', // Correo
-                es_estudiante: true, // Es estudiante
+                rol: 'profesor', // Es estudiante
             });
 
         expect(response.status).toBe(201);  // Verifica que el estado sea 201
@@ -59,7 +59,7 @@ describe('Endpoint POST /api/users', () => { // Grupo de pruebas para el endpoin
                 nombre_para_mostrar: 'Nuevo Usuario', // Nombre para mostrar
                 avatar_id: 'avatar1', // ID del avatar
                 correo: 'nuevo@ejemplo.com', // Correo
-                es_estudiante: true, // Es estudiante
+                rol: 'administrador', // Es estudiante
             });
 
         expect(response.status).toBe(500);  // Verifica el estado de error
