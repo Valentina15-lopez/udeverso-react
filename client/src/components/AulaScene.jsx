@@ -24,6 +24,11 @@ const AulaScene = () => {
 
   const [onFloor, setOnFloor] = useState(false);
   useCursor(onFloor);
+  const handleFloorClick = (e) => {
+    const newPosition = [e.point.x, 0, e.point.z];
+    console.log("newPosition", newPosition);
+    socket.emit("move", newPosition);
+  };
 
   return (
     <>
@@ -46,9 +51,7 @@ const AulaScene = () => {
               geometry={gltf.nodes.PisoAula.geometry}
               rotation-x={-Math.PI / 2}
               position-y={-0.467}
-              onClick={(e) =>
-                socket.emit("move", [e.point.x, -0.467, e.point.z])
-              }
+              onClick={handleFloorClick}
               onPointerEnter={() => setOnFloor(true)}
               onPointerLeave={() => setOnFloor(false)}
             >
