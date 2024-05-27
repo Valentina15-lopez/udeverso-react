@@ -17,9 +17,9 @@ export const UploadButton = () => {
   return (
     <div>
       <Button className="p-4 mx-2" onClick={handleFileChange}>
+        <input type="file" />
         {isSharing ? "Detener compartición" : "Compartir Material"}
       </Button>
-      <input type="file" onChange={handleFileChange} />
     </div>
   );
 };
