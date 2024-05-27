@@ -29,15 +29,10 @@ export const UploadButton = () => {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-
   const selectMaterial = (materialPath) => {
-    const textureLoader = new THREE.TextureLoader();
-    textureLoader.load(materialPath, (texture) => {
-      setFileTexture(texture);
-    });
+    setFileTexture(materialPath);
     closeModal();
   };
-
   return (
     <div>
       <Button onClick={openModal} type="button">
