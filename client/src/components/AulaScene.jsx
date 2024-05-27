@@ -44,8 +44,8 @@ const AulaScene = () => {
             <mesh
               receiveShadow
               geometry={gltf.nodes.PisoAula.geometry}
+              rotation-x={-Math.PI / 2}
               position-y={-0.467}
-              scale={0.02}
               onClick={(e) =>
                 socket.emit("move", [e.point.x, -0.467, e.point.z])
               }
