@@ -11,6 +11,7 @@ import { RoomContext } from "../context/RoomContext";
 import { UserContext } from "../context/UserContext";
 import modeloGlb from "../assets/modeloAula3.glb";
 import { VideoScreen } from "../components/Streaming/VideoScreen";
+import { Pizarron } from "./Pizarron";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
@@ -46,29 +47,33 @@ const AulaScene = () => {
           far={1000}
         >
           {(texture) => (
-            <mesh
-              receiveShadow
-              geometry={gltf.nodes.PisoAula.geometry}
-              rotation-x={-Math.PI / 2}
-              position-y={-0.467}
-              onClick={handleFloorClick}
-              onPointerEnter={() => setOnFloor(true)}
-              onPointerLeave={() => setOnFloor(false)}
-            >
-              <planeGeometry args={[10, 10]} />
-              <meshStandardMaterial
-                map={gltf.materials.piso.map}
-                normalMap={gltf.materials.piso.normalMap}
-                envMap={texture}
-                metalness={0.0}
-              />
-            </mesh>
+            <>
+              <mesh
+                receiveShadow
+                position={[-13.68, -0.467, 17.52]}
+                scale={0.02}
+                geometry={gltf.nodes.PisoAula.geometry}
+                onClick={(e) => socket.emit("move", [e.point.x, 0, e.point.z])}
+                onPointerEnter={() => setOnFloor(true)}
+                onPointerLeave={() => setOnFloor(false)}
+                dispose={null}
+              >
+                <meshStandardMaterial
+                  map={gltf.materials.piso.map}
+                  normalMap={gltf.materials.piso.normalMap}
+                  envMap={texture}
+                  metalness={0.0}
+                  normalScale={[0.25, -0.25]}
+                  color="#aaa"
+                />
+              </mesh>
+              <Pizarron />
+            </>
           )}
         </CubeCamera>
         {users.map((user) => (
           <Avatar
             key={user.id}
-            user={user}
             position={
               new THREE.Vector3(
                 user.position[0],

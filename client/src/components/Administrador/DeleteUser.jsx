@@ -16,7 +16,11 @@ const DeleteUser = () => {
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/api/users");
+        //const response = await axios.get("http://localhost:3001/api/users");
+        const response = await axios.get(
+          "https://metaversoude2.ddns.net:3001/api/users"
+        );
+
         setUsuarios(response.data);
       } catch (error) {
         console.error("Error al cargar los usuarios:", error);
@@ -33,8 +37,11 @@ const DeleteUser = () => {
         // Solo cargar si hay un usuario seleccionado
         console.log("Usuarios.js seleccionado:", formData.usuario); // Añadir este console.log
         try {
+          // const response = await axios.get(
+          //   `http://localhost:3001/api/users/${formData.usuario}`
+          // );
           const response = await axios.get(
-            `http://localhost:3001/api/users/${formData.usuario}`
+            `https://metaversoude2.ddns.net:3001/api/users/${formData.usuario}`
           );
           const userData = response.data;
           // Actualizar formData con los datos del usuario
@@ -68,7 +75,11 @@ const DeleteUser = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.delete(`http://localhost:3001/api/users/${formData.usuario}`);
+      //await axios.delete(`http://localhost:3001/api/users/${formData.usuario}`);
+      await axios.delete(
+        `https://metaversoude2.ddns.net:3001/api/users/${formData.usuario}`
+      );
+
       console.log("Usuarios.js borrado exitosamente");
     } catch (error) {
       console.error("Error al borrar el usuario:", error);

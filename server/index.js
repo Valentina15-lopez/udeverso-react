@@ -40,6 +40,7 @@ export const io = new Server(server, {
 app.use(express.json());
 app.use(
   cors({
+    //origin: "http://localhost:3000",
     origin: "https://metaversoude2.ddns.net:3000",
     methods: ["GET", "POST"], // Métodos HTTP permitidos
     credentials: true,
@@ -83,6 +84,7 @@ const roomHandler = (socket) => {
     if (!rooms[roomId]) rooms[roomId] = {};
     if (!chats[roomId]) chats[roomId] = [];
     socket.emit("get-messages", chats[roomId]);
+
     console.log("user joined the room", roomId, peerId, userName);
     rooms[roomId][peerId] = { peerId, userName };
     socket.join(roomId);
@@ -139,7 +141,6 @@ const roomHandler = (socket) => {
 io.on("connection", (socket) => {
   usersList.push({
     id: socket.id,
-    roomId: null,
     position: generateRandomPosition(),
     hairColor: generateRandomHexColor(),
     topColor: generateRandomHexColor(),
@@ -165,15 +166,15 @@ io.on("connection", (socket) => {
 });
 
 // Autenticar la conexión a la base de datos antes de iniciar el servidor
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Conexión a la base de datos exitosa");
-  })
-  .catch((error) => {
-    console.error("Error al conectarse a la base de datos:", error.message);
-    process.exit(1); // Termina la aplicación si no se puede conectar
-  });
+// sequelize
+//   .authenticate()
+//   .then(() => {
+//     console.log("Conexión a la base de datos exitosa");
+//   })
+//   .catch((error) => {
+//     console.error("Error al conectarse a la base de datos:", error.message);
+//     process.exit(1); // Termina la aplicación si no se puede conectar
+//   });
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
