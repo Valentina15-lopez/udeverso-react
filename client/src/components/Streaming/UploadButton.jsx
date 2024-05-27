@@ -3,8 +3,7 @@ import { RoomContext } from "../../context/RoomContext";
 import { Button } from "../../common/Button";
 import axios from "axios";
 import * as THREE from "three";
-import { Modal } from "../../common/Modal"; // Asegúrate de importar el modal
-
+import { Modal } from "../Modal";
 import { UserContext } from "../../context/UserContext";
 
 export const UploadButton = () => {

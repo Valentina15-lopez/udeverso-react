@@ -18,7 +18,7 @@ import {
 } from "../reducers/peerActions";
 import { SocketContext } from "../context/ContexProvider";
 import { UserContext } from "../context/UserContext";
-import { Modal } from "../common/Modal"; // Asegúrate de importar el modal
+import { Modal } from "../components/Modal"; // Asegúrate de importar el modal
 
 // Creación del contexto de la sala
 export const RoomContext = createContext({
