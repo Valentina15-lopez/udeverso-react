@@ -69,10 +69,10 @@ const AulaScene = () => {
                   metalness={0.0}
                 />
               </mesh>
+              <Pizarron />
             </>
           )}
         </CubeCamera>
-        <Pizarron />
 
         {users.map((user) => (
           <Avatar
