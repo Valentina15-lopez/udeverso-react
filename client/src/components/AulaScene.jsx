@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Environment, OrbitControls, Html } from "@react-three/drei";
+import { Environment, OrbitControls, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
 import { CubeCamera, useCursor } from "@react-three/drei";
 import { socket, userAtom } from "./../context/ContexProvider";
@@ -34,6 +34,7 @@ const AulaScene = () => {
     <>
       <fog attach="fog" args={["purple", 0, 130]} />
       <ambientLight intensity={0.1} />
+      <ContactShadows blur={2} />
       <OrbitControls />
       <group>
         <primitive object={gltf.scene} />
