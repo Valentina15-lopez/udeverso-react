@@ -17,8 +17,10 @@ export const ShareScreenButton = () => {
   };
 
   return (
-    <Button onClick={handleShareScreen}>
-      {isSharing ? "Detener compartición" : "Compartir pantalla"}
-    </Button>
+    <div>
+      <Button onClick={handleShareScreen}>
+        {isSharing ? "Detener compartición" : "Compartir pantalla"}
+      </Button>
+    </div>
   );
 };

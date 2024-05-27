@@ -18,6 +18,7 @@ import {
 } from "../reducers/peerActions";
 import { SocketContext } from "../context/ContexProvider";
 import { UserContext } from "../context/UserContext";
+import { Modal } from "../common/Modal"; // Asegúrate de importar el modal
 
 // Creación del contexto de la sala
 export const RoomContext = createContext({
@@ -31,6 +32,8 @@ export const RoomContext = createContext({
 export const RoomProvider = ({ children }) => {
   const { socket } = useContext(SocketContext);
   const navigate = useNavigate();
+  const [modalOpen, setModalOpen] = useState(false);
+
   const { userName, userId } = useContext(UserContext);
   const [me, setMe] = useState();
   const [fileTexture, setFileTexture] = useState(null);
@@ -90,9 +93,14 @@ fs.readFileSync('fullchain.pem', 'utf8');
         .getUserMedia({ video: true, audio: true })
         .then((stream) => {
           setStream(stream);
+        })
+        .catch((error) => {
+          console.error(error);
+          setModalOpen(true); // Abrir el modal si no se concede el permiso
         });
     } catch (error) {
       console.error(error);
+      setModalOpen(true); // Abrir el modal si no se concede el permiso
     }
 
     socket.on("room-created", enterRoom);
@@ -289,6 +297,13 @@ fs.readFileSync('fullchain.pem', 'utf8');
       }}
     >
       {children}
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+        <h2>Acceso a la cámara denegado</h2>
+        <p>
+          No puede interactuar sin habilitar la cámara. Por favor, conceda el
+          permiso.
+        </p>
+      </Modal>
     </RoomContext.Provider>
   );
 };
