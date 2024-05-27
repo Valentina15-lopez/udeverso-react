@@ -231,10 +231,13 @@ fs.readFileSync('fullchain.pem', 'utf8');
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://tu-servidor/upload", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://metaversoude2.ddns.net:3001/api/users/material",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Error al subir el archivo");
