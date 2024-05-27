@@ -9,7 +9,7 @@ import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RoomContext } from "../context/RoomContext";
 import { UserContext } from "../context/UserContext";
-import modeloGlb from "../assets/modeloAula3.glb";
+import modeloGlb from "../assets/Aula.glb";
 import { VideoScreen } from "../components/Streaming/VideoScreen";
 import { Pizarron } from "./Pizarron";
 
