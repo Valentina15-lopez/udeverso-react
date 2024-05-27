@@ -35,55 +35,57 @@ const AulaScene = () => {
       <Environment preset="sunset" />
       <ambientLight intensity={0.1} />
       <OrbitControls />
-      <primitive object={gltf.scene} />
-      <CubeCamera
-        frames={1}
-        position={[0, 0.5, 0]}
-        rotation={[0, 0, 0]}
-        resolution={2048}
-        near={1}
-        far={1000}
-      >
-        {(texture) => (
-          <mesh
-            receiveShadow
-            geometry={gltf.nodes.PisoAula.geometry}
-            rotation-x={-Math.PI / 2}
-            position-y={-0.467}
-            onClick={handleFloorClick}
-            onPointerEnter={() => setOnFloor(true)}
-            onPointerLeave={() => setOnFloor(false)}
-          >
-            <planeGeometry
-              args={[10, 10]}
-              rotateX={-Math.PI / 2}
-              position={[0, -0.467, 0]}
-            />
-            <meshStandardMaterial
-              map={gltf.materials.piso.map}
-              normalMap={gltf.materials.piso.normalMap}
-              envMap={texture}
-              metalness={0.0}
-            />
-          </mesh>
-        )}
-      </CubeCamera>
-      {users.map((user) => (
-        <Avatar
-          key={user.id}
-          user={user}
-          position={
-            new THREE.Vector3(
-              user.position[0],
-              user.position[1],
-              user.position[2]
-            )
-          }
-          hairColor={user.hairColor}
-          topColor={user.topColor}
-          bottomColor={user.bottomColor}
-        />
-      ))}
+      <group>
+        <primitive object={gltf.scene} />
+        <CubeCamera
+          frames={1}
+          position={[0, 0.5, 0]}
+          rotation={[0, 0, 0]}
+          resolution={2048}
+          near={1}
+          far={1000}
+        >
+          {(texture) => (
+            <mesh
+              receiveShadow
+              geometry={gltf.nodes.PisoAula.geometry}
+              rotation-x={-Math.PI / 2}
+              position-y={-0.467}
+              onClick={handleFloorClick}
+              onPointerEnter={() => setOnFloor(true)}
+              onPointerLeave={() => setOnFloor(false)}
+            >
+              <planeGeometry
+                args={[10, 10]}
+                rotateX={-Math.PI / 2}
+                position={[0, -0.467, 0]}
+              />
+              <meshStandardMaterial
+                map={gltf.materials.piso.map}
+                normalMap={gltf.materials.piso.normalMap}
+                envMap={texture}
+                metalness={0.0}
+              />
+            </mesh>
+          )}
+        </CubeCamera>
+        {users.map((user) => (
+          <Avatar
+            key={user.id}
+            user={user}
+            position={
+              new THREE.Vector3(
+                user.position[0],
+                user.position[1],
+                user.position[2]
+              )
+            }
+            hairColor={user.hairColor}
+            topColor={user.topColor}
+            bottomColor={user.bottomColor}
+          />
+        ))}
+      </group>
     </>
   );
 };
