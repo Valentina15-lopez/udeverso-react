@@ -37,34 +37,26 @@ const AulaScene = () => {
       <OrbitControls />
       <group>
         <primitive object={gltf.scene} />
-        <CubeCamera
-          frames={1}
-          position={[0, -1, 0]}
-          rotation={[0, 0, 0]}
-          resolution={2048}
-          near={1}
-          far={1000}
-        >
-          {(texture) => (
-            <mesh
-              receiveShadow
-              geometry={gltf.nodes.PisoAula.geometry}
-              rotation-x={-Math.PI / 2}
-              position-y={-0.467}
-              onClick={handleFloorClick}
-              onPointerEnter={() => setOnFloor(true)}
-              onPointerLeave={() => setOnFloor(false)}
-            >
-              <planeGeometry args={[10, 10]} />
-              <meshStandardMaterial
-                map={gltf.materials.piso.map}
-                normalMap={gltf.materials.piso.normalMap}
-                envMap={texture}
-                metalness={0.0}
-              />
-            </mesh>
-          )}
-        </CubeCamera>
+
+        {(texture) => (
+          <mesh
+            receiveShadow
+            geometry={gltf.nodes.PisoAula.geometry}
+            rotation-x={-Math.PI / 2}
+            position-y={-0.467}
+            onClick={handleFloorClick}
+            onPointerEnter={() => setOnFloor(true)}
+            onPointerLeave={() => setOnFloor(false)}
+          >
+            <planeGeometry args={[10, 10]} />
+            <meshStandardMaterial
+              map={gltf.materials.piso.map}
+              normalMap={gltf.materials.piso.normalMap}
+              envMap={texture}
+              metalness={0.0}
+            />
+          </mesh>
+        )}
         {users.map((user) => (
           <Avatar
             key={user.id}
