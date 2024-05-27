@@ -62,6 +62,8 @@ const AulaScene = () => {
               />
               <meshStandardMaterial
                 map={gltf.materials.piso.map}
+                rotateX={-Math.PI / 2}
+                position={[0, -0.467, 0]}
                 normalMap={gltf.materials.piso.normalMap}
                 envMap={texture}
                 metalness={0.0}
