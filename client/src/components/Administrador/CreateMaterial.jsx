@@ -75,16 +75,14 @@ const CreateMaterial = () => {
             >
               Usuario:
             </label>
-            <select
+            <input
               id="usuario"
+              type="text"
               name="usuario"
               value={formData.usuario}
               onChange={handleChange}
               className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-            >
-              <option value="">Seleccionar usuario</option>
-              {/* Renderizar opciones de usuario */}
-            </select>
+            />
           </div>
           <div className="mb-4">
             <label
