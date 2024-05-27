@@ -10,7 +10,9 @@ const ListMaterial = () => {
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/api/users");
+        const response = await axios.get(
+          "https://metaversoude2.ddns.net:3001/api/users"
+        );
         setUsuarios(response.data);
       } catch (error) {
         console.error("Error al cargar los usuarios:", error);
@@ -27,7 +29,7 @@ const ListMaterial = () => {
         // Solo cargar si hay un usuario seleccionado
         try {
           const response = await axios.get(
-            `http://localhost:3001/api/users/${selectedUsuario}/material`
+            `https://metaversoude2.ddns.net:3001/api/users/${selectedUsuario}/material`
           );
           setMateriales(response.data); // Guardar la lista de materiales
         } catch (error) {
@@ -65,7 +67,8 @@ const ListMaterial = () => {
 
     try {
       const response = await axios.delete(
-        `http://localhost:3001/api/users/${selectedUsuario}/material/` + nombre
+        `https://metaversoude2.ddns.net:3001/api/users/${selectedUsuario}/material/` +
+          nombre
       );
       console.log("Material borrado exitosamente");
     } catch (error) {

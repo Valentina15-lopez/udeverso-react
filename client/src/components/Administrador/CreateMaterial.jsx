@@ -14,7 +14,9 @@ const CreateMaterial = () => {
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/api/users");
+        const response = await axios.get(
+          "https://metaversoude2.ddns.net:3001/api/users"
+        );
         const users = response.data; // Supongamos que aquí tienes una lista de usuarios
         setUsuarios(users); // Guardar la lista de usuarios en el estado
       } catch (error) {
@@ -44,7 +46,7 @@ const CreateMaterial = () => {
       formDataToSend.append("archivo", formData.archivo); // Agregar el archivo
 
       await axios.post(
-        "http://localhost:3001/api/users/material", // Usar el endpoint correcto
+        "https://metaversoude2.ddns.net:3001/api/users/material", // Usar el endpoint correcto
         formDataToSend,
         {
           headers: {
