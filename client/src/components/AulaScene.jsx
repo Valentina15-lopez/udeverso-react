@@ -57,8 +57,8 @@ const AulaScene = () => {
             >
               <planeGeometry
                 args={[10, 10]}
-                rotation-x={-Math.PI / 2}
-                position-y={-0.467}
+                rotateX={-Math.PI / 2}
+                position={[0, -0.467, 0]}
               />
               <meshStandardMaterial
                 map={gltf.materials.piso.map}
