@@ -14,6 +14,7 @@ import axios from "axios";
 import { Navigate, useLocation } from "react-router-dom";
 import { Join } from "./components/Streaming/Join";
 import MenuDocente from "./pages/MenuDocente";
+import { JoinRoom } from "./components/Streaming/JoinRoom";
 
 const ProtectedRoute = ({ element }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -57,8 +58,12 @@ const routes = [
     element: <AulaVirtual />,
   },
   {
-    path: "/aulavirtual", // Agrega el parámetro de ruta para el ID
+    path: "/inicioDocente", // Agrega el parámetro de ruta para el ID
     element: <Join />,
+  },
+  {
+    path: "/inicioEstudiante", // Agrega el parámetro de ruta para el ID
+    element: <JoinRoom />,
   },
   {
     path: "/abm",

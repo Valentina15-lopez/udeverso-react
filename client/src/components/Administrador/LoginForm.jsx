@@ -28,7 +28,7 @@ const LoginForm = () => {
       if (response.ok) {
         login();
         const userData = await response.json();
-        navigate("/aulavirtual"); // Redirige a la página de aulavirtual si el inicio de sesión es exitoso
+        navigate("/inicioEstudiante"); // Redirige a la página de aulavirtual si el inicio de sesión es exitoso
         // Aquí manejas los datos del usuario recibidos del servidor
         console.log(userData);
       } else {
