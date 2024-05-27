@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Button } from "../../common/Button";
-import { RoomContext } from "../context/RoomContext";
+import { RoomContext } from "../../context/RoomContext";
 
 export const ShareScreenButton = () => {
   const { startScreenSharing, stopScreenSharing, screenStream } =

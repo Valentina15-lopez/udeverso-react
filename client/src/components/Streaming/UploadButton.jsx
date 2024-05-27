@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { RoomContext } from "../context/RoomContext";
+import { RoomContext } from "../../context/RoomContext";
 
 export const UploadButton = () => {
   const { uploadFile } = useContext(RoomContext);
