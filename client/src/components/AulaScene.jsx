@@ -38,32 +38,32 @@ const AulaScene = () => {
       <OrbitControls />
       <group>
         <primitive object={gltf.scene} />
-        <mesh
-          rotation-x={-Math.PI / 2}
-          onClick={(e) => socket.emit("move", [e.point.x, 0, e.point.z])}
-          onPointerEnter={() => setOnFloor(true)}
-          onPointerLeave={() => setOnFloor(false)}
-        >
-          <planeGeometry args={[10, 10]} />
-          <meshStandardMaterial color="#f0f0f0" />
-        </mesh>
-        {users.map((user) => (
-          <Avatar
-            key={user.id}
-            user={user}
-            position={
-              new THREE.Vector3(
-                user.position[0],
-                user.position[1],
-                user.position[2]
-              )
-            }
-            hairColor={user.hairColor}
-            topColor={user.topColor}
-            bottomColor={user.bottomColor}
-          />
-        ))}
       </group>
+      <mesh
+        rotation-x={-Math.PI / 2}
+        onClick={(e) => socket.emit("move", [e.point.x, 0, e.point.z])}
+        onPointerEnter={() => setOnFloor(true)}
+        onPointerLeave={() => setOnFloor(false)}
+      >
+        <planeGeometry args={[10, 10]} />
+        <meshStandardMaterial color="#f0f0f0" />
+      </mesh>
+      {users.map((user) => (
+        <Avatar
+          key={user.id}
+          user={user}
+          position={
+            new THREE.Vector3(
+              user.position[0],
+              user.position[1],
+              user.position[2]
+            )
+          }
+          hairColor={user.hairColor}
+          topColor={user.topColor}
+          bottomColor={user.bottomColor}
+        />
+      ))}
       {/* tener en cuenta que es una url externa */}
       <Environment
         files="https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/hdris/noon-grass/noon_grass_1k.hdr"
