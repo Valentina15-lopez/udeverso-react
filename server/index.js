@@ -147,6 +147,20 @@ io.on("connection", (socket) => {
     bottomColor: generateRandomHexColor(),
   });
   io.emit("usersList", usersList);
+  socket.on("screen-sharing-start", (data) => {
+    console.log("Iniciar compartir pantalla", data);
+    io.emit("screen-sharing-start", data);
+  });
+
+  socket.on("screen-sharing-stop", (data) => {
+    console.log("Detener compartir pantalla", data);
+    io.emit("screen-sharing-stop", data);
+  });
+
+  socket.on("file-upload", (data) => {
+    console.log("Archivo subido", data);
+    io.emit("file-upload", data);
+  });
 
   socket.on("move", (position) => {
     const users = usersList.find((user) => user.id === socket.id);
@@ -166,15 +180,14 @@ io.on("connection", (socket) => {
 });
 
 // Autenticar la conexión a la base de datos antes de iniciar el servidor
-// sequelize
-//   .authenticate()
-//   .then(() => {
-//     console.log("Conexión a la base de datos exitosa");
-//   })
-//   .catch((error) => {
-//     console.error("Error al conectarse a la base de datos:", error.message);
-//     process.exit(1); // Termina la aplicación si no se puede conectar
-//   });
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("Conexión a la base de datos exitosa");
+  })
+  .catch((error) => {
+    console.error("Error al conectarse a la base de datos:", error.message);
+  });
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 

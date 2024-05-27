@@ -5,6 +5,8 @@ import React, {
   useReducer,
   useContext,
 } from "react";
+import * as THREE from "three";
+
 import { useNavigate } from "react-router-dom";
 import Peer from "peerjs";
 import { peersReducer } from "../reducers/peerReducer";
@@ -31,6 +33,7 @@ export const RoomProvider = ({ children }) => {
   const navigate = useNavigate();
   const { userName, userId } = useContext(UserContext);
   const [me, setMe] = useState();
+  const [fileTexture, setFileTexture] = useState(null);
   const [stream, setStream] = useState();
   const [screenStream, setScreenStream] = useState();
 
@@ -125,35 +128,6 @@ fs.readFileSync('fullchain.pem', 'utf8');
     }
   };
 
-  const startScreenSharing = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-      });
-      setScreenStream(stream);
-      setScreenSharingId(socket.id);
-
-      // Enviar el stream a otros pares
-      stream.getTracks().forEach((track) => {
-        for (const peerId in peers) {
-          const peerConnection = peers[peerId].peerConnection;
-          peerConnection.addTrack(track, stream);
-        }
-      });
-
-      socket.emit("screen-sharing-start", { id: socket.id });
-    } catch (error) {
-      console.error("Error al compartir pantalla:", error);
-    }
-  };
-
-  const stopScreenSharing = () => {
-    screenStream.getTracks().forEach((track) => track.stop());
-    setScreenStream(null);
-    setScreenSharingId(null);
-    socket.emit("screen-sharing-stop", { id: socket.id });
-  };
-
   useEffect(() => {
     socket.emit("change-name", { peerId: userId, userName, roomId });
   }, [userName, userId, roomId]);
@@ -224,6 +198,34 @@ fs.readFileSync('fullchain.pem', 'utf8');
         .catch((err) => console.error(err));
     });
   };
+  const startScreenSharing = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+      });
+      setScreenStream(stream);
+      setScreenSharingId(socket.id);
+
+      stream.getTracks().forEach((track) => {
+        for (const peerId in peers) {
+          const peerConnection = peers[peerId].peerConnection;
+          peerConnection.addTrack(track, stream);
+        }
+      });
+
+      socket.emit("screen-sharing-start", { id: socket.id });
+    } catch (error) {
+      console.error("Error al compartir pantalla:", error);
+    }
+  };
+
+  const stopScreenSharing = () => {
+    screenStream.getTracks().forEach((track) => track.stop());
+    setScreenStream(null);
+    setScreenSharingId(null);
+    socket.emit("screen-sharing-stop", { id: socket.id });
+  };
+
   const uploadFile = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
@@ -233,15 +235,31 @@ fs.readFileSync('fullchain.pem', 'utf8');
         method: "POST",
         body: formData,
       });
+
       if (!response.ok) {
         throw new Error("Error al subir el archivo");
       }
+
       const data = await response.json();
-      // Aquí puedes manejar la respuesta del servidor, como actualizar el estado con la URL del archivo subido
+      const textureLoader = new THREE.TextureLoader();
+      const texture = await textureLoader.loadAsync(data.filePath);
+
+      setFileTexture(texture);
+
+      // Emitir evento para compartir la textura con los pares
+      socket.emit("file-upload", { filePath: data.filePath });
     } catch (error) {
       console.error("Error al subir el archivo:", error);
     }
   };
+
+  useEffect(() => {
+    socket.on("file-upload", async (data) => {
+      const textureLoader = new THREE.TextureLoader();
+      const texture = await textureLoader.loadAsync(data.filePath);
+      setFileTexture(texture);
+    });
+  }, [socket]);
 
   return (
     <RoomContext.Provider
