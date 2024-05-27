@@ -3,9 +3,9 @@ import { RoomContext } from "../../context/RoomContext";
 import { Button } from "../../common/Button";
 import axios from "axios";
 import * as THREE from "three";
+import { Modal } from "../../common/Modal"; // Asegúrate de importar el modal
 
 import { UserContext } from "../../context/UserContext";
-import MaterialModal from "./MaterialModal"; // Asegúrate de tener la ruta correcta
 
 export const UploadButton = () => {
   const { setFileTexture } = useContext(RoomContext); // Asegúrate de tener una función para actualizar la textura
@@ -44,12 +44,18 @@ export const UploadButton = () => {
       <Button onClick={openModal} type="button">
         Compartir Material
       </Button>
-      <MaterialModal
-        isOpen={isModalOpen}
-        closeModal={closeModal}
-        materials={materiales}
-        selectMaterial={selectMaterial}
-      />
+      <Modal isOpen={isModalOpen} closeModal={closeModal}>
+        <div>
+          <h1>Selecciona el archivo que desea compartir </h1>
+          {materiales.map((material) => (
+            <div key={material.id}>
+              <Button onClick={() => selectMaterial(material.path)}>
+                {material.name}
+              </Button>
+            </div>
+          ))}
+        </div>
+      </Modal>
     </div>
   );
 };
