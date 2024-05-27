@@ -226,18 +226,36 @@ fs.readFileSync('fullchain.pem', 'utf8');
     socket.emit("screen-sharing-stop", { id: socket.id });
   };
 
+  useEffect(() => {
+    socket.on("screen-sharing-start", (data) => {
+      setScreenSharingId(data.id);
+    });
+
+    socket.on("screen-sharing-stop", (data) => {
+      setScreenSharingId(null);
+      setScreenStream(null);
+    });
+
+    socket.on("file-upload", async (data) => {
+      const textureLoader = new THREE.TextureLoader();
+      const texture = await textureLoader.loadAsync(data.filePath);
+      setFileTexture(texture);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [socket]);
+
   const uploadFile = async (file) => {
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("archivo", file);
 
     try {
-      const response = await fetch(
-        "https://metaversoude2.ddns.net:3001/api/users/material",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const response = await fetch("http://localhost:3000/api/users/material", {
+        method: "POST",
+        body: formData,
+      });
 
       if (!response.ok) {
         throw new Error("Error al subir el archivo");
@@ -245,24 +263,15 @@ fs.readFileSync('fullchain.pem', 'utf8');
 
       const data = await response.json();
       const textureLoader = new THREE.TextureLoader();
-      const texture = await textureLoader.loadAsync(data.filePath);
+      const texture = await textureLoader.loadAsync(data.material.path);
 
       setFileTexture(texture);
 
-      // Emitir evento para compartir la textura con los pares
-      socket.emit("file-upload", { filePath: data.filePath });
+      socket.emit("file-upload", { filePath: data.material.path });
     } catch (error) {
       console.error("Error al subir el archivo:", error);
     }
   };
-
-  useEffect(() => {
-    socket.on("file-upload", async (data) => {
-      const textureLoader = new THREE.TextureLoader();
-      const texture = await textureLoader.loadAsync(data.filePath);
-      setFileTexture(texture);
-    });
-  }, [socket]);
 
   return (
     <RoomContext.Provider

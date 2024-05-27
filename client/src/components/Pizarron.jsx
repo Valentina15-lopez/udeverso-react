@@ -8,12 +8,10 @@ export function Pizarron(props) {
   const { nodes, materials } = useGLTF(
     "/models/items/Pizarron-transformed.glb"
   );
-  const { screenStream, peers, screenSharingId, fileTexture } =
+  const { screenStream, peers, screenSharingId, fileTexture, userId } =
     useContext(RoomContext);
-  const { userId } = useContext(UserContext);
-
   const videoRef = useRef(null);
-  const [videoTexture, setVideoTexture] = useState(null);
+  const [materialTexture, setMaterialTexture] = useState(null);
 
   useEffect(() => {
     const video = document.createElement("video");
@@ -29,13 +27,38 @@ export function Pizarron(props) {
       video.play();
 
       const texture = new THREE.VideoTexture(video);
-      setVideoTexture(texture);
+      setMaterialTexture(texture);
     }
 
     return () => {
       document.body.removeChild(video);
     };
   }, [screenStream]);
+
+  useEffect(() => {
+    if (fileTexture) {
+      setMaterialTexture(fileTexture);
+    }
+  }, [fileTexture]);
+
+  useEffect(() => {
+    const fetchMaterials = async () => {
+      try {
+        const response = await fetch(`/api/users/${userId}/material`);
+        const materials = await response.json();
+
+        if (materials.length > 0) {
+          const textureLoader = new THREE.TextureLoader();
+          const texture = await textureLoader.loadAsync(materials[0].path);
+          setMaterialTexture(texture);
+        }
+      } catch (error) {
+        console.error("Error al obtener materiales:", error);
+      }
+    };
+
+    fetchMaterials();
+  }, [userId]);
 
   return (
     <group {...props} dispose={null}>
@@ -62,11 +85,9 @@ export function Pizarron(props) {
         <mesh
           geometry={nodes.Malla003_2.geometry}
           material={
-            fileTexture
-              ? new THREE.MeshBasicMaterial({ map: fileTexture })
-              : videoTexture
-                ? new THREE.MeshBasicMaterial({ map: videoTexture })
-                : materials["Material #49"]
+            materialTexture
+              ? new THREE.MeshBasicMaterial({ map: materialTexture })
+              : materials["Material #49"]
           }
         />
       </group>
