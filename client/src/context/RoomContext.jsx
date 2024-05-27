@@ -31,6 +31,7 @@ export const RoomContext = createContext({
 
 export const RoomProvider = ({ children }) => {
   const { socket } = useContext(SocketContext);
+  const [fileTexture, setFileTexture] = useState(null);
   const navigate = useNavigate();
   const { userName, userId } = useContext(UserContext);
   const [me, setMe] = useState();
@@ -189,6 +190,13 @@ export const RoomProvider = ({ children }) => {
     };
   }, [me, stream, userName]);
 
+  const updateFileTexture = (texturePath) => {
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.load(texturePath, (texture) => {
+      setFileTexture(texture);
+    });
+  };
+
   return (
     <RoomContext.Provider
       value={{
@@ -199,6 +207,7 @@ export const RoomProvider = ({ children }) => {
         roomId,
         setRoomId,
         screenSharingId,
+        setFileTexture: updateFileTexture,
       }}
     >
       {children}
