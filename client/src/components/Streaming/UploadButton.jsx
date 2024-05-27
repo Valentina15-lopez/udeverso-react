@@ -18,6 +18,7 @@ export const UploadButton = () => {
         const response = await axios.get(
           `https://metaversoude2.ddns.net:3001/api/users/${userName}/material`
         );
+        console.log("materiales", response);
         setMateriales(response.data);
       } catch (error) {
         console.error("Error al cargar materiales del usuario:", error);
