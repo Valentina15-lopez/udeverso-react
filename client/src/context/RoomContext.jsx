@@ -300,8 +300,8 @@ fs.readFileSync('fullchain.pem', 'utf8');
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
         <h2>Acceso a la cámara denegado</h2>
         <p>
-          No puede interactuar sin habilitar la cámara. Por favor, conceda el
-          permiso.
+          No puede interactuar en UDEVERSO sin habilitar la cámara. Por favor,
+          conceda el permiso y recargue la pagina.
         </p>
       </Modal>
     </RoomContext.Provider>
