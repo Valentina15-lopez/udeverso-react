@@ -71,14 +71,16 @@ const AulaScene = () => {
             </mesh>
           )}
         </CubeCamera>
-        <Html
-          transform
-          className="w-full h-full"
-          rotation-y={Math.PI / 2}
-          position={[-35, 0, 0]}
+        <mesh
+          rotation-x={-Math.PI / 2}
+          position-y={-0.001}
+          onClick={(e) => socket.emit("move", [e.point.x, 0, e.point.z])}
+          onPointerEnter={() => setOnFloor(true)}
+          onPointerLeave={() => setOnFloor(false)}
         >
-          <VideoScreen stream={screenSharingVideo} />
-        </Html>
+          <planeGeometry args={[10, 10]} />
+          <meshStandardMaterial color="#f0f0f0" />
+        </mesh>
         {users.map((user) => (
           <Avatar
             key={user.id}
