@@ -32,14 +32,10 @@ export const RoomContext = createContext({
 export const RoomProvider = ({ children }) => {
   const { socket } = useContext(SocketContext);
   const navigate = useNavigate();
-  const [modalOpen, setModalOpen] = useState(false);
-
   const { userName, userId } = useContext(UserContext);
   const [me, setMe] = useState();
-  const [fileTexture, setFileTexture] = useState(null);
   const [stream, setStream] = useState();
   const [screenStream, setScreenStream] = useState();
-
   const [peers, dispatch] = useReducer(peersReducer, {});
   const [screenSharingId, setScreenSharingId] = useState("");
   const [roomId, setRoomId] = useState("");
@@ -58,17 +54,48 @@ export const RoomProvider = ({ children }) => {
 
   const [connections, setConnections] = useState({});
 
-  const peer = new Peer(userId, {
-    //host: "localhost",
-    host: "metaversoude2.ddns.net",
-    port: "9000",
-    path: "/",
-  });
+  useEffect(() => {
+    if (!me) return;
 
-  /*
-fs.readFileSync('privkey.pem', 'utf8');
-fs.readFileSync('fullchain.pem', 'utf8');
-*/
+    me.on("connection", (conn) => {
+      // Almacenar la nueva conexión en el estado
+      setConnections((prevConnections) => ({
+        ...prevConnections,
+        [conn.peer]: conn,
+      }));
+    });
+
+    return () => {
+      me.off("connection");
+    };
+  }, [me]);
+
+  const switchStream = (stream) => {
+    setScreenSharingId(me?.id || "");
+    Object.values(connections).forEach((connection) => {
+      const videoTrack = stream
+        ?.getTracks()
+        .find((track) => track.kind === "video");
+      connection.peerConnection
+        .getSenders()
+        .find((sender) => sender.track.kind === "video")
+        .replaceTrack(videoTrack)
+        .catch((err) => console.error(err));
+    });
+  };
+
+  const shareScreen = () => {
+    if (screenSharingId) {
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then(switchStream);
+    } else {
+      navigator.mediaDevices.getDisplayMedia({}).then((stream) => {
+        switchStream(stream);
+        setScreenStream(stream);
+      });
+    }
+  };
 
   const nameChangedHandler = ({ peerId, userName }) => {
     dispatch(addPeerNameAction(peerId, userName));
@@ -92,14 +119,9 @@ fs.readFileSync('fullchain.pem', 'utf8');
         .getUserMedia({ video: true, audio: true })
         .then((stream) => {
           setStream(stream);
-        })
-        .catch((error) => {
-          console.error(error);
-          setModalOpen(true); // Abrir el modal si no se concede el permiso
         });
     } catch (error) {
       console.error(error);
-      setModalOpen(true); // Abrir el modal si no se concede el permiso
     }
 
     socket.on("room-created", enterRoom);
@@ -121,39 +143,6 @@ fs.readFileSync('fullchain.pem', 'utf8');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const shareScreen = () => {
-    if (screenSharingId) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
-        .then(switchStream);
-    } else {
-      navigator.mediaDevices.getDisplayMedia({}).then((stream) => {
-        switchStream(stream);
-        setScreenStream(stream);
-      });
-    }
-  };
-
-  useEffect(() => {
-    socket.emit("change-name", { peerId: userId, userName, roomId });
-  }, [userName, userId, roomId]);
-
-  useEffect(() => {
-    if (!me) return;
-
-    me.on("connection", (conn) => {
-      // Almacenar la nueva conexión en el estado
-      setConnections((prevConnections) => ({
-        ...prevConnections,
-        [conn.peer]: conn,
-      }));
-    });
-
-    return () => {
-      me.off("connection");
-    };
-  }, [me]);
 
   useEffect(() => {
     if (screenSharingId) {
@@ -192,94 +181,6 @@ fs.readFileSync('fullchain.pem', 'utf8');
     };
   }, [me, stream, userName]);
 
-  const switchStream = (stream) => {
-    setScreenSharingId(me?.id || "");
-    Object.values(connections).forEach((connection) => {
-      const videoTrack = stream
-        ?.getTracks()
-        .find((track) => track.kind === "video");
-      connection.peerConnection
-        .getSenders()
-        .find((sender) => sender.track.kind === "video")
-        .replaceTrack(videoTrack)
-        .catch((err) => console.error(err));
-    });
-  };
-  const startScreenSharing = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-      });
-      setScreenStream(stream);
-      setScreenSharingId(socket.id);
-
-      stream.getTracks().forEach((track) => {
-        for (const peerId in peers) {
-          const peerConnection = peers[peerId].peerConnection;
-          peerConnection.addTrack(track, stream);
-        }
-      });
-
-      socket.emit("screen-sharing-start", { id: socket.id });
-    } catch (error) {
-      console.error("Error al compartir pantalla:", error);
-    }
-  };
-
-  const stopScreenSharing = () => {
-    screenStream.getTracks().forEach((track) => track.stop());
-    setScreenStream(null);
-    setScreenSharingId(null);
-    socket.emit("screen-sharing-stop", { id: socket.id });
-  };
-
-  useEffect(() => {
-    socket.on("screen-sharing-start", (data) => {
-      setScreenSharingId(data.id);
-    });
-
-    socket.on("screen-sharing-stop", (data) => {
-      setScreenSharingId(null);
-      setScreenStream(null);
-    });
-
-    socket.on("file-upload", async (data) => {
-      const textureLoader = new THREE.TextureLoader();
-      const texture = await textureLoader.loadAsync(data.filePath);
-      setFileTexture(texture);
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, [socket]);
-
-  const uploadFile = async (file) => {
-    const formData = new FormData();
-    formData.append("archivo", file);
-
-    try {
-      const response = await fetch("http://localhost:3000/api/users/material", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Error al subir el archivo");
-      }
-
-      const data = await response.json();
-      const textureLoader = new THREE.TextureLoader();
-      const texture = await textureLoader.loadAsync(data.material.path);
-
-      setFileTexture(texture);
-
-      socket.emit("file-upload", { filePath: data.material.path });
-    } catch (error) {
-      console.error("Error al subir el archivo:", error);
-    }
-  };
-
   return (
     <RoomContext.Provider
       value={{
@@ -290,17 +191,9 @@ fs.readFileSync('fullchain.pem', 'utf8');
         roomId,
         setRoomId,
         screenSharingId,
-        startScreenSharing,
-        stopScreenSharing,
-        uploadFile,
       }}
     >
       {children}
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <h1>Acceso a la cámara denegado</h1>
-        <p>No puede interactuar en UDEVERSO sin habilitar la cámara.</p>
-        <p>Por favor, conceda el permiso y recargue la pagina.</p>
-      </Modal>
     </RoomContext.Provider>
   );
 };
