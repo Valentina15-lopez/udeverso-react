@@ -25,7 +25,7 @@ const AulaScene = () => {
   const [onFloor, setOnFloor] = useState(false);
   useCursor(onFloor);
   const handleFloorClick = (e) => {
-    const newPosition = [e.point.x, 0, e.point.z];
+    const newPosition = [e.point.x, -0.467, e.point.z];
     console.log("newPosition", newPosition);
     socket.emit("move", newPosition);
   };
