@@ -80,7 +80,6 @@ fs.readFileSync('fullchain.pem', 'utf8');
 
   useEffect(() => {
     const peer = new Peer(userId, {
-      //host: "localhost",
       host: "metaversoude2.ddns.net",
       port: 9000,
       path: "/",
@@ -179,7 +178,7 @@ fs.readFileSync('fullchain.pem', 'utf8');
       dispatch(addPeerNameAction(peerId, name));
     });
 
-    socket.on("call", (call) => {
+    me.on("call", (call) => {
       const { userName } = call.metadata;
       dispatch(addPeerNameAction(call.peer, userName));
       call.answer(stream);
