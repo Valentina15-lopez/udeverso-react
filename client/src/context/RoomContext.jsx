@@ -131,6 +131,7 @@ export const RoomProvider = ({ children }) => {
     }
 
     socket.on("room-created", enterRoom);
+    socket.on("room-joined", enterRoom);
     socket.on("get-users", getUsers);
     socket.on("user-disconnected", removePeer);
     socket.on("user-started-sharing", (peerId) => setScreenSharingId(peerId));
@@ -139,6 +140,7 @@ export const RoomProvider = ({ children }) => {
 
     return () => {
       socket.off("room-created");
+      socket.off("room-joined");
       socket.off("get-users");
       socket.off("user-disconnected");
       socket.off("user-started-sharing");
