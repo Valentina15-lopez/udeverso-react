@@ -16,7 +16,7 @@ const CreateMaterial = () => {
       try {
         // const response = await axios.get("http://localhost:3001/api/users");
         const response = await axios.get(
-          "https://metaversoude2.ddns.net:/api/users"
+          "https://metaversoude2.ddns.net:3001/api/users"
         );
         const users = response.data; // Supongamos que aquí tienes una lista de usuarios
         setUsuarios(users); // Guardar la lista de usuarios en el estado
