@@ -14,7 +14,6 @@ const CreateMaterial = () => {
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        // const response = await axios.get("http://localhost:3001/api/users");
         const response = await axios.get(
           "https://metaversoude2.ddns.net:3001/api/users"
         );
@@ -75,14 +74,19 @@ const CreateMaterial = () => {
             >
               Usuario:
             </label>
-            <input
+            <select
               id="usuario"
-              type="text"
               name="usuario"
               value={formData.usuario}
               onChange={handleChange}
               className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-            />
+            >
+              {usuarios.map((usuario) => (
+                <option key={usuario.usuario} value={usuario.usuario}>
+                  {usuario.usuario}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="mb-4">
             <label
