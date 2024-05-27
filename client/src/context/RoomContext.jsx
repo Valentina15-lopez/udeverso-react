@@ -39,6 +39,7 @@ export const RoomProvider = ({ children }) => {
   const [peers, dispatch] = useReducer(peersReducer, {});
   const [screenSharingId, setScreenSharingId] = useState("");
   const [roomId, setRoomId] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
 
   const enterRoom = ({ roomId }) => {
     navigate(`/aulavirtual/${roomId}`);
@@ -119,9 +120,14 @@ export const RoomProvider = ({ children }) => {
         .getUserMedia({ video: true, audio: true })
         .then((stream) => {
           setStream(stream);
+        })
+        .catch((error) => {
+          console.error(error);
+          setModalOpen(true); // Abrir el modal si no se concede el permiso
         });
     } catch (error) {
       console.error(error);
+      setModalOpen(true); // Abrir el modal si no se concede el permiso
     }
 
     socket.on("room-created", enterRoom);
@@ -194,6 +200,11 @@ export const RoomProvider = ({ children }) => {
       }}
     >
       {children}
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+        <h1>Acceso a la cámara denegado</h1>
+        <p>No puede interactuar en UDEVERSO sin habilitar la cámara.</p>
+        <p>Por favor, conceda el permiso y recargue la pagina.</p>
+      </Modal>
     </RoomContext.Provider>
   );
 };
