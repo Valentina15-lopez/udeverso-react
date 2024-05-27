@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "NODE_ENV=test nodemon start.js",
     "test": "NODE_ENV=test jest",
-    "start": "node start.js",
+    "start": "NODE_ENV=prod nodemon start.js",
     "test:coverage": "NODE_ENV=test jest --coverage"
   },
   "main": "src/index.js",
