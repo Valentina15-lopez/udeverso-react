@@ -9,7 +9,7 @@ import { useAtom } from "jotai";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { SkeletonUtils } from "three-stdlib";
 import { useGrid } from "../hooks/useGrid";
-import { socket, userAtom } from "./SocketManager";
+import { socket, userAtom } from "../context/ContexProvider";
 
 const MOVEMENT_SPEED = 0.032;
 
