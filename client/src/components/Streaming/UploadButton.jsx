@@ -53,7 +53,7 @@ export const UploadButton = () => {
             </div>
           ) : (
             materiales.map((material) => (
-              <div key={material.id} className="mb-2">
+              <div className="mb-2">
                 <Button
                   onClick={() => selectMaterial(material.nombre)}
                   isLight={true}

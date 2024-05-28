@@ -59,7 +59,6 @@ export const Room = () => {
       </div>
       <div className="fixed bottom-0 right-0 mr-16 mb-16 gap-3">
         <div className="flex gap-3">
-          <ShareScreenButton onClick={shareScreen} />
           <ChatButton onClick={toggleChat} />
           <UploadButton />
         </div>
