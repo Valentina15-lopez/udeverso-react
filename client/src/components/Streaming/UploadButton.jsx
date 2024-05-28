@@ -41,7 +41,7 @@ export const UploadButton = () => {
           {materiales.map((material) => (
             <div key={material.id}>
               <Button onClick={() => selectMaterial(material.path)}>
-                <span>{material.id.name}</span>
+                <span>{material.id.nombre}</span>
               </Button>
             </div>
           ))}
