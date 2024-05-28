@@ -26,7 +26,7 @@ export const UploadButton = () => {
     };
 
     loadMaterials();
-  }, []);
+  }, [isModalOpen]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
