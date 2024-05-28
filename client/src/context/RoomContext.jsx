@@ -192,6 +192,8 @@ export const RoomProvider = ({ children }) => {
 
   const updateFileTexture = (texturePath) => {
     console.log("texturePath", texturePath);
+    console.log("fileTexture", fileTexture);
+
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(texturePath, (texture) => {
       setFileTexture(texture);
