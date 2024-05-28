@@ -45,14 +45,19 @@ export const UploadButton = () => {
             Selecciona el archivo que desea compartir
           </h1>
           {loading ? (
-            <div className="flex justify-center items-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mr-3"></div>
-              <p>Cargando materiales...</p>
+            <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-75 z-50">
+              <div className="flex flex-col justify-center items-center">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
+                <p className="text-white text-lg">Cargando materiales...</p>
+              </div>
             </div>
           ) : (
             materiales.map((material) => (
               <div key={material.id} className="mb-2">
-                <Button onClick={() => selectMaterial(material.path)}>
+                <Button
+                  className="bg-white text-blue-900"
+                  onClick={() => selectMaterial(material.path)}
+                >
                   <span>{material.nombre}</span>
                 </Button>
               </div>
