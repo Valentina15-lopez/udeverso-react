@@ -46,7 +46,9 @@ export function Pizarron(props) {
   useEffect(() => {
     const fetchMaterials = async () => {
       try {
-        const response = await fetch(`/api/users/${userName}/material`);
+        const response = await fetch(
+          `https://metaversoude2.ddns.net:3001/api/users/${userName}/material`
+        );
         const materials = await response.json();
 
         if (materials.length > 0) {
