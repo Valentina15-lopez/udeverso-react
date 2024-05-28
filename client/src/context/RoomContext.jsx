@@ -191,6 +191,7 @@ export const RoomProvider = ({ children }) => {
   }, [me, stream, userName]);
 
   const updateFileTexture = (texturePath) => {
+    console.log("texturePath", texturePath);
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(texturePath, (texture) => {
       setFileTexture(texture);
@@ -208,6 +209,7 @@ export const RoomProvider = ({ children }) => {
         setRoomId,
         screenSharingId,
         setFileTexture: updateFileTexture,
+        fileTexture,
       }}
     >
       {children}
