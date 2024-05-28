@@ -30,7 +30,7 @@ export const ChatInput = () => {
             className="bg-rose-400 p-2 ml-2 rounded-lg text-lg hover:bg-rose-600 text-white"
             isLight={false}
           >
-            Send
+            Enviar
           </Button>
         </div>
       </form>
