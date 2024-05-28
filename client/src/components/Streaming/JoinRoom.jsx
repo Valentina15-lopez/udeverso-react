@@ -24,7 +24,9 @@ export const JoinRoom = () => {
         placeholder="Ingrese el ID de la Sala"
         className="mb-4 p-2 border border-gray-300 rounded"
       />
-      <Button onClick={joinRoom}>Unirse a la Sala</Button>
+      <Button onClick={joinRoom} isLight={false}>
+        Unirse a la Sala
+      </Button>
     </div>
   );
 };

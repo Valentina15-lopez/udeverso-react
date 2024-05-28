@@ -36,7 +36,7 @@ export const UploadButton = () => {
 
   return (
     <div>
-      <Button onClick={openModal} type="button">
+      <Button onClick={openModal} type="button" isLight={false}>
         Compartir Material
       </Button>
       <Modal isOpen={isModalOpen} closeModal={closeModal}>
@@ -55,8 +55,8 @@ export const UploadButton = () => {
             materiales.map((material) => (
               <div key={material.id} className="mb-2">
                 <Button
-                  className="bg-white text-blue-900"
                   onClick={() => selectMaterial(material.path)}
+                  isLight={true}
                 >
                   <span>{material.nombre}</span>
                 </Button>

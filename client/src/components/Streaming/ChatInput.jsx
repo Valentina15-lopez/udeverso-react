@@ -28,6 +28,7 @@ export const ChatInput = () => {
             testId="send-msg-button"
             type="submit"
             className="bg-rose-400 p-2 ml-2 rounded-lg text-lg hover:bg-rose-600 text-white"
+            isLight={false}
           >
             Send
           </Button>

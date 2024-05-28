@@ -18,7 +18,7 @@ export const ShareScreenButton = () => {
 
   return (
     <div>
-      <Button onClick={handleShareScreen}>
+      <Button onClick={handleShareScreen} isLight={false}>
         {isSharing ? "Detener compartición" : "Compartir pantalla"}
       </Button>
     </div>

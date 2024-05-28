@@ -9,7 +9,9 @@ export const Join = () => {
   return (
     <div className="flex flex-col">
       <NameInput />
-      <Button onClick={createRoom}>Crear sala</Button>
+      <Button onClick={createRoom} isLight={false}>
+        Crear sala
+      </Button>
     </div>
   );
 };
