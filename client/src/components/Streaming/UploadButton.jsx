@@ -29,8 +29,8 @@ export const UploadButton = () => {
     setLoading(false); // Terminar el estado de carga
   };
 
-  const selectMaterial = (materialPath) => {
-    setFileTexture(materialPath);
+  const selectMaterial = (materialName) => {
+    setFileTexture(materialName);
     closeModal();
   };
 
