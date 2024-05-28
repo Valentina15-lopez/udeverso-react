@@ -12,24 +12,20 @@ export const UploadButton = () => {
   const { userName } = useContext(UserContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    const loadMaterials = async () => {
-      try {
-        const response = await axios.get(
-          `https://metaversoude2.ddns.net:3001/api/users/${userName}/material`
-        );
-        console.log("materiales", response);
-        setMateriales(response.data);
-      } catch (error) {
-        console.error("Error al cargar materiales del usuario:", error);
-      }
-    };
-
-    loadMaterials();
-  }, [isModalOpen]);
-
-  const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  const openModal = async () => {
+    setIsModalOpen(true);
+    try {
+      const response = await axios.get(
+        `https://metaversoude2.ddns.net:3001/api/users/${userName}/material`
+      );
+      console.log("materiales", response);
+      setMateriales(response.data);
+    } catch (error) {
+      console.error("Error al cargar materiales del usuario:", error);
+    }
+  };
   const selectMaterial = (materialPath) => {
     setFileTexture(materialPath);
     closeModal();
