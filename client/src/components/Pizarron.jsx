@@ -8,6 +8,8 @@ export function Pizarron(props) {
   const { nodes, materials } = useGLTF(
     "/models/items/Pizarron-transformed.glb"
   );
+  const { userName } = useContext(UserContext);
+
   const { screenStream, peers, screenSharingId, fileTexture, userId } =
     useContext(RoomContext);
   const videoRef = useRef(null);
@@ -44,7 +46,7 @@ export function Pizarron(props) {
   useEffect(() => {
     const fetchMaterials = async () => {
       try {
-        const response = await fetch(`/api/users/${userId}/material`);
+        const response = await fetch(`/api/users/${userName}/material`);
         const materials = await response.json();
 
         if (materials.length > 0) {
@@ -58,7 +60,7 @@ export function Pizarron(props) {
     };
 
     fetchMaterials();
-  }, [userId]);
+  }, [userName]);
 
   return (
     <group {...props} dispose={null}>
