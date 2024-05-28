@@ -38,10 +38,12 @@ export const UploadButton = () => {
       <Modal isOpen={isModalOpen} closeModal={closeModal}>
         <div>
           <h1>Selecciona el archivo que desea compartir </h1>
+
           {materiales.map((material) => (
             <div key={material.id}>
               <Button onClick={() => selectMaterial(material.path)}>
-                <span>{material.id.nombre}</span>
+                <span>{material}</span>
+                {console.log(material)}
               </Button>
             </div>
           ))}
