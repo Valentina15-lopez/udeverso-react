@@ -4,7 +4,8 @@ import * as THREE from "three";
 import { UserContext } from "../context/UserContext";
 import { RoomContext } from "../context/RoomContext";
 import axios from "axios";
-import * as pdfjsLib from "pdfjs-dist";
+import pdfjsLib from "pdfjs-dist/legacy/build/pdf";
+import pdfjsWorker from "pdfjs-dist/legacy/build/pdf.worker.entry";
 
 export function Pizarron(props) {
   const { nodes, materials } = useGLTF(
