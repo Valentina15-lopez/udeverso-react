@@ -24,7 +24,7 @@ export function Pizarron(props) {
         );
         const materials = response.data;
 
-        console.log("materiales", materials);
+        console.log("materialesfetchmateriales", materials);
 
         // Encuentra el material con nombre "fileTexture"
         const fileTextureMaterial = materials.find(
