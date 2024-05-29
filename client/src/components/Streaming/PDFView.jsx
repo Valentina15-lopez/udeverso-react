@@ -4,7 +4,7 @@ import { Html } from "@react-three/drei";
 import { useLoader } from "@react-three/fiber";
 import pdfjs from "pdfjs-dist";
 
-const PDFView = ({ file }) => {
+export const PDFView = ({ file }) => {
   const [page, setPage] = useState(1);
   const [pdfImages, setPdfImages] = useState([]);
   const texture = useLoader(THREE.TextureLoader, pdfImages[page - 1] || "");
@@ -71,5 +71,3 @@ const PDFView = ({ file }) => {
     </>
   );
 };
-
-export default PDFView;
