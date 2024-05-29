@@ -127,35 +127,37 @@ export function Pizarron(props) {
     setMaterialTexture(texture);
   };
   return (
-    <group {...props} dispose={null}>
-      <mesh
-        geometry={nodes.Cylinder005.geometry}
-        material={materials["Material #45"]}
-        position={[-4.854, 2.798, -1.338]}
-        rotation={[Math.PI / 2, 0, -3.122]}
-        scale={[0.009, 0.01, 0.009]}
-      />
-      <group
-        position={[-4.889, 0.798, 0.429]}
-        rotation={[-Math.PI, 0.02, -Math.PI]}
-        scale={[0.008, 0.02, 0.022]}
-      >
+    <>
+      <group {...props} dispose={null}>
         <mesh
-          geometry={nodes.Malla003.geometry}
-          material={materials["01 - Default"]}
+          geometry={nodes.Cylinder005.geometry}
+          material={materials["Material #45"]}
+          position={[-4.854, 2.798, -1.338]}
+          rotation={[Math.PI / 2, 0, -3.122]}
+          scale={[0.009, 0.01, 0.009]}
         />
-        <mesh
-          geometry={nodes.Malla003_1.geometry}
-          material={materials["02 - Default"]}
-        />
-        <mesh
-          geometry={nodes.Malla003_2.geometry}
-          material={
-            materialTexture
-              ? new THREE.MeshBasicMaterial({ map: materialTexture })
-              : materials["Material #49"]
-          }
-        />
+        <group
+          position={[-4.889, 0.798, 0.429]}
+          rotation={[-Math.PI, 0.02, -Math.PI]}
+          scale={[0.008, 0.02, 0.022]}
+        >
+          <mesh
+            geometry={nodes.Malla003.geometry}
+            material={materials["01 - Default"]}
+          />
+          <mesh
+            geometry={nodes.Malla003_1.geometry}
+            material={materials["02 - Default"]}
+          />
+          <mesh
+            geometry={nodes.Malla003_2.geometry}
+            material={
+              materialTexture
+                ? new THREE.MeshBasicMaterial({ map: materialTexture })
+                : materials["Material #49"]
+            }
+          />
+        </group>
       </group>
       {loading && (
         <div style={{ position: "absolute", top: "48%", left: "43%" }}>
@@ -170,7 +172,7 @@ export function Pizarron(props) {
           height: 100,
         }}
       />
-    </group>
+    </>
   );
 }
 

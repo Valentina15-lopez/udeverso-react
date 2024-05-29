@@ -74,7 +74,6 @@ export const UploadButton = () => {
           )}
         </div>
       </Modal>
-      <PDFView />
     </div>
   );
 };
