@@ -41,11 +41,6 @@ export const PDFView = ({ file }) => {
 
   return (
     <>
-      {loading && (
-        <div style={{ position: "absolute", top: "48%", left: "43%" }}>
-          Loading...
-        </div>
-      )}
       <Html transform width={"300px"} height={"300px"}>
         <canvas ref={canvasRef} />
       </Html>
