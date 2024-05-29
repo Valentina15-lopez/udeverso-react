@@ -1,9 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as pdfjsLib from "pdfjs-dist";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  window.location.origin + "/pdf.worker.min.mjs";
-
 export const PDFView = ({ file, className, width, height, padding }) => {
   const [loading, setLoading] = useState(false);
   const canvasRef = useRef(null);
