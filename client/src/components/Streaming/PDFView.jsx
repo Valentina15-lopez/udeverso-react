@@ -48,26 +48,10 @@ export const PDFView = ({ file }) => {
 
   return (
     <>
-      <Html transform position={[0, 0, 0]}>
-        <button
-          onClick={() => setPage((prevPage) => Math.max(prevPage - 1, 1))}
-        >
-          Prev
-        </button>
-        <button
-          onClick={() =>
-            setPage((prevPage) => Math.min(prevPage + 1, pdfImages.length))
-          }
-        >
-          Next
-        </button>
-      </Html>
-      {pdfImages[page - 1] && (
-        <mesh position={[0, 0, -1]}>
-          <planeGeometry args={[2, 2]} />
-          <meshBasicMaterial map={texture} />
-        </mesh>
-      )}
+      <mesh position={[0, 0, -1]}>
+        <planeGeometry args={[2, 2]} />
+        <meshBasicMaterial map={texture} />
+      </mesh>
     </>
   );
 };
