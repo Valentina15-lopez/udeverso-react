@@ -35,10 +35,19 @@ export function Pizarron(props) {
         console.log("fileTextureMaterial", fileTextureMaterial);
 
         if (fileTextureMaterial) {
-          const textureLoader = new THREE.TextureLoader();
-          const texture = await textureLoader.loadAsync(
-            fileTextureMaterial.path
+          // Procesa el buffer para crear una URL de blob
+          const materialBuffer = new Uint8Array(
+            fileTextureMaterial.material.data
           );
+          const blob = new Blob([materialBuffer], { type: "image/jpeg" });
+          const url = URL.createObjectURL(blob);
+
+          const textureLoader = new THREE.TextureLoader();
+          const texture = await textureLoader.loadAsync(url);
+
+          // Libera la URL después de cargar la textura
+          URL.revokeObjectURL(url);
+
           setMaterialTexture(texture);
         }
       } catch (error) {
@@ -48,7 +57,6 @@ export function Pizarron(props) {
 
     fetchMaterials();
   }, [userName, fileTexture]);
-
   return (
     <group {...props} dispose={null}>
       <mesh
