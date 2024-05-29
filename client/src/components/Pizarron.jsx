@@ -14,36 +14,7 @@ export function Pizarron(props) {
 
   const { screenStream, peers, screenSharingId, fileTexture, userId } =
     useContext(RoomContext);
-  const videoRef = useRef(null);
   const [materialTexture, setMaterialTexture] = useState(null);
-
-  useEffect(() => {
-    const video = document.createElement("video");
-    video.id = "video-screen";
-    video.style.display = "none";
-    video.autoPlay = true;
-    video.muted = true;
-
-    document.body.appendChild(video);
-
-    if (screenStream) {
-      video.srcObject = screenStream;
-      video.play();
-
-      const texture = new THREE.VideoTexture(video);
-      setMaterialTexture(texture);
-    }
-
-    return () => {
-      document.body.removeChild(video);
-    };
-  }, [screenStream]);
-
-  useEffect(() => {
-    if (fileTexture) {
-      setMaterialTexture(fileTexture);
-    }
-  }, [fileTexture]);
 
   useEffect(() => {
     const fetchMaterials = async () => {
@@ -53,9 +24,11 @@ export function Pizarron(props) {
         );
         const materials = response.data;
 
+        console.log(materials);
+
         // Encuentra el material con nombre "fileTexture"
         const fileTextureMaterial = materials.find(
-          (material) => material.name === "fileTexture"
+          (material) => material.nombre === fileTexture
         );
 
         if (fileTextureMaterial) {
