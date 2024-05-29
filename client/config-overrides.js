@@ -4,10 +4,7 @@ module.exports = function override(config, env) {
   // Agrega el alias para importar pdfjs-dist
   config.resolve.alias = {
     ...config.resolve.alias,
-    "pdfjs-dist": path.resolve(
-      __dirname,
-      "node_modules/pdfjs-dist/legacy/build/pdf.mjs"
-    ),
+    "pdfjs-dist": path.resolve(__dirname, "public/pdf.mjs"),
   };
 
   // Permitir la importación de pdf.worker
