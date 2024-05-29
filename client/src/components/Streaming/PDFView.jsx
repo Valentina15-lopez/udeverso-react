@@ -1,57 +1,58 @@
 import React, { useEffect, useRef, useState } from "react";
-import * as THREE from "three";
-import { Html } from "@react-three/drei";
-import { useLoader } from "@react-three/fiber";
 import pdfjs from "pdfjs-dist";
 
-export const PDFView = ({ file }) => {
-  const [page, setPage] = useState(1);
-  const [pdfImages, setPdfImages] = useState([]);
-  const texture = useLoader(THREE.TextureLoader, "");
-  console.log("pdfviwew");
+export const PDFPreview = ({ file }) => {
+  const [loading, setLoading] = useState(false);
+  const canvasRef = useRef(null);
 
   useEffect(() => {
-    const loadPDF = async () => {
+    const loadAndRenderPDF = async (file) => {
+      setLoading(true);
+      // eslint-disable-next-line no-undef
+      const loadingTask = pdfjsLib.getDocument(file);
+
       try {
-        const arrayBuffer = file;
-        const pdfData = new Uint8Array(arrayBuffer);
-        const loadingTask = pdfjs.getDocument({ data: pdfData });
         const pdf = await loadingTask.promise;
-        const totalPageCount = pdf.numPages;
+        const page = await pdf.getPage(1);
 
-        for (let i = 1; i <= totalPageCount; i++) {
-          const page = await pdf.getPage(i);
-          const viewport = page.getViewport({ scale: 1 });
-          const canvas = document.createElement("canvas");
-          const context = canvas.getContext("2d");
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
+        const canvas = canvasRef.current;
+        const context = canvas.getContext("2d");
+        const viewport = page.getViewport({ scale: 1 });
 
-          const renderContext = {
-            canvasContext: context,
-            viewport: viewport,
-          };
-          await page.render(renderContext).promise;
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
 
-          const imageDataUrl = canvas.toDataURL();
-          setPdfImages((prevImages) => [...prevImages, imageDataUrl]);
-        }
+        await page.render({
+          canvasContext: context,
+          viewport: viewport,
+        });
       } catch (error) {
         console.error("Error loading PDF:", error);
       }
+      setLoading(false);
     };
-
     if (file) {
-      loadPDF();
+      loadAndRenderPDF(file);
     }
   }, [file]);
 
   return (
     <>
-      <mesh position={[0, 0, -1]}>
-        <planeGeometry args={[2, 2]} />
-        <meshBasicMaterial map={texture} />
-      </mesh>
+      {loading && (
+        <div style={{ position: "absolute", top: "48%", left: "43%" }}>
+          Loading...
+        </div>
+      )}
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: "absolute",
+          width: 100,
+          height: 100,
+          top: 10,
+          left: 10,
+        }}
+      />
     </>
   );
 };

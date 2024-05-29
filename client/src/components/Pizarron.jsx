@@ -1,10 +1,10 @@
-import React, { useEffect, useContext, useState, useRef } from "react";
-import { useGLTF, Html } from "@react-three/drei";
+import React, { useEffect, useContext, useState } from "react";
+import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { UserContext } from "../context/UserContext";
 import { RoomContext } from "../context/RoomContext";
 import axios from "axios";
-import pdfjs from "pdfjs-dist";
+import pdfjs from "../lib/pdfjs-dist";
 
 export function Pizarron(props) {
   const { nodes, materials } = useGLTF(
@@ -12,44 +12,11 @@ export function Pizarron(props) {
   );
   const { userName } = useContext(UserContext);
 
-  const {
-    screenStream,
-    peers,
-    screenSharingId,
-    fileTexture,
-    userId,
-    setScreenStream,
-  } = useContext(RoomContext);
+  const { screenStream, peers, screenSharingId, fileTexture, setScreenStream } =
+    useContext(RoomContext);
   const [materialTexture, setMaterialTexture] = useState(null);
   const [pdfImages, setPdfImages] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const canvasRef = useRef(null);
-  const loadAndRenderPDF = async (file) => {
-    setLoading(true);
-    // eslint-disable-next-line no-undef
-    const loadingTask = pdfjs.getDocument(file);
-
-    try {
-      const pdf = await loadingTask.promise;
-      const page = await pdf.getPage(1);
-
-      const canvas = canvasRef.current;
-      const context = canvas.getContext("2d");
-      const viewport = page.getViewport({ scale: 1 });
-
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-
-      await page.render({
-        canvasContext: context,
-        viewport: viewport,
-      });
-    } catch (error) {
-      console.error("Error loading PDF:", error);
-    }
-    setLoading(false);
-  };
 
   useEffect(() => {
     const fetchMaterial = async () => {
@@ -58,12 +25,12 @@ export function Pizarron(props) {
           `https://metaversoude2.ddns.net:3001/api/users/${userName}/material/${fileTexture}`
         );
         const material = response.data;
+
         if (material && material.material && material.material.data) {
           const materialBuffer = new Uint8Array(material.material.data);
           setScreenStream(materialBuffer);
-          console.log(materialBuffer);
           if (material.ext === "pdf") {
-            await loadAndRenderPDF(materialBuffer);
+            await loadPDF(materialBuffer);
           } else {
             loadImage(materialBuffer, material.ext);
           }
@@ -134,39 +101,37 @@ export function Pizarron(props) {
     setMaterialTexture(texture);
   };
   return (
-    <>
-      <group {...props} dispose={null}>
+    <group {...props} dispose={null}>
+      <mesh
+        geometry={nodes.Cylinder005.geometry}
+        material={materials["Material #45"]}
+        position={[-4.854, 2.798, -1.338]}
+        rotation={[Math.PI / 2, 0, -3.122]}
+        scale={[0.009, 0.01, 0.009]}
+      />
+      <group
+        position={[-4.889, 0.798, 0.429]}
+        rotation={[-Math.PI, 0.02, -Math.PI]}
+        scale={[0.008, 0.02, 0.022]}
+      >
         <mesh
-          geometry={nodes.Cylinder005.geometry}
-          material={materials["Material #45"]}
-          position={[-4.854, 2.798, -1.338]}
-          rotation={[Math.PI / 2, 0, -3.122]}
-          scale={[0.009, 0.01, 0.009]}
+          geometry={nodes.Malla003.geometry}
+          material={materials["01 - Default"]}
         />
-        <group
-          position={[-4.889, 0.798, 0.429]}
-          rotation={[-Math.PI, 0.02, -Math.PI]}
-          scale={[0.008, 0.02, 0.022]}
-        >
-          <mesh
-            geometry={nodes.Malla003.geometry}
-            material={materials["01 - Default"]}
-          />
-          <mesh
-            geometry={nodes.Malla003_1.geometry}
-            material={materials["02 - Default"]}
-          />
-          <mesh
-            geometry={nodes.Malla003_2.geometry}
-            material={
-              materialTexture
-                ? new THREE.MeshBasicMaterial({ map: materialTexture })
-                : materials["Material #49"]
-            }
-          />
-        </group>
+        <mesh
+          geometry={nodes.Malla003_1.geometry}
+          material={materials["02 - Default"]}
+        />
+        <mesh
+          geometry={nodes.Malla003_2.geometry}
+          material={
+            materialTexture
+              ? new THREE.MeshBasicMaterial({ map: materialTexture })
+              : materials["Material #49"]
+          }
+        />
       </group>
-    </>
+    </group>
   );
 }
 
