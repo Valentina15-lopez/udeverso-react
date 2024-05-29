@@ -10,15 +10,14 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RoomContext } from "../context/RoomContext";
 import { UserContext } from "../context/UserContext";
 import modeloGlb from "../assets/modeloAula3.glb";
-import { VideoScreen } from "../components/Streaming/VideoScreen";
-import { Pizarron } from "./Pizarron";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
   const [users] = useAtom(userAtom);
 
   console.log(users);
-  const { screenStream, peers, screenSharingId } = useContext(RoomContext);
+  const { screenStream, peers, screenSharingId, fileTexture } =
+    useContext(RoomContext);
   const { userId } = useContext(UserContext);
   const screenSharingVideo =
     screenSharingId === userId ? screenStream : peers[screenSharingId]?.stream;

@@ -2,6 +2,8 @@ import React, { useEffect, useContext, useState, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { RoomContext } from "../context/RoomContext";
+import axios from "axios";
+
 import { UserContext } from "../context/UserContext";
 
 export function Pizarron(props) {
@@ -46,14 +48,21 @@ export function Pizarron(props) {
   useEffect(() => {
     const fetchMaterials = async () => {
       try {
-        const response = await fetch(
+        const response = await axios.get(
           `https://metaversoude2.ddns.net:3001/api/users/${userName}/material`
         );
-        const materials = await response.json();
+        const materials = response.data;
 
-        if (materials.length > 0) {
+        // Encuentra el material con nombre "fileTexture"
+        const fileTextureMaterial = materials.find(
+          (material) => material.name === "fileTexture"
+        );
+
+        if (fileTextureMaterial) {
           const textureLoader = new THREE.TextureLoader();
-          const texture = await textureLoader.loadAsync(materials[0].path);
+          const texture = await textureLoader.loadAsync(
+            fileTextureMaterial.path
+          );
           setMaterialTexture(texture);
         }
       } catch (error) {
@@ -62,7 +71,7 @@ export function Pizarron(props) {
     };
 
     fetchMaterials();
-  }, [userName]);
+  }, [userName, setMaterialTexture]);
 
   return (
     <group {...props} dispose={null}>
