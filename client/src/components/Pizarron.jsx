@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState, useRef } from "react";
-import { useGLTF } from "@react-three/drei";
+import { useGLTF, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { UserContext } from "../context/UserContext";
 import { RoomContext } from "../context/RoomContext";
@@ -164,14 +164,16 @@ export function Pizarron(props) {
           Loading...
         </div>
       )}
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: "absolute",
-          width: 100,
-          height: 100,
-        }}
-      />
+      <Html transform>
+        <canvas
+          ref={canvasRef}
+          style={{
+            position: "absolute",
+            width: 100,
+            height: 100,
+          }}
+        />
+      </Html>
     </>
   );
 }
