@@ -17,6 +17,7 @@ export function Pizarron(props) {
   const [materialTexture, setMaterialTexture] = useState(null);
 
   useEffect(() => {
+    console.log("se ejecuta use effect");
     const fetchMaterials = async () => {
       try {
         const response = await axios.get(
