@@ -8,7 +8,7 @@ import axios from "axios";
 import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
 
 // Configura la ruta del trabajador PDF.js
-GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.js`;
+GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.8.335/pdf.worker.js`;
 
 export function Pizarron(props) {
   const { nodes, materials } = useGLTF(
