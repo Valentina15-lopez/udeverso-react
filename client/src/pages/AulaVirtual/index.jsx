@@ -15,6 +15,7 @@ import {
 } from "@react-three/drei";
 import { PDFView } from "../components/Streaming/PDFView";
 import { RoomContext } from "../../context/RoomContext";
+import pdfjs from "pdfjs-dist";
 
 import { useAtom } from "jotai";
 

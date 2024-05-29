@@ -9,7 +9,7 @@ export const PDFPreview = ({ file }) => {
     const loadAndRenderPDF = async (file) => {
       setLoading(true);
       // eslint-disable-next-line no-undef
-      const loadingTask = pdfjsLib.getDocument(file);
+      const loadingTask = pdfjs.getDocument(file);
 
       try {
         const pdf = await loadingTask.promise;
