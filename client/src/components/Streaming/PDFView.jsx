@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import pdfjs from "../../lib/pdfjs-dist";
+import pdfjs from "pdfjs-dist";
 
 export const PDFView = ({ file, className, width, height, padding }) => {
   const [loading, setLoading] = useState(false);
