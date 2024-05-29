@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import pdfjs from "pdfjs-dist";
 import { Html } from "@react-three/drei";
-import { RoomContext } from "../context/RoomContext";
+import { RoomContext } from "../../context/RoomContext";
 
 export const PDFView = ({ file }) => {
   const [loading, setLoading] = useState(false);
