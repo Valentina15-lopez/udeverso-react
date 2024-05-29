@@ -1,49 +1,73 @@
-import React, { useEffect, useRef, useState, useContext } from "react";
-import pdfjs from "pdfjs-dist";
+import React, { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
 import { Html } from "@react-three/drei";
-import { RoomContext } from "../../context/RoomContext";
+import { useLoader } from "@react-three/fiber";
 
-export const PDFView = ({ file }) => {
-  const [loading, setLoading] = useState(false);
-  const { screenStream } = useContext(RoomContext);
-  const canvasRef = useRef(null);
+const PDFView = ({ file }) => {
+  const [page, setPage] = useState(1);
+  const [pdfImages, setPdfImages] = useState([]);
+  const texture = useLoader(THREE.TextureLoader, pdfImages[page - 1] || "");
 
   useEffect(() => {
-    const loadAndRenderPDF = async (screenStream) => {
-      setLoading(true);
-      // eslint-disable-next-line no-undef
-      const loadingTask = pdfjs.getDocument(screenStream);
-
+    const loadPDF = async () => {
       try {
+        const arrayBuffer = file;
+        const pdfData = new Uint8Array(arrayBuffer);
+        const loadingTask = pdfjsLib.getDocument({ data: pdfData });
         const pdf = await loadingTask.promise;
-        const page = await pdf.getPage(1);
+        const totalPageCount = pdf.numPages;
 
-        const canvas = canvasRef.current;
-        const context = canvas.getContext("2d");
-        const viewport = page.getViewport({ scale: 1 });
+        for (let i = 1; i <= totalPageCount; i++) {
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 1 });
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d");
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
 
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
+          const renderContext = {
+            canvasContext: context,
+            viewport: viewport,
+          };
+          await page.render(renderContext).promise;
 
-        await page.render({
-          canvasContext: context,
-          viewport: viewport,
-        });
+          const imageDataUrl = canvas.toDataURL();
+          setPdfImages((prevImages) => [...prevImages, imageDataUrl]);
+        }
       } catch (error) {
         console.error("Error loading PDF:", error);
       }
-      setLoading(false);
     };
-    if (screenStream) {
-      loadAndRenderPDF(screenStream);
+
+    if (file) {
+      loadPDF();
     }
-  }, [screenStream]);
+  }, [file]);
 
   return (
     <>
-      <Html transform width={"300px"} height={"300px"}>
-        <canvas ref={canvasRef} />
+      <Html transform position={[0, 0, 0]}>
+        <button
+          onClick={() => setPage((prevPage) => Math.max(prevPage - 1, 1))}
+        >
+          Prev
+        </button>
+        <button
+          onClick={() =>
+            setPage((prevPage) => Math.min(prevPage + 1, pdfImages.length))
+          }
+        >
+          Next
+        </button>
       </Html>
+      {texture && (
+        <mesh position={[0, 0, -1]}>
+          <planeGeometry args={[2, 2]} />
+          <meshBasicMaterial map={texture} />
+        </mesh>
+      )}
     </>
   );
 };
+
+export default PDFView;
