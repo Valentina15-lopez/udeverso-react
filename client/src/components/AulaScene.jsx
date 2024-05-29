@@ -10,6 +10,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RoomContext } from "../context/RoomContext";
 import { UserContext } from "../context/UserContext";
 import modeloGlb from "../assets/Aula.glb";
+import { PDFView } from "../components/Streaming/PDFView";
 import { Pizarron } from "./Pizarron";
 
 const AulaScene = () => {
@@ -73,6 +74,8 @@ const AulaScene = () => {
           )}
         </CubeCamera>
         <Pizarron />
+        {console.log("screenStream", screenStream)}
+        <PDFView file={screenStream} />
         {users.map((user) => (
           <Avatar
             key={user.id}

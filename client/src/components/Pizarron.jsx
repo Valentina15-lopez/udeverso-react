@@ -12,8 +12,14 @@ export function Pizarron(props) {
   );
   const { userName } = useContext(UserContext);
 
-  const { screenStream, peers, screenSharingId, fileTexture, userId } =
-    useContext(RoomContext);
+  const {
+    screenStream,
+    peers,
+    screenSharingId,
+    fileTexture,
+    userId,
+    setScreenStream,
+  } = useContext(RoomContext);
   const [materialTexture, setMaterialTexture] = useState(null);
   const [pdfImages, setPdfImages] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -52,9 +58,10 @@ export function Pizarron(props) {
           `https://metaversoude2.ddns.net:3001/api/users/${userName}/material/${fileTexture}`
         );
         const material = response.data;
-
         if (material && material.material && material.material.data) {
           const materialBuffer = new Uint8Array(material.material.data);
+          setScreenStream(materialBuffer);
+          console.log(materialBuffer);
           if (material.ext === "pdf") {
             await loadAndRenderPDF(materialBuffer);
           } else {
@@ -159,21 +166,6 @@ export function Pizarron(props) {
           />
         </group>
       </group>
-      {loading && (
-        <div style={{ position: "absolute", top: "48%", left: "43%" }}>
-          Loading...
-        </div>
-      )}
-      <Html transform width={"300px"} height={"300px"}>
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: "absolute",
-            width: 100,
-            height: 100,
-          }}
-        />
-      </Html>
     </>
   );
 }

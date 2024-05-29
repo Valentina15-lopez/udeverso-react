@@ -1,15 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import pdfjs from "pdfjs-dist";
+import { Html } from "@react-three/drei";
+import { RoomContext } from "../context/RoomContext";
 
-export const PDFView = ({ file, className, width, height, padding }) => {
+export const PDFView = ({ file }) => {
   const [loading, setLoading] = useState(false);
+  const { screenStream } = useContext(RoomContext);
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    const loadAndRenderPDF = async (file) => {
+    const loadAndRenderPDF = async (screenStream) => {
       setLoading(true);
       // eslint-disable-next-line no-undef
-      const loadingTask = pdfjs.getDocument(file);
+      const loadingTask = pdfjs.getDocument(screenStream);
 
       try {
         const pdf = await loadingTask.promise;
@@ -31,10 +34,10 @@ export const PDFView = ({ file, className, width, height, padding }) => {
       }
       setLoading(false);
     };
-    if (file) {
-      loadAndRenderPDF(file);
+    if (screenStream) {
+      loadAndRenderPDF(screenStream);
     }
-  }, [file]);
+  }, [screenStream]);
 
   return (
     <>
@@ -43,17 +46,9 @@ export const PDFView = ({ file, className, width, height, padding }) => {
           Loading...
         </div>
       )}
-      <canvas
-        ref={canvasRef}
-        className={className}
-        style={{
-          position: "absolute",
-          width: width - padding * 2,
-          height: height - padding * 2,
-          top: padding,
-          left: padding,
-        }}
-      />
+      <Html transform width={"300px"} height={"300px"}>
+        <canvas ref={canvasRef} />
+      </Html>
     </>
   );
 };

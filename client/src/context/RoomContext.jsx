@@ -204,6 +204,7 @@ export const RoomProvider = ({ children }) => {
         screenSharingId,
         setFileTexture,
         fileTexture,
+        setScreenStream,
       }}
     >
       {children}
