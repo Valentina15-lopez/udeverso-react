@@ -44,7 +44,7 @@ export function Pizarron(props) {
     };
 
     fetchMaterials();
-  }, [userName, setMaterialTexture]);
+  }, [userName, fileTexture]);
 
   return (
     <group {...props} dispose={null}>
