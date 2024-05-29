@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext, useState, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { UserContext } from "../context/UserContext";
@@ -17,6 +17,33 @@ export function Pizarron(props) {
   const [materialTexture, setMaterialTexture] = useState(null);
   const [pdfImages, setPdfImages] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const canvasRef = useRef(null);
+  const loadAndRenderPDF = async (file) => {
+    setLoading(true);
+    // eslint-disable-next-line no-undef
+    const loadingTask = pdfjs.getDocument(file);
+
+    try {
+      const pdf = await loadingTask.promise;
+      const page = await pdf.getPage(1);
+
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
+      const viewport = page.getViewport({ scale: 1 });
+
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      await page.render({
+        canvasContext: context,
+        viewport: viewport,
+      });
+    } catch (error) {
+      console.error("Error loading PDF:", error);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
     const fetchMaterial = async () => {
@@ -29,7 +56,7 @@ export function Pizarron(props) {
         if (material && material.material && material.material.data) {
           const materialBuffer = new Uint8Array(material.material.data);
           if (material.ext === "pdf") {
-            await loadPDF(materialBuffer);
+            await loadAndRenderPDF(materialBuffer);
           } else {
             loadImage(materialBuffer, material.ext);
           }
@@ -130,6 +157,19 @@ export function Pizarron(props) {
           }
         />
       </group>
+      {loading && (
+        <div style={{ position: "absolute", top: "48%", left: "43%" }}>
+          Loading...
+        </div>
+      )}
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: "absolute",
+          width: 100,
+          height: 100,
+        }}
+      />
     </group>
   );
 }
