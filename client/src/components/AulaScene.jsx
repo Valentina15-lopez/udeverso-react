@@ -9,7 +9,8 @@ import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RoomContext } from "../context/RoomContext";
 import { UserContext } from "../context/UserContext";
-import modeloGlb from "../assets/modeloAula3.glb";
+import modeloGlb from "../assets/Aula.glb";
+import { Pizarron } from "./Pizarron";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
@@ -71,7 +72,7 @@ const AulaScene = () => {
             </>
           )}
         </CubeCamera>
-
+        <Pizarron />
         {users.map((user) => (
           <Avatar
             key={user.id}
