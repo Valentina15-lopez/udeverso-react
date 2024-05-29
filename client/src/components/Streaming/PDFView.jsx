@@ -7,7 +7,7 @@ import pdfjs from "pdfjs-dist";
 export const PDFView = ({ file }) => {
   const [page, setPage] = useState(1);
   const [pdfImages, setPdfImages] = useState([]);
-  const texture = useLoader(THREE.TextureLoader, pdfImages[page - 1] || "");
+  const texture = useLoader(THREE.TextureLoader, "");
   console.log("pdfviwew");
 
   useEffect(() => {
