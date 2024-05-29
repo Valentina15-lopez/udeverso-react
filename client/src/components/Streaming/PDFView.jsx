@@ -48,6 +48,7 @@ export const PDFView = ({ file }) => {
       )}
       <canvas
         ref={canvasRef}
+        position={[0, 0, 0]}
         style={{
           position: "absolute",
           width: 100,
