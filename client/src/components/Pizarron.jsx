@@ -1,11 +1,14 @@
 import React, { useEffect, useContext, useState, useRef } from "react";
+import * as pdfjsLib from "pdfjs-dist";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
+import { UserContext } from "../context/UserContext";
 import { RoomContext } from "../context/RoomContext";
 import axios from "axios";
-import { getDocument } from "pdfjs-dist/build/pdf";
+import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
 
-import { UserContext } from "../context/UserContext";
+// Configura la ruta del trabajador PDF.js
+GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.js`;
 
 export function Pizarron(props) {
   const { nodes, materials } = useGLTF(
