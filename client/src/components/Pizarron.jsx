@@ -1,10 +1,10 @@
-import React, { useEffect, useContext, useState, useRef } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { UserContext } from "../context/UserContext";
 import { RoomContext } from "../context/RoomContext";
 import axios from "axios";
-import pdfjs from "../../node_modules/pdfjs-dist";
+import pdfjs from "../lib/pdfjs-dist";
 
 export function Pizarron(props) {
   const { nodes, materials } = useGLTF(
