@@ -6,7 +6,7 @@ module.exports = function override(config, env) {
     ...config.resolve.alias,
     "pdfjs-dist": path.resolve(
       __dirname,
-      "node_modules/pdfjs-dist/legacy/build/pdf.js"
+      "node_modules/pdfjs-dist/legacy/build/pdf.mjs"
     ),
   };
 

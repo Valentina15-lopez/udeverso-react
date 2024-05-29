@@ -6,6 +6,9 @@ import { RoomContext } from "../context/RoomContext";
 import axios from "axios";
 import * as pdfjsLib from "pdfjs-dist";
 
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  window.location.origin + "/pdf.worker.min.mjs";
+
 export function Pizarron(props) {
   const { nodes, materials } = useGLTF(
     "/models/items/Pizarron-transformed.glb"
