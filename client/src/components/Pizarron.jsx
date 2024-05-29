@@ -32,6 +32,8 @@ export function Pizarron(props) {
           (material) => material.nombre === fileTexture
         );
 
+        console.log("fileTextureMaterial", fileTextureMaterial);
+
         if (fileTextureMaterial) {
           const textureLoader = new THREE.TextureLoader();
           const texture = await textureLoader.loadAsync(
