@@ -4,8 +4,7 @@ import * as THREE from "three";
 import { UserContext } from "../context/UserContext";
 import { RoomContext } from "../context/RoomContext";
 import axios from "axios";
-import pdfjsLib from "pdfjs-dist/legacy/build/pdf";
-import pdfjsWorker from "pdfjs-dist/legacy/build/pdf.worker.entry";
+import pdfjs from "pdfjs-dist";
 
 export function Pizarron(props) {
   const { nodes, materials } = useGLTF(
@@ -60,7 +59,7 @@ export function Pizarron(props) {
   };
 
   const loadPDF = async (pdfData) => {
-    const loadingTask = pdfjsLib.getDocument({ data: pdfData });
+    const loadingTask = pdfjs.getDocument({ data: pdfData });
     const pdf = await loadingTask.promise;
     const totalPageCount = pdf.numPages;
 
