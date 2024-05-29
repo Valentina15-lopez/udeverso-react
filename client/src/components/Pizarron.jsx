@@ -3,6 +3,7 @@ import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { RoomContext } from "../context/RoomContext";
 import axios from "axios";
+import { getDocument } from "pdfjs-dist/build/pdf";
 
 import { UserContext } from "../context/UserContext";
 
@@ -15,48 +16,90 @@ export function Pizarron(props) {
   const { screenStream, peers, screenSharingId, fileTexture, userId } =
     useContext(RoomContext);
   const [materialTexture, setMaterialTexture] = useState(null);
+  const [pdfImages, setPdfImages] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
-    console.log("se ejecuta use effect");
-    const fetchMaterials = async () => {
+    const fetchMaterial = async () => {
       try {
         const response = await axios.get(
-          `https://metaversoude2.ddns.net:3001/api/users/${userName}/material`
+          `https://metaversoude2.ddns.net:3001/api/users/${userName}/material/${fileTexture}`
         );
-        const materials = response.data;
+        const material = response.data;
 
-        console.log("materialesfetchmateriales", materials);
-
-        // Encuentra el material con nombre "fileTexture"
-        const fileTextureMaterial = materials.find(
-          (material) => material.nombre === fileTexture
-        );
-
-        console.log("fileTextureMaterial", fileTextureMaterial);
-
-        if (fileTextureMaterial) {
-          // Procesa el buffer para crear una URL de blob
-          const materialBuffer = new Uint8Array(
-            fileTextureMaterial.material.data
-          );
-          const blob = new Blob([materialBuffer], { type: "image/jpeg" });
-          const url = URL.createObjectURL(blob);
-
-          const textureLoader = new THREE.TextureLoader();
-          const texture = await textureLoader.loadAsync(url);
-
-          // Libera la URL después de cargar la textura
-          URL.revokeObjectURL(url);
-
-          setMaterialTexture(texture);
+        if (material && material.material && material.material.data) {
+          const materialBuffer = new Uint8Array(material.material.data);
+          if (material.ext === "pdf") {
+            await loadPDF(materialBuffer);
+          } else {
+            loadImage(materialBuffer, material.ext);
+          }
         }
       } catch (error) {
-        console.error("Error al obtener materiales:", error);
+        console.error("Error al obtener material:", error);
       }
     };
 
-    fetchMaterials();
+    fetchMaterial();
   }, [userName, fileTexture]);
+
+  const loadImage = (buffer, ext) => {
+    const blob = new Blob([buffer], { type: `image/${ext}` });
+    const image = new Image();
+    const objectURL = URL.createObjectURL(blob);
+
+    image.onload = () => {
+      const texture = new THREE.Texture();
+      texture.image = image;
+      texture.needsUpdate = true;
+      setMaterialTexture(texture);
+      URL.revokeObjectURL(objectURL);
+    };
+
+    image.src = objectURL;
+  };
+
+  const loadPDF = async (pdfData) => {
+    const loadingTask = getDocument({ data: pdfData });
+    const pdf = await loadingTask.promise;
+    const totalPageCount = pdf.numPages;
+
+    const images = [];
+    for (let i = 1; i <= totalPageCount; i++) {
+      const page = await pdf.getPage(i);
+      const viewport = page.getViewport({ scale: 1 });
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      const renderContext = {
+        canvasContext: context,
+        viewport: viewport,
+      };
+      await page.render(renderContext).promise;
+
+      const imageDataUrl = canvas.toDataURL();
+      const image = new Image();
+      image.src = imageDataUrl;
+      images.push(image);
+    }
+
+    setPdfImages(images);
+    showPage(currentPage);
+  };
+
+  const showPage = (pageNumber) => {
+    if (pageNumber < 0 || pageNumber >= pdfImages.length) {
+      return;
+    }
+
+    const image = pdfImages[pageNumber];
+    const texture = new THREE.Texture(image);
+    texture.needsUpdate = true;
+
+    setMaterialTexture(texture);
+  };
   return (
     <group {...props} dispose={null}>
       <mesh

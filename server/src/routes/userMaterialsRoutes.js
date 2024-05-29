@@ -4,6 +4,7 @@ import {
   addMaterialToUser,
   deleteMaterialOfUser,
   getAllMaterialsOfUser,
+  getMaterialOfUser,
 } from "../controllers/usersMaterialsController.js"; //importamos los controladores
 
 const router = express.Router(); //creamos el router
@@ -112,5 +113,7 @@ router.get("/api/users/:usuario/material", getAllMaterialsOfUser);
  *        description: Error al eliminar material
  */
 router.delete("/api/users/:usuario/material/:nombre", deleteMaterialOfUser);
+
+router.get("/api/users/:usuario/material/:nombre", getMaterialOfUser);
 
 export default router;

@@ -45,7 +45,7 @@ export const UploadButton = () => {
   return (
     <div>
       <Button onClick={openModal} type="button" isLight={false}>
-        {isSharing ? "Detener compartición" : "Compartir Material"}
+        {isSharing ? "Detener presentación" : "Compartir Material"}
       </Button>
       <Modal isOpen={isModalOpen} closeModal={closeModal}>
         <div>
