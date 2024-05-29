@@ -11,33 +11,41 @@ export const UploadButton = () => {
   const { userName } = useContext(UserContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
 
   const closeModal = () => setIsModalOpen(false);
 
   const openModal = async () => {
-    setIsModalOpen(true);
-    setLoading(true); // Iniciar el estado de carga
-    try {
-      const response = await axios.get(
-        `https://metaversoude2.ddns.net:3001/api/users/${userName}/material`
-      );
-      console.log("materiales", response);
-      setMateriales(response.data);
-    } catch (error) {
-      console.error("Error al cargar materiales del usuario:", error);
+    if (isSharing) {
+      setIsModalOpen(false);
+      setFileTexture();
+      setIsSharing(false);
+    } else {
+      setIsModalOpen(true);
+      setLoading(true); // Iniciar el estado de carga
+      try {
+        const response = await axios.get(
+          `https://metaversoude2.ddns.net:3001/api/users/${userName}/material`
+        );
+        console.log("materiales", response);
+        setMateriales(response.data);
+      } catch (error) {
+        console.error("Error al cargar materiales del usuario:", error);
+      }
+      setLoading(false); // Terminar el estado de carga
     }
-    setLoading(false); // Terminar el estado de carga
   };
 
   const selectMaterial = (materialName) => {
     setFileTexture(materialName);
     closeModal();
+    setIsSharing(true);
   };
 
   return (
     <div>
       <Button onClick={openModal} type="button" isLight={false}>
-        Compartir Material
+        {isSharing ? "Detener compartición" : "Compartir pantalla"}
       </Button>
       <Modal isOpen={isModalOpen} closeModal={closeModal}>
         <div>
