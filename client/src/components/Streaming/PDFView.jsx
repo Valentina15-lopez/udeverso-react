@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { Html } from "@react-three/drei";
 import { useLoader } from "@react-three/fiber";
+import pdfjs from "pdfjs-dist";
 
 const PDFView = ({ file }) => {
   const [page, setPage] = useState(1);
@@ -13,7 +14,7 @@ const PDFView = ({ file }) => {
       try {
         const arrayBuffer = file;
         const pdfData = new Uint8Array(arrayBuffer);
-        const loadingTask = pdfjsLib.getDocument({ data: pdfData });
+        const loadingTask = pdfjs.getDocument({ data: pdfData });
         const pdf = await loadingTask.promise;
         const totalPageCount = pdf.numPages;
 
