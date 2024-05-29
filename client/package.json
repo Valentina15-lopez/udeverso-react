@@ -115,7 +115,7 @@
     "Readme.md"
   ],
   "scripts": {
-    "start": "react-scripts-rewired start",
+    "start": "react-app-rewired start",
     "build": "webpack",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
