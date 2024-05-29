@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import pdfjs from "pdfjs-dist";
 
-export const PDFPreview = ({ file }) => {
+export const PDFView = ({ file }) => {
   const [loading, setLoading] = useState(false);
   const canvasRef = useRef(null);
 
