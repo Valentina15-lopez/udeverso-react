@@ -164,7 +164,7 @@ export function Pizarron(props) {
           Loading...
         </div>
       )}
-      <Html transform>
+      <Html transform width={"300px"} height={"300px"}>
         <canvas
           ref={canvasRef}
           style={{
