@@ -33,11 +33,19 @@ export const Room = () => {
     setRoomId(roomId || "");
   }, [roomId, setRoomId]);
 
+  const screenSharingVideo =
+    screenSharingId === userId ? screenStream : peers[screenSharingId]?.stream;
+
   const { [screenSharingId]: sharing, ...peersToShow } = peers;
 
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex grow">
+        {screenSharingVideo && (
+          <div className="w-4/5 pr-4">
+            <VideoPlayer stream={screenSharingVideo} />
+          </div>
+        )}
         <div className={`grid gap-4 grid-cols-3`}>
           {screenSharingId !== userId && (
             <div>
