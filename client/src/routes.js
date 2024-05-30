@@ -74,9 +74,7 @@ const routes = [
   },
   {
     path: "/abm/createUsers",
-    element: (
-      <RoleProtectedRoute element={<CreateUsers />} roles={["administrador"]} />
-    ),
+    element: <CreateUsers />,
   },
   {
     path: "/abm/material",
