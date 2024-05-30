@@ -1,19 +1,22 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { UserContext } from "../context/UserContext";
 import { RoomContext } from "../context/RoomContext";
 import axios from "axios";
-import { PDFView } from "./../components/Streaming/PDFView"; // Asegúrate de importar PDFView correctamente
+import pdfjs from "pdfjs-dist";
 
 export function Pizarron(props) {
   const { nodes, materials } = useGLTF(
     "/models/items/Pizarron-transformed.glb"
   );
   const { userName } = useContext(UserContext);
+
   const { screenStream, peers, screenSharingId, fileTexture, setScreenStream } =
     useContext(RoomContext);
   const [materialTexture, setMaterialTexture] = useState(null);
+  const [pdfImages, setPdfImages] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
     const fetchMaterial = async () => {
@@ -26,9 +29,8 @@ export function Pizarron(props) {
         if (material && material.material && material.material.data) {
           const materialBuffer = new Uint8Array(material.material.data);
           setScreenStream(materialBuffer);
-
           if (material.ext === "pdf") {
-            return; // PDFView se encargará de renderizar el PDF
+            await loadPDF(materialBuffer);
           } else {
             loadImage(materialBuffer, material.ext);
           }
@@ -41,19 +43,14 @@ export function Pizarron(props) {
     fetchMaterial();
   }, [userName, fileTexture]);
 
-  const handlePDFRender = (canvas) => {
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.needsUpdate = true;
-    setMaterialTexture(texture);
-  };
-
   const loadImage = (buffer, ext) => {
     const blob = new Blob([buffer], { type: `image/${ext}` });
     const image = new Image();
     const objectURL = URL.createObjectURL(blob);
 
     image.onload = () => {
-      const texture = new THREE.Texture(image);
+      const texture = new THREE.Texture();
+      texture.image = image;
       texture.needsUpdate = true;
       setMaterialTexture(texture);
       URL.revokeObjectURL(objectURL);
@@ -62,6 +59,47 @@ export function Pizarron(props) {
     image.src = objectURL;
   };
 
+  const loadPDF = async (pdfData) => {
+    const loadingTask = pdfjs.getDocument({ data: pdfData });
+    const pdf = await loadingTask.promise;
+    const totalPageCount = pdf.numPages;
+
+    const images = [];
+    for (let i = 1; i <= totalPageCount; i++) {
+      const page = await pdf.getPage(i);
+      const viewport = page.getViewport({ scale: 1 });
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      const renderContext = {
+        canvasContext: context,
+        viewport: viewport,
+      };
+      await page.render(renderContext).promise;
+
+      const imageDataUrl = canvas.toDataURL();
+      const image = new Image();
+      image.src = imageDataUrl;
+      images.push(image);
+    }
+
+    setPdfImages(images);
+    showPage(currentPage);
+  };
+
+  const showPage = (pageNumber) => {
+    if (pageNumber < 0 || pageNumber >= pdfImages.length) {
+      return;
+    }
+
+    const image = pdfImages[pageNumber];
+    const texture = new THREE.Texture(image);
+    texture.needsUpdate = true;
+
+    setMaterialTexture(texture);
+  };
   return (
     <group {...props} dispose={null}>
       <mesh

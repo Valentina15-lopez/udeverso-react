@@ -7,10 +7,11 @@ pdfjs.GlobalWorkerOptions.workerSrc =
 export const PDFView = ({ file }) => {
   const [loading, setLoading] = useState(false);
   const canvasRef = useRef(null);
-  console.log("PDFVIEW", file);
+
   useEffect(() => {
     const loadAndRenderPDF = async (file) => {
       setLoading(true);
+      // eslint-disable-next-line no-undef
       const loadingTask = pdfjs.getDocument(file);
 
       try {
@@ -27,21 +28,35 @@ export const PDFView = ({ file }) => {
         await page.render({
           canvasContext: context,
           viewport: viewport,
-        }).promise;
+        });
       } catch (error) {
         console.error("Error loading PDF:", error);
       }
       setLoading(false);
     };
-
     if (file) {
       loadAndRenderPDF(file);
     }
   }, [file]);
 
   return (
-    <div style={{ display: "none" }}>
-      <canvas ref={canvasRef} />
-    </div>
+    <>
+      {loading && (
+        <div style={{ position: "absolute", top: "48%", left: "43%" }}>
+          Loading...
+        </div>
+      )}
+      <canvas
+        ref={canvasRef}
+        position={[0, 0, 0]}
+        style={{
+          position: "absolute",
+          width: 100,
+          height: 100,
+          top: 10,
+          left: 10,
+        }}
+      />
+    </>
   );
 };

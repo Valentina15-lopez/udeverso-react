@@ -42,7 +42,7 @@ const AulaVirtual = () => {
           >
             <AulaScene />
           </Canvas>
-          {fileTexture && <PDFView file={fileTexture} />}
+          <PDFView file={fileTexture} />
         </div>
         <div className="w-1/4 ">
           <Room />
