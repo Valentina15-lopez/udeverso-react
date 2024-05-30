@@ -24,6 +24,7 @@ const RoleProtectedRoute = ({ element, roles }) => {
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [loading, setLoading] = useState(true);
 
+  console.log(user);
   useEffect(() => {
     const checkAuth = async () => {
       try {
