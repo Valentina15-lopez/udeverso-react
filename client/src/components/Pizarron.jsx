@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { UserContext } from "../context/UserContext";
@@ -6,17 +6,71 @@ import { RoomContext } from "../context/RoomContext";
 import axios from "axios";
 import pdfjs from "pdfjs-dist";
 
+pdfjs.GlobalWorkerOptions.workerSrc =
+  window.location.origin + "/pdf.worker.min.js";
+
+export const PDFView = ({ file, onRender }) => {
+  const [loading, setLoading] = useState(false);
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const loadAndRenderPDF = async (file) => {
+      setLoading(true);
+      const loadingTask = pdfjs.getDocument(file);
+
+      try {
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1);
+
+        const canvas = canvasRef.current;
+        const context = canvas.getContext("2d");
+        const viewport = page.getViewport({ scale: 1 });
+
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        await page.render({
+          canvasContext: context,
+          viewport: viewport,
+        }).promise;
+
+        if (onRender) {
+          onRender(canvas);
+        }
+      } catch (error) {
+        console.error("Error loading PDF:", error);
+      }
+      setLoading(false);
+    };
+
+    if (file) {
+      loadAndRenderPDF(file);
+    }
+  }, [file, onRender]);
+
+  return (
+    <>
+      {loading && (
+        <div style={{ position: "absolute", top: "48%", left: "43%" }}>
+          Loading...
+        </div>
+      )}
+      <canvas
+        ref={canvasRef}
+        style={{ display: "none" }} // Ocultar el canvas
+      />
+    </>
+  );
+};
+
 export function Pizarron(props) {
   const { nodes, materials } = useGLTF(
     "/models/items/Pizarron-transformed.glb"
   );
   const { userName } = useContext(UserContext);
-
   const { screenStream, peers, screenSharingId, fileTexture, setScreenStream } =
     useContext(RoomContext);
   const [materialTexture, setMaterialTexture] = useState(null);
-  const [pdfImages, setPdfImages] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
     const fetchMaterial = async () => {
@@ -29,8 +83,9 @@ export function Pizarron(props) {
         if (material && material.material && material.material.data) {
           const materialBuffer = new Uint8Array(material.material.data);
           setScreenStream(materialBuffer);
+
           if (material.ext === "pdf") {
-            await loadPDF(materialBuffer);
+            loadPDF(materialBuffer);
           } else {
             loadImage(materialBuffer, material.ext);
           }
@@ -49,8 +104,7 @@ export function Pizarron(props) {
     const objectURL = URL.createObjectURL(blob);
 
     image.onload = () => {
-      const texture = new THREE.Texture();
-      texture.image = image;
+      const texture = new THREE.Texture(image);
       texture.needsUpdate = true;
       setMaterialTexture(texture);
       URL.revokeObjectURL(objectURL);
@@ -60,46 +114,32 @@ export function Pizarron(props) {
   };
 
   const loadPDF = async (pdfData) => {
-    const loadingTask = pdfjs.getDocument({ data: pdfData });
+    const data = { data: pdfData };
+    const loadingTask = pdfjs.getDocument(data);
     const pdf = await loadingTask.promise;
-    const totalPageCount = pdf.numPages;
+    const page = await pdf.getPage(1);
+    const viewport = page.getViewport({ scale: 1 });
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
 
-    const images = [];
-    for (let i = 1; i <= totalPageCount; i++) {
-      const page = await pdf.getPage(i);
-      const viewport = page.getViewport({ scale: 1 });
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
+    const renderContext = {
+      canvasContext: context,
+      viewport: viewport,
+    };
 
-      const renderContext = {
-        canvasContext: context,
-        viewport: viewport,
-      };
-      await page.render(renderContext).promise;
+    await page.render(renderContext).promise;
 
-      const imageDataUrl = canvas.toDataURL();
-      const image = new Image();
-      image.src = imageDataUrl;
-      images.push(image);
-    }
-
-    setPdfImages(images);
-    showPage(currentPage);
+    const image = new Image();
+    image.src = canvas.toDataURL();
+    image.onload = () => {
+      const texture = new THREE.Texture(image);
+      texture.needsUpdate = true;
+      setMaterialTexture(texture);
+    };
   };
 
-  const showPage = (pageNumber) => {
-    if (pageNumber < 0 || pageNumber >= pdfImages.length) {
-      return;
-    }
-
-    const image = pdfImages[pageNumber];
-    const texture = new THREE.Texture(image);
-    texture.needsUpdate = true;
-
-    setMaterialTexture(texture);
-  };
   return (
     <group {...props} dispose={null}>
       <mesh
