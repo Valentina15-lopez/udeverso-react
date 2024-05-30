@@ -16,7 +16,11 @@ export const UploadButton = () => {
   const [isSharing, setIsSharing] = useState(false);
   const [screenMode, setScreenMode] = useState(false);
 
-  const closeModal = () => setIsModalOpen2(false);
+  const closeModal = () => setIsModalOpen(false);
+  const closeModal2 = () => {
+    setIsModalOpen2(false);
+    setIsModalOpen(false);
+  };
 
   const openModal = () => {
     if (isSharing) {
@@ -65,10 +69,10 @@ export const UploadButton = () => {
         <div>
           <div className="mb-2">
             <Button onClick={() => setScreenMode(true)} isLight={true}>
-              <span>"Compartir Pantalla"</span>
+              <span>Compartir Pantalla</span>
             </Button>
             <Button onClick={loadmaterials} isLight={true}>
-              <span>"Compartir Material"</span>
+              <span>Compartir Material</span>
             </Button>
           </div>
         </div>
@@ -76,7 +80,7 @@ export const UploadButton = () => {
       {screenMode ? (
         sharescreen()
       ) : (
-        <Modal isOpen={isModalOpen2} closeModal={closeModal}>
+        <Modal isOpen={isModalOpen2} closeModal={closeModal2}>
           <div>
             <h1 className="text-lg font-semibold mb-4">
               Selecciona el archivo que desea compartir
