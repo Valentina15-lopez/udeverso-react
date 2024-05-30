@@ -1,50 +1,41 @@
 import React, { useEffect, useRef, useState } from "react";
 import pdfjs from "pdfjs-dist";
-import * as THREE from "three";
-import { useLoader } from "@react-three/fiber";
 
 pdfjs.GlobalWorkerOptions.workerSrc =
   window.location.origin + "/pdf.worker.min.js";
 
 export const PDFView = ({ file }) => {
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [pdfImages, setPdfImages] = useState([]);
-  const texture = useLoader(THREE.TextureLoader, pdfImages[page - 1] || "");
   const canvasRef = useRef(null);
+
   useEffect(() => {
-    const loadPDF = async () => {
+    const loadAndRenderPDF = async (file) => {
+      setLoading(true);
+      // eslint-disable-next-line no-undef
+      const loadingTask = pdfjs.getDocument(file);
+
       try {
-        const arrayBuffer = file;
-        const pdfData = new Uint8Array(arrayBuffer);
-        const loadingTask = pdfjs.getDocument({ data: pdfData });
         const pdf = await loadingTask.promise;
-        const totalPageCount = pdf.numPages;
+        const page = await pdf.getPage(1);
 
-        for (let i = 1; i <= totalPageCount; i++) {
-          const page = await pdf.getPage(i);
-          const viewport = page.getViewport({ scale: 1 });
-          const canvas = document.createElement("canvas");
-          const context = canvas.getContext("2d");
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
+        const canvas = canvasRef.current;
+        const context = canvas.getContext("2d");
+        const viewport = page.getViewport({ scale: 1 });
 
-          const renderContext = {
-            canvasContext: context,
-            viewport: viewport,
-          };
-          await page.render(renderContext).promise;
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
 
-          const imageDataUrl = canvas.toDataURL();
-          setPdfImages((prevImages) => [...prevImages, imageDataUrl]);
-        }
+        await page.render({
+          canvasContext: context,
+          viewport: viewport,
+        });
       } catch (error) {
         console.error("Error loading PDF:", error);
       }
+      setLoading(false);
     };
-
     if (file) {
-      loadPDF();
+      loadAndRenderPDF(file);
     }
   }, [file]);
 
@@ -68,18 +59,6 @@ export const PDFView = ({ file }) => {
               bottom: 121,
             }}
           />
-          <button
-            onClick={() => setPage((prevPage) => Math.max(prevPage - 1, 1))}
-          >
-            Prev
-          </button>
-          <button
-            onClick={() =>
-              setPage((prevPage) => Math.min(prevPage + 1, pdfImages.length))
-            }
-          >
-            Next
-          </button>
         </>
       )}
     </>
