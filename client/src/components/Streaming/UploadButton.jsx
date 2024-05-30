@@ -50,6 +50,11 @@ export const UploadButton = () => {
       setLoading(false); // Terminar el estado de carga
     }
   };
+  const sharescreen = () => {
+    shareScreen();
+    closeModal();
+    setIsSharing(true);
+  };
 
   const selectMaterial = (materialName) => {
     setFileTexture(materialName);
@@ -65,7 +70,7 @@ export const UploadButton = () => {
       <Modal isOpen={isModalOpen} closeModal={closeModal}>
         <div>
           <div className="flex flex-col gap-1">
-            <Button onClick={shareScreen} isLight={true}>
+            <Button onClick={sharescreen} isLight={true}>
               <span>Compartir Pantalla</span>
             </Button>
             <Button onClick={loadmaterials} isLight={true}>
