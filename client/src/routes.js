@@ -39,7 +39,7 @@ const routes = [
   {
     path: "/aulavirtual/:roomId",
     element: (
-      <RoleProtectedRoute element={<AulaVirtual />} roles={["estudiante"]} />
+      <RoleProtectedRoute element={<AulaVirtual />} roles={["alumno"]} />
     ),
   },
   {
@@ -48,9 +48,7 @@ const routes = [
   },
   {
     path: "/inicioEstudiante",
-    element: (
-      <RoleProtectedRoute element={<JoinRoom />} roles={["estudiante"]} />
-    ),
+    element: <RoleProtectedRoute element={<JoinRoom />} roles={["alumno"]} />,
   },
   {
     path: "/abm",
