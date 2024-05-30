@@ -14,7 +14,6 @@ export const UploadButton = () => {
   const [isModalOpen2, setIsModalOpen2] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
-  const [screenMode, setScreenMode] = useState(false);
 
   const closeModal = () => setIsModalOpen(false);
   const closeModal2 = () => {
@@ -31,7 +30,6 @@ export const UploadButton = () => {
     setIsSharing(!isSharing);
   };
   const loadmaterials = async () => {
-    setScreenMode(false);
     if (isSharing) {
       setIsModalOpen2(false);
       setFileTexture();
@@ -57,10 +55,6 @@ export const UploadButton = () => {
     closeModal2();
     setIsSharing(true);
   };
-  const sharescreen = () => {
-    shareScreen();
-    setIsSharing(true);
-  };
 
   return (
     <div>
@@ -70,7 +64,7 @@ export const UploadButton = () => {
       <Modal isOpen={isModalOpen} closeModal={closeModal}>
         <div>
           <div className="flex flex-col gap-1">
-            <Button onClick={() => setScreenMode(true)} isLight={true}>
+            <Button onClick={shareScreen} isLight={true}>
               <span>Compartir Pantalla</span>
             </Button>
             <Button onClick={loadmaterials} isLight={true}>
@@ -79,36 +73,32 @@ export const UploadButton = () => {
           </div>
         </div>
       </Modal>
-      {screenMode ? (
-        sharescreen()
-      ) : (
-        <Modal isOpen={isModalOpen2} closeModal={closeModal2}>
-          <div>
-            <h1 className="text-lg font-semibold mb-4">
-              Selecciona el archivo que desea compartir
-            </h1>
-            {loading ? (
-              <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-75 z-50">
-                <div className="flex flex-col justify-center items-center">
-                  <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
-                  <p className="text-white text-lg">Cargando materiales...</p>
-                </div>
+      <Modal isOpen={isModalOpen2} closeModal={closeModal2}>
+        <div>
+          <h1 className="text-lg font-semibold mb-4">
+            Selecciona el archivo que desea compartir
+          </h1>
+          {loading ? (
+            <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-75 z-50">
+              <div className="flex flex-col justify-center items-center">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
+                <p className="text-white text-lg">Cargando materiales...</p>
               </div>
-            ) : (
-              materiales.map((material) => (
-                <div className="mb-2">
-                  <Button
-                    onClick={() => selectMaterial(material.nombre)}
-                    isLight={true}
-                  >
-                    <span>{material.nombre}</span>
-                  </Button>
-                </div>
-              ))
-            )}
-          </div>
-        </Modal>
-      )}
+            </div>
+          ) : (
+            materiales.map((material) => (
+              <div className="mb-2">
+                <Button
+                  onClick={() => selectMaterial(material.nombre)}
+                  isLight={true}
+                >
+                  <span>{material.nombre}</span>
+                </Button>
+              </div>
+            ))
+          )}
+        </div>
+      </Modal>
     </div>
   );
 };
