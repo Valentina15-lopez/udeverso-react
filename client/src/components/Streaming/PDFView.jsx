@@ -12,35 +12,39 @@ export const PDFView = ({ file }) => {
   const [pdfImages, setPdfImages] = useState([]);
   const texture = useLoader(THREE.TextureLoader, pdfImages[page - 1] || "");
   const canvasRef = useRef(null);
-
   useEffect(() => {
-    const loadAndRenderPDF = async (file) => {
-      setLoading(true);
-      // eslint-disable-next-line no-undef
-      const loadingTask = pdfjs.getDocument(file);
-
+    const loadPDF = async () => {
       try {
+        const arrayBuffer = file;
+        const pdfData = new Uint8Array(arrayBuffer);
+        const loadingTask = pdfjs.getDocument({ data: pdfData });
         const pdf = await loadingTask.promise;
-        const page = await pdf.getPage(1);
+        const totalPageCount = pdf.numPages;
 
-        const canvas = canvasRef.current;
-        const context = canvas.getContext("2d");
-        const viewport = page.getViewport({ scale: 1 });
+        for (let i = 1; i <= totalPageCount; i++) {
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 1 });
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d");
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
 
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
+          const renderContext = {
+            canvasContext: context,
+            viewport: viewport,
+          };
+          await page.render(renderContext).promise;
 
-        await page.render({
-          canvasContext: context,
-          viewport: viewport,
-        });
+          const imageDataUrl = canvas.toDataURL();
+          setPdfImages((prevImages) => [...prevImages, imageDataUrl]);
+        }
       } catch (error) {
         console.error("Error loading PDF:", error);
       }
-      setLoading(false);
     };
+
     if (file) {
-      loadAndRenderPDF(file);
+      loadPDF();
     }
   }, [file]);
 
