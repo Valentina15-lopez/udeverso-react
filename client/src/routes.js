@@ -18,6 +18,8 @@ import { JoinRoom } from "./components/Streaming/JoinRoom";
 import { UserContext } from "../src/context/UserContext";
 
 const RoleProtectedRoute = ({ element, roles }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -31,6 +33,7 @@ const RoleProtectedRoute = ({ element, roles }) => {
           }
         );
         if (response.status === 200) {
+          setIsAuthenticated(true);
           const userData = await axios.get(
             `https://metaversoude2.ddns.net:3001/api/users/${response.data.usuario}`
           );
@@ -38,28 +41,25 @@ const RoleProtectedRoute = ({ element, roles }) => {
           console.log(userData.data);
         }
       } catch (error) {
+        setIsAuthenticated(false);
         setUser(null);
       }
+      setIsCheckingAuth(false);
       setLoading(false);
     };
+
     checkAuth();
-    console.log(user);
-    console.log(roles);
+  }, []);
 
-    if (loading) {
-      return <LoadingSpinner />;
-    }
+  if (isCheckingAuth) {
+    return <LoadingSpinner />;
+  }
 
-    if (!user) {
-      return <Navigate to="/login" />;
-    }
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
 
-    if (!roles.includes(user.rol)) {
-      return <Navigate to="/not-found" />;
-    }
-
-    return element;
-  });
+  return element;
 };
 
 const routes = [
