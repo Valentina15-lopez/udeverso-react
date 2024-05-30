@@ -12,8 +12,7 @@ export function Pizarron(props) {
   );
   const { userName } = useContext(UserContext);
 
-  const { screenStream, peers, screenSharingId, fileTexture, setScreenStream } =
-    useContext(RoomContext);
+  const { setFileTexture, fileTexture } = useContext(RoomContext);
   const [materialTexture, setMaterialTexture] = useState(null);
   const [pdfImages, setPdfImages] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -28,7 +27,7 @@ export function Pizarron(props) {
 
         if (material && material.material && material.material.data) {
           const materialBuffer = new Uint8Array(material.material.data);
-          setScreenStream(materialBuffer);
+          setFileTexture(materialBuffer);
           if (material.ext === "pdf") {
             await loadPDF(materialBuffer);
           } else {
