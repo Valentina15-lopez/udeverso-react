@@ -13,6 +13,7 @@ export const UploadButton = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
+  const [screenMode, setScreenMode] = useState(false);
 
   const closeModal = () => setIsModalOpen(false);
 
@@ -40,6 +41,8 @@ export const UploadButton = () => {
   const selectMaterial = (materialName) => {
     setFileTexture(materialName);
     closeModal();
+  };
+  const sharescreen = () => {
     shareScreen();
     setIsSharing(true);
   };
@@ -51,30 +54,46 @@ export const UploadButton = () => {
       </Button>
       <Modal isOpen={isModalOpen} closeModal={closeModal}>
         <div>
-          <h1 className="text-lg font-semibold mb-4">
-            Selecciona el archivo que desea compartir
-          </h1>
-          {loading ? (
-            <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-75 z-50">
-              <div className="flex flex-col justify-center items-center">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
-                <p className="text-white text-lg">Cargando materiales...</p>
-              </div>
-            </div>
-          ) : (
-            materiales.map((material) => (
-              <div className="mb-2">
-                <Button
-                  onClick={() => selectMaterial(material.nombre)}
-                  isLight={true}
-                >
-                  <span>{material.nombre}</span>
-                </Button>
-              </div>
-            ))
-          )}
+          <div className="mb-2">
+            <Button onClick={() => setScreenMode(true)} isLight={true}>
+              <span>"Compartir Pantalla"</span>
+            </Button>
+            <Button onClick={() => setScreenMode(false)} isLight={true}>
+              <span>"Compartir Material"</span>
+            </Button>
+          </div>
         </div>
       </Modal>
+      {screenMode ? (
+        sharescreen()
+      ) : (
+        <Modal isOpen={isModalOpen} closeModal={closeModal}>
+          <div>
+            <h1 className="text-lg font-semibold mb-4">
+              Selecciona el archivo que desea compartir
+            </h1>
+            {loading ? (
+              <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-75 z-50">
+                <div className="flex flex-col justify-center items-center">
+                  <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
+                  <p className="text-white text-lg">Cargando materiales...</p>
+                </div>
+              </div>
+            ) : (
+              materiales.map((material) => (
+                <div className="mb-2">
+                  <Button
+                    onClick={() => selectMaterial(material.nombre)}
+                    isLight={true}
+                  >
+                    <span>{material.nombre}</span>
+                  </Button>
+                </div>
+              ))
+            )}
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
