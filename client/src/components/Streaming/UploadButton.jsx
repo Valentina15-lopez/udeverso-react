@@ -24,6 +24,7 @@ export const UploadButton = () => {
   const openModal = () => {
     if (isSharing) {
       setIsModalOpen(false);
+      setFileTexture();
     } else {
       setIsModalOpen(true);
     }
