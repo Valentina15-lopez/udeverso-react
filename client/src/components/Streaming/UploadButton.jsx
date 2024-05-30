@@ -17,7 +17,15 @@ export const UploadButton = () => {
 
   const closeModal = () => setIsModalOpen(false);
 
-  const openModal = async () => {
+  const openModal = () => {
+    if (isSharing) {
+      setIsModalOpen(false);
+    } else {
+      setIsModalOpen(true);
+    }
+  };
+  const loadmaterials = async () => {
+    setScreenMode(false);
     if (isSharing) {
       setIsModalOpen(false);
       setFileTexture();
@@ -58,7 +66,7 @@ export const UploadButton = () => {
             <Button onClick={() => setScreenMode(true)} isLight={true}>
               <span>"Compartir Pantalla"</span>
             </Button>
-            <Button onClick={() => setScreenMode(false)} isLight={true}>
+            <Button onClick={loadmaterials} isLight={true}>
               <span>"Compartir Material"</span>
             </Button>
           </div>
