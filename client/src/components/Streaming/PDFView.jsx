@@ -1,11 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import pdfjs from "pdfjs-dist";
+import * as THREE from "three";
+import { useLoader } from "@react-three/fiber";
 
 pdfjs.GlobalWorkerOptions.workerSrc =
   window.location.origin + "/pdf.worker.min.js";
 
 export const PDFView = ({ file }) => {
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pdfImages, setPdfImages] = useState([]);
+  const texture = useLoader(THREE.TextureLoader, pdfImages[page - 1] || "");
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -41,23 +46,38 @@ export const PDFView = ({ file }) => {
 
   return (
     <>
-      {loading && (
+      {loading ? (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-75 z-50">
           <div className="flex flex-col justify-center items-center">
             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
             <p className="text-white text-lg">Cargando...</p>
           </div>
         </div>
+      ) : (
+        <>
+          <canvas
+            ref={canvasRef}
+            style={{
+              position: "absolute",
+              width: "25%",
+              right: 47,
+              bottom: 121,
+            }}
+          />
+          <button
+            onClick={() => setPage((prevPage) => Math.max(prevPage - 1, 1))}
+          >
+            Prev
+          </button>
+          <button
+            onClick={() =>
+              setPage((prevPage) => Math.min(prevPage + 1, pdfImages.length))
+            }
+          >
+            Next
+          </button>
+        </>
       )}
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: "absolute",
-          width: "25%",
-          right: 47,
-          bottom: 121,
-        }}
-      />
     </>
   );
 };
