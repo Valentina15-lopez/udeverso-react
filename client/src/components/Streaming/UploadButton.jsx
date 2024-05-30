@@ -16,7 +16,7 @@ export const UploadButton = () => {
   const [isSharing, setIsSharing] = useState(false);
   const [screenMode, setScreenMode] = useState(false);
 
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => setIsModalOpen2(false);
 
   const openModal = () => {
     if (isSharing) {

@@ -20,8 +20,6 @@ const AulaScene = () => {
   const { screenStream, peers, screenSharingId, fileTexture } =
     useContext(RoomContext);
   const { userId } = useContext(UserContext);
-  const screenSharingVideo =
-    screenSharingId === userId ? screenStream : peers[screenSharingId]?.stream;
 
   const [onFloor, setOnFloor] = useState(false);
   useCursor(onFloor);

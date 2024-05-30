@@ -10,7 +10,6 @@ export function Pizarron(props) {
   const { nodes, materials } = useGLTF(
     "/models/items/Pizarron-transformed.glb"
   );
-  const { fileTexture, setScreenStream } = useContext(RoomContext);
   const [materialTexture, setMaterialTexture] = useState(null);
 
   return (
