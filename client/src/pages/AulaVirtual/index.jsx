@@ -6,7 +6,8 @@ import { userAtom } from "../../context/ContexProvider";
 import { Room } from "../../components/Streaming/room";
 import { Physics, RigidBody } from "@react-three/rapier";
 import Controller from "ecctrl";
-
+import { useNavigate } from "react-router-dom";
+import { Button } from "../../common/Button";
 import {
   Gltf,
   Environment,
@@ -22,16 +23,28 @@ const AulaVirtual = () => {
   const [users] = useAtom(userAtom);
   const { roomId } = useParams(); // Obtiene el ID de la sala de los parámetros de ruta
   const { fileTexture } = useContext(RoomContext);
+  const navigate = useNavigate();
 
   // Lógica de redirección aquí, por ejemplo, redirigir a / si no hay ID de sala
   if (!roomId) {
     return <Navigate to="/" />;
   }
 
+  // Función para manejar la redirección a la página anterior
+  const handleGoBack = () => {
+    navigate(-1); // Redirige a la página anterior en el historial
+  };
+
   // Renderizar la página de AulaVirtual con el ID de la sala
   return (
     <div className="h-screen flex flex-col">
       <div className="flex-1 flex">
+        <Button
+          onClick={handleGoBack}
+          className="py-2 px-4 bg-indigo-500 text-white font-semibold rounded-md hover:bg-indigo-600 transition duration-300"
+        >
+          Volver
+        </Button>
         <div className="w-3/4">
           <Canvas
             frameloop="demand"
