@@ -16,6 +16,7 @@ import { Join } from "./components/Streaming/Join";
 import MenuDocente from "./pages/MenuDocente";
 import { JoinRoom } from "./components/Streaming/JoinRoom";
 import { UserContext } from "../src/context/UserContext";
+import { AccessDenied } from "./pages/AccessDenied";
 
 const RoleProtectedRoute = ({ element, roles }) => {
   const { user } = useContext(UserContext);
@@ -57,7 +58,7 @@ const RoleProtectedRoute = ({ element, roles }) => {
   }
 
   if (!roles.includes(user.rol)) {
-    return <Navigate to="/not-found" />;
+    return <Navigate to="/access-denied" />;
   }
 
   return element;
@@ -136,6 +137,10 @@ const routes = [
     element: (
       <RoleProtectedRoute element={<MenuDocente />} roles={["profesor"]} />
     ),
+  },
+  {
+    path: "/access-denied",
+    element: <AccessDenied />,
   },
 ];
 
