@@ -99,7 +99,7 @@ const CreateUser = () => {
             Rol:
             <input
               type="text"
-              name="es_estudiante"
+              name="rol"
               onChange={handleChange}
               className="block w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
             />
