@@ -31,8 +31,13 @@ const LoginForm = () => {
         login();
         const userData = await response.json();
         console.log(userData);
-        navigate("/inicioEstudiante"); // Redirige a la página de aulavirtual si el inicio de sesión es exitoso
-        // Aquí manejas los datos del usuario recibidos del servidor
+        if (userData.usuario.rol === "alumno") {
+          navigate("/inicioEstudiante");
+        } else if (userData.usuario.rol === "profesor") {
+          navigate("/MenuDocente");
+        } else {
+          navigate("/abm");
+        }
         setUser(userData.usuario);
       } else {
         // Maneja errores de autenticación
