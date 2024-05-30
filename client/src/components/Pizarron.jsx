@@ -4,18 +4,15 @@ import * as THREE from "three";
 import { UserContext } from "../context/UserContext";
 import { RoomContext } from "../context/RoomContext";
 import axios from "axios";
-import pdfjs from "pdfjs-dist";
-import { PDFView } from "../components/Streaming/PDFView"; // Asegúrate de importar PDFView correctamente
-
-pdfjs.GlobalWorkerOptions.workerSrc =
-  window.location.origin + "/pdf.worker.min.js";
+import { PDFView } from "./PDFView"; // Asegúrate de importar PDFView correctamente
 
 export function Pizarron(props) {
   const { nodes, materials } = useGLTF(
     "/models/items/Pizarron-transformed.glb"
   );
   const { userName } = useContext(UserContext);
-  const { fileTexture, setScreenStream } = useContext(RoomContext);
+  const { screenStream, peers, screenSharingId, fileTexture, setScreenStream } =
+    useContext(RoomContext);
   const [materialTexture, setMaterialTexture] = useState(null);
 
   useEffect(() => {
@@ -45,7 +42,7 @@ export function Pizarron(props) {
   }, [userName, fileTexture]);
 
   const handlePDFRender = (canvas) => {
-    const texture = new THREE.Texture(canvas);
+    const texture = new THREE.CanvasTexture(canvas);
     texture.needsUpdate = true;
     setMaterialTexture(texture);
   };
