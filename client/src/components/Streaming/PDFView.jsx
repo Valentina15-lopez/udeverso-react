@@ -4,7 +4,7 @@ import pdfjs from "pdfjs-dist";
 pdfjs.GlobalWorkerOptions.workerSrc =
   window.location.origin + "/pdf.worker.min.js";
 
-export const PDFView = ({ file, onRender }) => {
+export const PDFView = ({ file }) => {
   const [loading, setLoading] = useState(false);
   const canvasRef = useRef(null);
 
@@ -28,10 +28,6 @@ export const PDFView = ({ file, onRender }) => {
           canvasContext: context,
           viewport: viewport,
         }).promise;
-
-        if (onRender) {
-          onRender(canvas);
-        }
       } catch (error) {
         console.error("Error loading PDF:", error);
       }
@@ -41,7 +37,7 @@ export const PDFView = ({ file, onRender }) => {
     if (file) {
       loadAndRenderPDF(file);
     }
-  }, [file, onRender]);
+  }, [file]);
 
   return (
     <div style={{ display: "none" }}>

@@ -21,7 +21,7 @@ import { useAtom } from "jotai";
 const AulaVirtual = () => {
   const [users] = useAtom(userAtom);
   const { roomId } = useParams(); // Obtiene el ID de la sala de los parámetros de ruta
-  const { screenStream } = useContext(RoomContext);
+  const { fileTexture } = useContext(RoomContext);
 
   // Lógica de redirección aquí, por ejemplo, redirigir a / si no hay ID de sala
   if (!roomId) {
@@ -42,7 +42,7 @@ const AulaVirtual = () => {
           >
             <AulaScene />
           </Canvas>
-          {/* <PDFView file={screenStream} /> */}
+          {fileTexture && <PDFView file={fileTexture} />}
         </div>
         <div className="w-1/4 ">
           <Room />

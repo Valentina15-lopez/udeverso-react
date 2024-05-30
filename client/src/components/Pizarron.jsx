@@ -93,7 +93,6 @@ export function Pizarron(props) {
           }
         />
       </group>
-      {fileTexture && <PDFView file={fileTexture} onRender={handlePDFRender} />}
     </group>
   );
 }
