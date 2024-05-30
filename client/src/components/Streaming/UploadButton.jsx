@@ -53,7 +53,7 @@ export const UploadButton = () => {
 
   const selectMaterial = (materialName) => {
     setFileTexture(materialName);
-    closeModal();
+    closeModal2();
   };
   const sharescreen = () => {
     shareScreen();
