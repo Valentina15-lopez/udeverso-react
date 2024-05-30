@@ -39,7 +39,9 @@ const UserProvider = ({ children }) => {
       // Aquí puedes hacer lo que necesites con la lista de usuarios
     });
   }, [userId]);
-
+  {
+    console.log("entro al user provider");
+  }
   useEffect(() => {
     const fetchUser = async () => {
       try {
