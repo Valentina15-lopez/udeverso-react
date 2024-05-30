@@ -85,7 +85,8 @@ export function Pizarron(props) {
           setScreenStream(materialBuffer);
 
           if (material.ext === "pdf") {
-            loadPDF(materialBuffer);
+            // Usar PDFView para renderizar el PDF y obtener el canvas
+            return <PDFView file={materialBuffer} onRender={handlePDFRender} />;
           } else {
             loadImage(materialBuffer, material.ext);
           }
@@ -97,6 +98,16 @@ export function Pizarron(props) {
 
     fetchMaterial();
   }, [userName, fileTexture]);
+
+  const handlePDFRender = (canvas) => {
+    const image = new Image();
+    image.src = canvas.toDataURL();
+    image.onload = () => {
+      const texture = new THREE.Texture(image);
+      texture.needsUpdate = true;
+      setMaterialTexture(texture);
+    };
+  };
 
   const loadImage = (buffer, ext) => {
     const blob = new Blob([buffer], { type: `image/${ext}` });
@@ -111,33 +122,6 @@ export function Pizarron(props) {
     };
 
     image.src = objectURL;
-  };
-
-  const loadPDF = async (pdfData) => {
-    const data = { data: pdfData };
-    const loadingTask = pdfjs.getDocument(data);
-    const pdf = await loadingTask.promise;
-    const page = await pdf.getPage(1);
-    const viewport = page.getViewport({ scale: 1 });
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-
-    const renderContext = {
-      canvasContext: context,
-      viewport: viewport,
-    };
-
-    await page.render(renderContext).promise;
-
-    const image = new Image();
-    image.src = canvas.toDataURL();
-    image.onload = () => {
-      const texture = new THREE.Texture(image);
-      texture.needsUpdate = true;
-      setMaterialTexture(texture);
-    };
   };
 
   return (
@@ -171,6 +155,7 @@ export function Pizarron(props) {
           }
         />
       </group>
+      {fileTexture && <PDFView file={fileTexture} onRender={handlePDFRender} />}
     </group>
   );
 }

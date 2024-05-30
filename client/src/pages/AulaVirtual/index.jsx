@@ -42,7 +42,7 @@ const AulaVirtual = () => {
           >
             <AulaScene />
           </Canvas>
-          <PDFView file={screenStream} />
+          {/* <PDFView file={screenStream} /> */}
         </div>
         <div className="w-1/4 ">
           <Room />
