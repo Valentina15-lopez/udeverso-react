@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useAuth } from "../AuthContext";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "../../context/UserContext";
 
 const LoginForm = () => {
   const [nombreUsuario, setNombreUsuario] = useState("");
