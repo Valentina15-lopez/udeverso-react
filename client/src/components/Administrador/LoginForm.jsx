@@ -33,7 +33,7 @@ const LoginForm = () => {
         console.log(userData);
         navigate("/inicioEstudiante"); // Redirige a la página de aulavirtual si el inicio de sesión es exitoso
         // Aquí manejas los datos del usuario recibidos del servidor
-        setUser(userData);
+        setUser(userData.usuario);
       } else {
         // Maneja errores de autenticación
         const errorMessage = await response.text();
