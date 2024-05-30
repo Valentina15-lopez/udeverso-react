@@ -54,6 +54,7 @@ const UserProvider = ({ children }) => {
             `https://metaversoude2.ddns.net:3001/api/users/${response.data.usuario}`
           );
           setUser(userData.data);
+          console.log(userData.data);
         }
       } catch (error) {
         setUser(null);
