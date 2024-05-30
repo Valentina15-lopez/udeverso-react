@@ -39,12 +39,7 @@ const AulaVirtual = () => {
   return (
     <div className="h-screen flex flex-col">
       <div className="flex-1 flex">
-        <Button
-          onClick={handleGoBack}
-          className="py-2 px-4 bg-indigo-500 text-white font-semibold rounded-md hover:bg-indigo-600 transition duration-300"
-        >
-          Volver
-        </Button>
+        <Button onClick={handleGoBack}>Volver</Button>
         <div className="w-3/4">
           <Canvas
             frameloop="demand"
