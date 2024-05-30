@@ -28,6 +28,7 @@ export const UploadButton = () => {
     } else {
       setIsModalOpen(true);
     }
+    setIsSharing(!isSharing);
   };
   const loadmaterials = async () => {
     setScreenMode(false);
