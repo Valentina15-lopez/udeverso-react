@@ -11,6 +11,7 @@ export const UploadButton = () => {
   const [materiales, setMateriales] = useState([]);
   const { userName } = useContext(UserContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const [screenMode, setScreenMode] = useState(false);
@@ -27,11 +28,11 @@ export const UploadButton = () => {
   const loadmaterials = async () => {
     setScreenMode(false);
     if (isSharing) {
-      setIsModalOpen(false);
+      setIsModalOpen2(false);
       setFileTexture();
       setIsSharing(false);
     } else {
-      setIsModalOpen(true);
+      setIsModalOpen2(true);
       setLoading(true); // Iniciar el estado de carga
       try {
         const response = await axios.get(
@@ -75,7 +76,7 @@ export const UploadButton = () => {
       {screenMode ? (
         sharescreen()
       ) : (
-        <Modal isOpen={isModalOpen} closeModal={closeModal}>
+        <Modal isOpen={isModalOpen2} closeModal={closeModal}>
           <div>
             <h1 className="text-lg font-semibold mb-4">
               Selecciona el archivo que desea compartir
