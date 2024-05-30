@@ -34,6 +34,7 @@ const RoleProtectedRoute = ({ element, roles }) => {
         );
         if (response.status === 200) {
           setIsAuthenticated(true);
+          console.log(response.data);
           const userData = await axios.get(
             `https://metaversoude2.ddns.net:3001/api/users/${response.data.usuario}`
           );
