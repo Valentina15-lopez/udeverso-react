@@ -5,7 +5,7 @@ import { UserContext } from "../context/UserContext";
 import { RoomContext } from "../context/RoomContext";
 import axios from "axios";
 import pdfjs from "pdfjs-dist";
-import { PDFView } from "./PDFView"; // Asegúrate de importar PDFView correctamente
+import { PDFView } from "../components/Streaming/PDFView"; // Asegúrate de importar PDFView correctamente
 
 pdfjs.GlobalWorkerOptions.workerSrc =
   window.location.origin + "/pdf.worker.min.js";
