@@ -4,7 +4,6 @@ import { Button } from "../../common/Button";
 import axios from "axios";
 import { Modal } from "../../common/Modal";
 import { UserContext } from "../../context/UserContext";
-import { PDFView } from "./PDFView";
 
 export const UploadButton = () => {
   const { setFileTexture, shareScreen } = useContext(RoomContext); // Asegúrate de tener una función para actualizar la textura

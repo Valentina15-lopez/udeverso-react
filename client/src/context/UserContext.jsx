@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState, useContext } from "react";
 import { v4 as uuidV4 } from "uuid";
 import { SocketContext } from "../../src/context/ContexProvider";
+import axios from "axios";
 
 // Definición de la forma de los valores del contexto
 const UserContext = createContext({
@@ -12,7 +13,8 @@ const UserContext = createContext({
 // Componente proveedor de contexto de usuario
 const UserProvider = ({ children }) => {
   const { socket } = useContext(SocketContext);
-
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   // Estado local para almacenar el ID de usuario
   const [userId] = useState(localStorage.getItem("userId") || uuidV4());
   // Estado local para almacenar el nombre de usuario
@@ -38,9 +40,35 @@ const UserProvider = ({ children }) => {
     });
   }, [userId]);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get(
+          "https://metaversoude2.ddns.net:3001/api/checkAuth",
+          {
+            withCredentials: true,
+          }
+        );
+        if (response.status === 200) {
+          const userData = await axios.get(
+            `https://metaversoude2.ddns.net:3001/api/users/${response.data.usuario}`
+          );
+          setUser(userData.data);
+        }
+      } catch (error) {
+        setUser(null);
+      }
+      setLoading(false);
+    };
+
+    fetchUser();
+  }, []);
+
   // Renderiza el proveedor de contexto de usuario con sus valores proporcionados a los hijos
   return (
-    <UserContext.Provider value={{ userId, userName, setUserName, usersList }}>
+    <UserContext.Provider
+      value={{ userId, userName, setUserName, usersList, user, loading }}
+    >
       {children}
     </UserContext.Provider>
   );

@@ -46,7 +46,7 @@ const UserList = () => {
             nombre_para_mostrar: userData.nombre_para_mostrar || "",
             avatar_id: userData.avatar_id || "",
             correo: userData.correo || "",
-            es_estudiante: userData.es_estudiante || "",
+            rol: userData.es_estudiante || "",
           });
         } catch (error) {
           console.error("Error al cargar datos del usuario:", error);
