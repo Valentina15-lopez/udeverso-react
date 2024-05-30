@@ -42,19 +42,20 @@ export const PDFView = ({ file }) => {
   return (
     <>
       {loading && (
-        <div style={{ position: "absolute", top: "48%", left: "43%" }}>
-          Loading...
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-75 z-50">
+          <div className="flex flex-col justify-center items-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
+            <p className="text-white text-lg">Cargando...</p>
+          </div>
         </div>
       )}
       <canvas
         ref={canvasRef}
-        position={[0, 0, 0]}
         style={{
           position: "absolute",
-          width: 100,
-          height: 100,
-          top: 10,
-          left: 10,
+          width: "25%",
+          right: 47,
+          bottom: 121,
         }}
       />
     </>
