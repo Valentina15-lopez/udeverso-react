@@ -20,6 +20,9 @@ import { UserContext } from "../src/context/UserContext";
 const RoleProtectedRoute = ({ element, roles }) => {
   const { user, loading } = useContext(UserContext);
 
+  console.log(user);
+  console.log(roles);
+
   if (loading) {
     return <LoadingSpinner />;
   }
