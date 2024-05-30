@@ -7,7 +7,7 @@ pdfjs.GlobalWorkerOptions.workerSrc =
 export const PDFView = ({ file }) => {
   const [loading, setLoading] = useState(false);
   const canvasRef = useRef(null);
-
+  console.log("PDFVIEW", file);
   useEffect(() => {
     const loadAndRenderPDF = async (file) => {
       setLoading(true);
