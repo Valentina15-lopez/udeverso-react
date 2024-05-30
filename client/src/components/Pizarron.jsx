@@ -1,75 +1,21 @@
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { UserContext } from "../context/UserContext";
 import { RoomContext } from "../context/RoomContext";
 import axios from "axios";
 import pdfjs from "pdfjs-dist";
+import { PDFView } from "./PDFView"; // Asegúrate de importar PDFView correctamente
 
 pdfjs.GlobalWorkerOptions.workerSrc =
   window.location.origin + "/pdf.worker.min.js";
-
-export const PDFView = ({ file, onRender }) => {
-  const [loading, setLoading] = useState(false);
-  const canvasRef = useRef(null);
-
-  useEffect(() => {
-    const loadAndRenderPDF = async (file) => {
-      setLoading(true);
-      const loadingTask = pdfjs.getDocument(file);
-
-      try {
-        const pdf = await loadingTask.promise;
-        const page = await pdf.getPage(1);
-
-        const canvas = canvasRef.current;
-        const context = canvas.getContext("2d");
-        const viewport = page.getViewport({ scale: 1 });
-
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-
-        await page.render({
-          canvasContext: context,
-          viewport: viewport,
-        }).promise;
-
-        if (onRender) {
-          onRender(canvas);
-        }
-      } catch (error) {
-        console.error("Error loading PDF:", error);
-      }
-      setLoading(false);
-    };
-
-    if (file) {
-      loadAndRenderPDF(file);
-    }
-  }, [file, onRender]);
-
-  return (
-    <>
-      {loading && (
-        <div style={{ position: "absolute", top: "48%", left: "43%" }}>
-          Loading...
-        </div>
-      )}
-      <canvas
-        ref={canvasRef}
-        style={{ display: "none" }} // Ocultar el canvas
-      />
-    </>
-  );
-};
 
 export function Pizarron(props) {
   const { nodes, materials } = useGLTF(
     "/models/items/Pizarron-transformed.glb"
   );
   const { userName } = useContext(UserContext);
-  const { screenStream, peers, screenSharingId, fileTexture, setScreenStream } =
-    useContext(RoomContext);
+  const { fileTexture, setScreenStream } = useContext(RoomContext);
   const [materialTexture, setMaterialTexture] = useState(null);
 
   useEffect(() => {
@@ -85,8 +31,7 @@ export function Pizarron(props) {
           setScreenStream(materialBuffer);
 
           if (material.ext === "pdf") {
-            // Usar PDFView para renderizar el PDF y obtener el canvas
-            return <PDFView file={materialBuffer} onRender={handlePDFRender} />;
+            return; // PDFView se encargará de renderizar el PDF
           } else {
             loadImage(materialBuffer, material.ext);
           }
@@ -100,13 +45,9 @@ export function Pizarron(props) {
   }, [userName, fileTexture]);
 
   const handlePDFRender = (canvas) => {
-    const image = new Image();
-    image.src = canvas.toDataURL();
-    image.onload = () => {
-      const texture = new THREE.Texture(image);
-      texture.needsUpdate = true;
-      setMaterialTexture(texture);
-    };
+    const texture = new THREE.Texture(canvas);
+    texture.needsUpdate = true;
+    setMaterialTexture(texture);
   };
 
   const loadImage = (buffer, ext) => {

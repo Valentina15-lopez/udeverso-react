@@ -4,14 +4,13 @@ import pdfjs from "pdfjs-dist";
 pdfjs.GlobalWorkerOptions.workerSrc =
   window.location.origin + "/pdf.worker.min.js";
 
-export const PDFView = ({ file }) => {
+export const PDFView = ({ file, onRender }) => {
   const [loading, setLoading] = useState(false);
   const canvasRef = useRef(null);
 
   useEffect(() => {
     const loadAndRenderPDF = async (file) => {
       setLoading(true);
-      // eslint-disable-next-line no-undef
       const loadingTask = pdfjs.getDocument(file);
 
       try {
@@ -28,35 +27,25 @@ export const PDFView = ({ file }) => {
         await page.render({
           canvasContext: context,
           viewport: viewport,
-        });
+        }).promise;
+
+        if (onRender) {
+          onRender(canvas);
+        }
       } catch (error) {
         console.error("Error loading PDF:", error);
       }
       setLoading(false);
     };
+
     if (file) {
       loadAndRenderPDF(file);
     }
-  }, [file]);
+  }, [file, onRender]);
 
   return (
-    <>
-      {loading && (
-        <div style={{ position: "absolute", top: "48%", left: "43%" }}>
-          Loading...
-        </div>
-      )}
-      <canvas
-        ref={canvasRef}
-        position={[0, 0, 0]}
-        style={{
-          position: "absolute",
-          width: 100,
-          height: 100,
-          top: 10,
-          left: 10,
-        }}
-      />
-    </>
+    <div style={{ display: "none" }}>
+      <canvas ref={canvasRef} />
+    </div>
   );
 };
