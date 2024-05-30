@@ -67,7 +67,7 @@ export const UploadButton = () => {
       </Button>
       <Modal isOpen={isModalOpen} closeModal={closeModal}>
         <div>
-          <div className="mb-2">
+          <div className="flex flex-col gap-1">
             <Button onClick={() => setScreenMode(true)} isLight={true}>
               <span>Compartir Pantalla</span>
             </Button>
