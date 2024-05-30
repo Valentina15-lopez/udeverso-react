@@ -7,7 +7,7 @@ import { UserContext } from "../../context/UserContext";
 import { PDFView } from "./PDFView";
 
 export const UploadButton = () => {
-  const { setFileTexture } = useContext(RoomContext); // Asegúrate de tener una función para actualizar la textura
+  const { setFileTexture, shareScreen } = useContext(RoomContext); // Asegúrate de tener una función para actualizar la textura
   const [materiales, setMateriales] = useState([]);
   const { userName } = useContext(UserContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,6 +40,7 @@ export const UploadButton = () => {
   const selectMaterial = (materialName) => {
     setFileTexture(materialName);
     closeModal();
+    shareScreen();
     setIsSharing(true);
   };
 
