@@ -13,6 +13,7 @@ const UserContext = createContext({
 // Componente proveedor de contexto de usuario
 const UserProvider = ({ children }) => {
   const { socket } = useContext(SocketContext);
+  const [user, setUser] = useState(null);
 
   // Estado local para almacenar el ID de usuario
   const [userId] = useState(localStorage.getItem("userId") || uuidV4());
@@ -44,7 +45,9 @@ const UserProvider = ({ children }) => {
 
   // Renderiza el proveedor de contexto de usuario con sus valores proporcionados a los hijos
   return (
-    <UserContext.Provider value={{ userId, userName, setUserName, usersList }}>
+    <UserContext.Provider
+      value={{ userId, userName, setUserName, usersList, user, setUser }}
+    >
       {children}
     </UserContext.Provider>
   );

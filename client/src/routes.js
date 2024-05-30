@@ -18,9 +18,10 @@ import { JoinRoom } from "./components/Streaming/JoinRoom";
 import { UserContext } from "../src/context/UserContext";
 
 const RoleProtectedRoute = ({ element, roles }) => {
+  const { user } = useContext(UserContext);
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -35,15 +36,9 @@ const RoleProtectedRoute = ({ element, roles }) => {
         if (response.status === 200) {
           setIsAuthenticated(true);
           console.log(response.data);
-          const userData = await axios.get(
-            `https://metaversoude2.ddns.net:3001/api/users/${response.data.usuario}`
-          );
-          setUser(userData.data);
-          console.log(userData.data);
         }
       } catch (error) {
         setIsAuthenticated(false);
-        setUser(null);
       }
       setIsCheckingAuth(false);
       setLoading(false);
@@ -58,6 +53,10 @@ const RoleProtectedRoute = ({ element, roles }) => {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
+  }
+
+  if (!roles.includes(user.rol)) {
+    return <Navigate to="/not-found" />;
   }
 
   return element;
