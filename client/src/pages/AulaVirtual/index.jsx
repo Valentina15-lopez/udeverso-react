@@ -52,7 +52,7 @@ const AulaVirtual = () => {
           {fileTexture && <PDFView file={fileTexture} />}
         </div>
         <div className="w-1/4 ">
-          <Button onClick={handleGoBack}>Volver</Button>
+          <Button onClick={handleGoBack}>Salir del aula</Button>
           <Room />
         </div>
       </div>
