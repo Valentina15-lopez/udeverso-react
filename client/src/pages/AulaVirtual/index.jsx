@@ -17,6 +17,7 @@ import {
 import { PDFView } from "../../components/Streaming/PDFView";
 import { RoomContext } from "../../context/RoomContext";
 import { SocketContext } from "../../context/ContexProvider";
+import { UserContext } from "../../context/UserContext";
 
 import { useAtom } from "jotai";
 
@@ -25,6 +26,8 @@ const AulaVirtual = () => {
   const { socket } = useContext(SocketContext);
   const { roomId } = useParams(); // Obtiene el ID de la sala de los parámetros de ruta
   const { fileTexture } = useContext(RoomContext);
+  const { userId } = useContext(UserContext);
+
   const navigate = useNavigate();
 
   // Lógica de redirección aquí, por ejemplo, redirigir a / si no hay ID de sala
@@ -34,8 +37,9 @@ const AulaVirtual = () => {
 
   // Función para manejar la redirección a la página anterior
   const handleGoBack = () => {
-    socket.emit("user-disconnected", roomId);
-
+    socket.emit("user-disconnected", {
+      peerId: userId,
+    });
     navigate(-1); // Redirige a la página anterior en el historial
   };
 
