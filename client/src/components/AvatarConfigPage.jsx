@@ -26,65 +26,70 @@ export const AvatarConfigPage = () => {
   };
 
   return (
-    <div>
-      <h1>Configura tu Avatar</h1>
-      <div>
-        <label>
-          Color de Pelo:
-          <select
-            value={hairColor}
-            onChange={(e) => setHairColor(e.target.value)}
-          >
-            {colors.hair.map((color) => (
-              <option key={color} value={color}>
-                {color}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-      <div>
-        <label>
-          Color de Remera:
-          <select
-            value={topColor}
-            onChange={(e) => setTopColor(e.target.value)}
-          >
-            {colors.top.map((color) => (
-              <option key={color} value={color}>
-                {color}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-      <div>
-        <label>
-          Color de Pantalón:
-          <select
-            value={bottomColor}
-            onChange={(e) => setBottomColor(e.target.value)}
-          >
-            {colors.bottom.map((color) => (
-              <option key={color} value={color}>
-                {color}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-      <Button onClick={handleSave}>Guardar Avatar</Button>
-      <div style={{ width: "300px", height: "300px" }}>
-        <Canvas>
-          <ambientLight />
-          <OrbitControls />
-          <Avatar
-            position={[0, 0, 0]}
-            hairColor={hairColor}
-            topColor={topColor}
-            bottomColor={bottomColor}
-          />
-        </Canvas>
+    <div className="flex flex-row items-center justify-center h-screen bg-gray-100">
+      <div className="max-w-md w-full overflow-hidden my-8 bg-white shadow-lg rounded-lg p-6">
+        <h1>Configura tu Avatar</h1>
+        <div>
+          <label>
+            Color de Pelo:
+            <select
+              value={hairColor}
+              className={`w-full py-2 px-8 text-xl rounded-md transition duration-300 ${"bg-blue-200 text-blue-900 hover:bg-blue-300"}`}
+              onChange={(e) => setHairColor(e.target.value)}
+            >
+              {colors.hair.map((color) => (
+                <option key={color} value={color}>
+                  {color}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div>
+          <label>
+            Color de Remera:
+            <select
+              value={topColor}
+              className={`w-full py-2 px-8 text-xl rounded-md transition duration-300 ${"bg-blue-200 text-blue-900 hover:bg-blue-300"}`}
+              onChange={(e) => setTopColor(e.target.value)}
+            >
+              {colors.top.map((color) => (
+                <option key={color} value={color}>
+                  {color}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div>
+          <label>
+            Color de Pantalón:
+            <select
+              value={bottomColor}
+              className={`w-full py-2 px-8 text-xl rounded-md transition duration-300 ${"bg-blue-200 text-blue-900 hover:bg-blue-300"}`}
+              onChange={(e) => setBottomColor(e.target.value)}
+            >
+              {colors.bottom.map((color) => (
+                <option key={color} value={color}>
+                  {color}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <Button onClick={handleSave}>Guardar Avatar</Button>
+        <div style={{ width: "300px", height: "300px" }}>
+          <Canvas>
+            <ambientLight />
+            <OrbitControls />
+            <Avatar
+              position={[0, 0, 0]}
+              hairColor={hairColor}
+              topColor={topColor}
+              bottomColor={bottomColor}
+            />
+          </Canvas>
+        </div>
       </div>
     </div>
   );
