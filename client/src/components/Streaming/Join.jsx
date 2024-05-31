@@ -21,10 +21,12 @@ export const Join = () => {
           Crear una Sala
         </h2>
         <NameInput />
-        <Button onClick={createRoom} isLight={false}>
-          Crear sala
-        </Button>
-        <Button onClick={handleGoBack}>Volver al inicio</Button>
+        <div className="flex flex-col gap-2">
+          <Button onClick={createRoom} isLight={false}>
+            Crear sala
+          </Button>
+          <Button onClick={handleGoBack}>Volver al inicio</Button>
+        </div>
       </div>
     </div>
   );
