@@ -80,9 +80,17 @@ export const UploadButton = () => {
       </Modal>
       <Modal isOpen={isModalOpen2} closeModal={closeModal2}>
         <div>
-          <h1 className="text-lg font-semibold mb-4">
-            Selecciona el archivo que desea compartir
-          </h1>
+          {materiales.length !== 0 ? (
+            <h1 className="text-lg font-semibold mb-4">
+              Selecciona el archivo que desea compartir
+            </h1>
+          ) : (
+            <h1 className="text-lg font-semibold mb-4">
+              No tiene materiales asociados a tu usuario.Cargue materiales y
+              vuelva a intentar
+            </h1>
+          )}
+
           {loading ? (
             <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-75 z-50">
               <div className="flex flex-col justify-center items-center">
@@ -90,7 +98,7 @@ export const UploadButton = () => {
                 <p className="text-white text-lg">Cargando materiales...</p>
               </div>
             </div>
-          ) : materiales.length !== 0 ? (
+          ) : (
             materiales.map((material) => (
               <div className="mb-2">
                 <Button
@@ -101,11 +109,6 @@ export const UploadButton = () => {
                 </Button>
               </div>
             ))
-          ) : (
-            <h1 className="text-lg font-semibold mb-4">
-              No tiene materiales asociados a tu usuario.Cargue materiales y
-              vuelva a intentar
-            </h1>
           )}
         </div>
       </Modal>
