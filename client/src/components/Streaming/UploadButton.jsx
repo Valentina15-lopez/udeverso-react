@@ -90,7 +90,7 @@ export const UploadButton = () => {
                 <p className="text-white text-lg">Cargando materiales...</p>
               </div>
             </div>
-          ) : materiales ? (
+          ) : materiales.length !== 0 ? (
             materiales.map((material) => (
               <div className="mb-2">
                 <Button
