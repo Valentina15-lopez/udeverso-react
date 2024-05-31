@@ -80,12 +80,11 @@ const roomHandler = (socket) => {
     console.log("user created the room");
   };
 
-  const joinRoom = (roomId, peerId, userName) => {
+  const joinRoom = ({ roomId, peerId, userName }) => {
     if (!rooms[roomId]) rooms[roomId] = {};
     if (!chats[roomId]) chats[roomId] = [];
     socket.emit("get-messages", chats[roomId]);
     console.log("user joined the room", roomId, peerId, userName);
-
     rooms[roomId][peerId] = { peerId, userName };
     socket.join(roomId);
     socket.to(roomId).emit("user-joined", { peerId, userName });
