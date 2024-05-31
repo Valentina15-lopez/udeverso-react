@@ -1,23 +1,20 @@
-// AvatarConfigContext.js
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState } from "react";
 
 export const AvatarConfigContext = createContext();
 
 export const AvatarConfigProvider = ({ children }) => {
-  const [avatarConfigs, setAvatarConfigs] = useState({});
+  const [avatarConfig, setAvatarConfig] = useState({
+    hairColor: "#00ff00",
+    topColor: "#ff00ff",
+    bottomColor: "#a52a2a",
+  });
 
-  const setAvatarConfig = (userId, config) => {
-    setAvatarConfigs((prevConfigs) => ({
-      ...prevConfigs,
-      [userId]: config,
-    }));
-  };
-
+  const [saveAvatar, setSaveAvatar] = useState(false);
   return (
-    <AvatarConfigContext.Provider value={{ avatarConfigs, setAvatarConfig }}>
+    <AvatarConfigContext.Provider
+      value={{ avatarConfig, setAvatarConfig, saveAvatar, setSaveAvatar }}
+    >
       {children}
     </AvatarConfigContext.Provider>
   );
 };
-
-export const useAvatarConfig = () => useContext(AvatarConfigContext);

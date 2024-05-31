@@ -90,9 +90,9 @@ const AulaScene = () => {
                 user.position[2]
               )
             }
-            hairColor={getColor().hairColor}
-            topColor={getColor().topColor}
-            bottomColor={getColor().bottomColor}
+            hairColor={user.hairColor}
+            topColor={user.topColor}
+            bottomColor={user.bottomColor}
           />
         ))}
       </group>
