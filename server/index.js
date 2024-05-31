@@ -103,16 +103,16 @@ const roomHandler = (socket) => {
   };
 
   const leaveRoom = ({ peerId, roomId }) => {
-    socket.to(roomId).emit("user-disconnected", peerId);
+    socket.emit("user-disconnected", peerId);
   };
 
   const startSharing = ({ peerId, roomId }) => {
     console.log({ roomId, peerId });
-    socket.to(roomId).emit("user-started-sharing", peerId);
+    socket.emit("user-started-sharing", peerId);
   };
 
   const stopSharing = (roomId) => {
-    socket.to(roomId).emit("user-stopped-sharing");
+    socket.emit("user-stopped-sharing");
   };
 
   const addMessage = (roomId, message) => {
@@ -149,21 +149,6 @@ io.on("connection", (socket) => {
     bottomColor: generateRandomHexColor(),
   });
   io.emit("usersList", usersList);
-  socket.on("screen-sharing-start", (data) => {
-    console.log("Iniciar compartir pantalla", data);
-    io.emit("screen-sharing-start", data);
-  });
-
-  socket.on("screen-sharing-stop", (data) => {
-    console.log("Detener compartir pantalla", data);
-    io.emit("screen-sharing-stop", data);
-  });
-
-  socket.on("file-upload", (data) => {
-    console.log("Archivo subido", data);
-    io.emit("file-upload", data);
-  });
-
   socket.on("move", (position) => {
     const users = usersList.find((user) => user.id === socket.id);
     users.position = position;
