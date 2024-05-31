@@ -5,15 +5,20 @@ import { SocketContext } from "../../context/ContexProvider";
 import { UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { AvatarConfigPage } from "../AvatarConfigPage";
+import { AvatarConfigContext } from "../../context/AvatarConfigContext";
 
 export const JoinRoom = () => {
   const { socket } = useContext(SocketContext);
+  const { saveAvatar } = useContext(AvatarConfigContext);
+
   const { userId, userName } = useContext(UserContext);
   const [roomId, setRoomId] = useState("");
   const navigate = useNavigate();
 
   const joinRoom = () => {
-    socket.emit("join-room", { roomId: roomId, peerId: userId, userName });
+    if (saveAvatar) {
+      socket.emit("join-room", { roomId: roomId, peerId: userId, userName });
+    }
   };
   // Función para manejar la redirección a la página anterior
   const handleGoBack = () => {

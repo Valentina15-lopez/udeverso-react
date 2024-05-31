@@ -1,14 +1,19 @@
+import React, { useContext } from "react";
 import { NameInput } from "../../common/Name";
 import { Button } from "../../common/Button";
 import { socket } from "../../context/ContexProvider";
 import { useNavigate } from "react-router-dom";
 import { AvatarConfigPage } from "../AvatarConfigPage";
+import { AvatarConfigContext } from "../../context/AvatarConfigContext";
 
 export const Join = () => {
+  const { saveAvatar } = useContext(AvatarConfigContext);
   const navigate = useNavigate();
 
   const createRoom = () => {
-    socket.emit("create-room");
+    if (saveAvatar) {
+      socket.emit("create-room");
+    }
   };
   // Función para manejar la redirección a la página anterior
   const handleGoBack = () => {

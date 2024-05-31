@@ -13,8 +13,8 @@ const colors = {
 };
 
 export const AvatarConfigPage = () => {
-  const navigate = useNavigate();
-  const { avatarConfig, setAvatarConfig } = useContext(AvatarConfigContext);
+  const { avatarConfig, setAvatarConfig, saveAvatar, setSaveAvatar } =
+    useContext(AvatarConfigContext);
 
   const [hairColor, setHairColor] = useState(avatarConfig.hairColor);
   const [topColor, setTopColor] = useState(avatarConfig.topColor);
@@ -22,7 +22,7 @@ export const AvatarConfigPage = () => {
 
   const handleSave = () => {
     setAvatarConfig({ hairColor, topColor, bottomColor });
-    navigate("/aula");
+    setSaveAvatar(true);
   };
 
   return (
@@ -73,7 +73,7 @@ export const AvatarConfigPage = () => {
           </select>
         </label>
       </div>
-      <Button onClick={handleSave}>Guardar</Button>
+      <Button onClick={handleSave}>Guardar Avatar</Button>
       <div style={{ width: "300px", height: "300px" }}>
         <Canvas>
           <ambientLight />

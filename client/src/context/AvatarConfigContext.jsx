@@ -9,8 +9,11 @@ export const AvatarConfigProvider = ({ children }) => {
     bottomColor: "#a52a2a",
   });
 
+  const [saveAvatar, setSaveAvatar] = useState(false);
   return (
-    <AvatarConfigContext.Provider value={{ avatarConfig, setAvatarConfig }}>
+    <AvatarConfigContext.Provider
+      value={{ avatarConfig, setAvatarConfig, saveAvatar, setSaveAvatar }}
+    >
       {children}
     </AvatarConfigContext.Provider>
   );
