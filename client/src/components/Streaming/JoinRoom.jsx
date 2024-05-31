@@ -21,7 +21,7 @@ export const JoinRoom = () => {
 
   const joinRoom = () => {
     if (saveAvatar) {
-      socket.emit("user-joined", { peerId: userId, userName });
+      socket.emit("join-room");
     } else {
       setisModalOpen(true);
     }
