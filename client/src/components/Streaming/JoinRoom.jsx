@@ -25,15 +25,12 @@ export const JoinRoom = () => {
         <h2 className="text-2xl font-semibold text-center py-4 bg-gray-800 text-white">
           Unirse a una Sala
         </h2>
-        <div className="w-80 ">
-          <NameInput />
-        </div>
+        <NameInput />
         <input
           type="text"
           value={roomId}
           onChange={(e) => setRoomId(e.target.value)}
           placeholder="Ingrese el ID de la Sala"
-          className="mb-4 p-2 border w-80 text-center border-gray-300 rounded"
         />
         <div className="flex flex-col gap-2">
           <Button onClick={joinRoom} isLight={false}>
