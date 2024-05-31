@@ -39,7 +39,6 @@ const AulaVirtual = () => {
   return (
     <div className="h-screen flex flex-col">
       <div className="flex-1 flex">
-        <Button onClick={handleGoBack}>Volver</Button>
         <div className="w-3/4">
           <Canvas
             frameloop="demand"
@@ -53,6 +52,7 @@ const AulaVirtual = () => {
           {fileTexture && <PDFView file={fileTexture} />}
         </div>
         <div className="w-1/4 ">
+          <Button onClick={handleGoBack}>Volver</Button>
           <Room />
         </div>
       </div>
