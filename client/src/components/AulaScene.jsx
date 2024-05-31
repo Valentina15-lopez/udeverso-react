@@ -10,10 +10,13 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RoomContext } from "../context/RoomContext";
 import { UserContext } from "../context/UserContext";
 import modeloGlb from "../assets/Aula.glb";
+import { AvatarConfigContext } from "../context/AvatarConfigContext";
 import { Pizarron } from "./Pizarron";
 
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
+  const { avatarConfig } = useContext(AvatarConfigContext);
+
   const [users] = useAtom(userAtom);
 
   console.log(users);
@@ -82,9 +85,9 @@ const AulaScene = () => {
                 user.position[2]
               )
             }
-            hairColor={user.hairColor}
-            topColor={user.topColor}
-            bottomColor={user.bottomColor}
+            hairColor={avatarConfig.hairColor}
+            topColor={avatarConfig.topColor}
+            bottomColor={avatarConfig.bottomColor}
           />
         ))}
       </group>

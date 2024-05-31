@@ -8,6 +8,7 @@ import { RoomProvider } from "../src/context/RoomContext";
 import { UserProvider } from "./context/UserContext";
 import "./App.css";
 import { ChatProvider } from "./context/ChatContext";
+import { AvatarConfigProvider } from "./context/AvatarConfigContext";
 
 function App() {
   const element = useRoutes(routes);
@@ -25,13 +26,15 @@ export default function Root() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <UserProvider>
-          <RoomProvider>
-            <ChatProvider>
-              <App />
-            </ChatProvider>
-          </RoomProvider>
-        </UserProvider>
+        <AvatarConfigProvider>
+          <UserProvider>
+            <RoomProvider>
+              <ChatProvider>
+                <App />
+              </ChatProvider>
+            </RoomProvider>
+          </UserProvider>
+        </AvatarConfigProvider>
       </BrowserRouter>
     </AuthProvider>
   );

@@ -4,6 +4,7 @@ import { Button } from "../../common/Button";
 import { SocketContext } from "../../context/ContexProvider";
 import { UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { AvatarConfigPage } from "../AvatarConfigPage";
 
 export const JoinRoom = () => {
   const { socket } = useContext(SocketContext);
@@ -21,6 +22,7 @@ export const JoinRoom = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+      <AvatarConfigPage />
       <div className="max-w-md w-full overflow-hidden my-8 bg-white shadow-lg rounded-lg p-6">
         <h2 className="text-2xl font-semibold text-center py-4 bg-gray-800 text-white mb-4">
           Unirse a una Sala
