@@ -16,11 +16,13 @@ import {
 } from "@react-three/drei";
 import { PDFView } from "../../components/Streaming/PDFView";
 import { RoomContext } from "../../context/RoomContext";
+import { SocketContext } from "../../context/ContexProvider";
 
 import { useAtom } from "jotai";
 
 const AulaVirtual = () => {
   const [users] = useAtom(userAtom);
+  const { socket } = useContext(SocketContext);
   const { roomId } = useParams(); // Obtiene el ID de la sala de los parámetros de ruta
   const { fileTexture } = useContext(RoomContext);
   const navigate = useNavigate();
@@ -32,6 +34,7 @@ const AulaVirtual = () => {
 
   // Función para manejar la redirección a la página anterior
   const handleGoBack = () => {
+    socket.emit("user-disconnected", { roomId });
     navigate(-1); // Redirige a la página anterior en el historial
   };
 

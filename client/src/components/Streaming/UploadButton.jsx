@@ -90,7 +90,6 @@ export const UploadButton = () => {
               vuelva a intentar
             </h1>
           )}
-
           {loading ? (
             <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-75 z-50">
               <div className="flex flex-col justify-center items-center">
