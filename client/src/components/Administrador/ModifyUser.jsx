@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ModifyUser = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -66,6 +67,11 @@ const ModifyUser = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+  const navigate = useNavigate();
+
+  const handleBackToHome = () => {
+    navigate("/abm");
   };
 
   const handleSubmit = async (e) => {
@@ -152,7 +158,8 @@ const ModifyUser = () => {
             Modificar
           </button>
           <button
-            type="reset"
+            type="button"
+            onClick={handleBackToHome}
             className="w-full mt-2.5 bg-indigo-300 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-600 transition duration-300"
           >
             Volver al inicio

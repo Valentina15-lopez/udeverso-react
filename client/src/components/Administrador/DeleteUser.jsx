@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const DeleteUser = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -85,6 +86,11 @@ const DeleteUser = () => {
       console.error("Error al borrar el usuario:", error);
     }
   };
+  const navigate = useNavigate();
+
+  const handleBackToHome = () => {
+    navigate("/abm");
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen">
@@ -160,7 +166,8 @@ const DeleteUser = () => {
             Borrar
           </button>
           <button
-            type="reset"
+            type="button"
+            onClick={handleBackToHome}
             className="w-full mt-2.5 bg-indigo-300 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-600 transition duration-300"
           >
             Volver al inicio
