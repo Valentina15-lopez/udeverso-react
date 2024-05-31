@@ -9,8 +9,5 @@ const peerServer = PeerServer({
     cert: fs.readFileSync("fullchain.pem", "utf8"),
   },
 });
-// const peerServer = PeerServer({
-//   port: 9000,
-//   path: "/",
-// });
+
 console.log("Servidor Peer escuchando en el puerto 9000...");
