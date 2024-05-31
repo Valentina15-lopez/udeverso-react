@@ -58,7 +58,7 @@ export const AvatarConfigPage = () => {
               className={`w-full py-2 px-8 text-xl rounded-md transition duration-300 ${"bg-blue-200 text-blue-900 hover:bg-blue-300"}`}
               onChange={(e) => setHairColor(e.target.value)}
             >
-              {colors.bottom.map((color) => (
+              {colors.hair.map((color) => (
                 <option key={color.value} value={color.value}>
                   {color.label}
                 </option>
@@ -74,7 +74,7 @@ export const AvatarConfigPage = () => {
               className={`w-full py-2 px-8 text-xl rounded-md transition duration-300 ${"bg-blue-200 text-blue-900 hover:bg-blue-300"}`}
               onChange={(e) => setTopColor(e.target.value)}
             >
-              {colors.bottom.map((color) => (
+              {colors.top.map((color) => (
                 <option key={color.value} value={color.value}>
                   {color.label}
                 </option>
