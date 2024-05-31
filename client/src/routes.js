@@ -70,7 +70,10 @@ const routes = [
   {
     path: "/aulavirtual/:roomId",
     element: (
-      <RoleProtectedRoute element={<AulaVirtual />} roles={["alumno"]} />
+      <RoleProtectedRoute
+        element={<AulaVirtual />}
+        roles={["alumno", "profesor", "administrador"]}
+      />
     ),
   },
   {
