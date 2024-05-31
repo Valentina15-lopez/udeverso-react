@@ -92,6 +92,7 @@ const roomHandler = (socket) => {
       hairColor: generateRandomHexColor(),
       topColor: generateRandomHexColor(),
       bottomColor: generateRandomHexColor(),
+      roomId: roomId,
     });
     io.emit("usersList", usersList);
     socket.on("move", (position) => {
@@ -111,10 +112,12 @@ const roomHandler = (socket) => {
 
     socket.on("disconnect", () => {
       console.log("user left the room", peerId);
-      usersList.splice(
-        usersList.findIndex((user) => user.id === socket.id),
-        1
-      );
+      const index = usersList.findIndex((user) => user.id === socketId);
+
+      // Si el usuario existe en la lista, elimínalo
+      if (index !== -1) {
+        usersList.splice(index, 1);
+      }
       io.emit("usersList", usersList);
       leaveRoom({ peerId });
     });
