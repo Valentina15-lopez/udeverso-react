@@ -12,7 +12,7 @@ import { UserContext } from "../context/UserContext";
 import modeloGlb from "../assets/modeloAula3.glb";
 import { AvatarConfigContext } from "../context/AvatarConfigContext";
 import { Pizarron } from "./Pizarron";
-
+//esta es la version final
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
   const { avatarConfig } = useContext(AvatarConfigContext);
