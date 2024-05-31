@@ -4,6 +4,7 @@ import { AvatarConfigContext } from "../context/AvatarConfigContext";
 import { Avatar } from "./Avatar";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
+import { Button } from "../../common/Button";
 
 const colors = {
   hair: ["#00ff00", "#ff0000", "#0000ff"],
@@ -72,8 +73,7 @@ export const AvatarConfigPage = () => {
           </select>
         </label>
       </div>
-      <button onClick={handleSave}>Guardar y Entrar</button>
-
+      <Button onClick={handleSave}>Guardar</Button>
       <div style={{ width: "300px", height: "300px" }}>
         <Canvas>
           <ambientLight />
