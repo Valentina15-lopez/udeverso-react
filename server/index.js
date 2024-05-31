@@ -93,6 +93,13 @@ const roomHandler = (socket) => {
       topColor: generateRandomHexColor(),
       bottomColor: generateRandomHexColor(),
     });
+    io.emit("usersList", usersList);
+    socket.on("move", (position) => {
+      const users = usersList.find((user) => user.id === peerId);
+      users.position = position;
+      io.emit("usersList", usersList);
+    });
+
     rooms[roomId][peerId] = { peerId, userName };
     socket.join(roomId);
     socket.to(roomId).emit("user-joined", { peerId, userName });
@@ -104,6 +111,11 @@ const roomHandler = (socket) => {
     socket.on("disconnect", () => {
       console.log("user left the room", peerId);
       leaveRoom({ peerId, roomId });
+      usersList.splice(
+        usersList.findIndex((user) => user.id === peerId),
+        1
+      );
+      io.emit("usersList", usersList);
     });
   };
 
