@@ -11,7 +11,7 @@ const colors = {
   bottom: ["#a52a2a", "#8b4513", "#2e8b57"],
 };
 
-const AvatarConfigPage = () => {
+export const AvatarConfigPage = () => {
   const navigate = useNavigate();
   const { avatarConfig, setAvatarConfig } = useContext(AvatarConfigContext);
 
@@ -89,5 +89,3 @@ const AvatarConfigPage = () => {
     </div>
   );
 };
-
-export default AvatarConfigPage;
