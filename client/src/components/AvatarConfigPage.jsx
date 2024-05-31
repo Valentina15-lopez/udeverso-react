@@ -8,19 +8,26 @@ import { Button } from "../common/Button";
 
 const colors = {
   hair: [
-    { value: "#00ff00", label: "Verde" },
+    { value: "#ffffff", label: "Blanco" },
+    { value: "#000000", label: "Negro" },
     { value: "#ff0000", label: "Rojo" },
-    { value: "#0000ff", label: "Azul" },
+    { value: "#ffff00", label: "Amarillo" },
   ],
   top: [
-    { value: "#ff00ff", label: "Magenta" },
-    { value: "#00ffff", label: "Cian" },
+    { value: "#00ff00", label: "Verde" },
+    { value: "#ffffff", label: "Blanco" },
+    { value: "#000000", label: "Negro" },
+    { value: "#0000ff", label: "Azul" },
+    { value: "#ff0000", label: "Rojo" },
     { value: "#ffff00", label: "Amarillo" },
   ],
   bottom: [
-    { value: "#a52a2a", label: "Marrón" },
-    { value: "#8b4513", label: "Siena" },
-    { value: "#2e8b57", label: "Verde mar" },
+    { value: "#00ff00", label: "Verde" },
+    { value: "#ffffff", label: "Blanco" },
+    { value: "#000000", label: "Negro" },
+    { value: "#0000ff", label: "Azul" },
+    { value: "#ff0000", label: "Rojo" },
+    { value: "#ffff00", label: "Amarillo" },
   ],
 };
 
