@@ -78,18 +78,16 @@ export const AvatarConfigPage = () => {
           </label>
         </div>
         <Button onClick={handleSave}>Guardar Avatar</Button>
-        <div style={{ width: "100%", height: "100%" }}>
-          <Canvas>
-            <ambientLight />
-            <OrbitControls />
-            <Avatar
-              position={[0, 0, 0]}
-              hairColor={hairColor}
-              topColor={topColor}
-              bottomColor={bottomColor}
-            />
-          </Canvas>
-        </div>
+        <Canvas>
+          <ambientLight />
+          <OrbitControls />
+          <Avatar
+            position={[0, 0, 0]}
+            hairColor={hairColor}
+            topColor={topColor}
+            bottomColor={bottomColor}
+          />
+        </Canvas>
       </div>
     </div>
   );
