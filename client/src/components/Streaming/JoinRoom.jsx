@@ -3,14 +3,20 @@ import { NameInput } from "../../common/Name";
 import { Button } from "../../common/Button";
 import { SocketContext } from "../../context/ContexProvider";
 import { UserContext } from "../../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 export const JoinRoom = () => {
   const { socket } = useContext(SocketContext);
   const { userId, userName } = useContext(UserContext);
   const [roomId, setRoomId] = useState("");
+  const navigate = useNavigate();
 
   const joinRoom = () => {
     socket.emit("join-room", { roomId: roomId, peerId: userId, userName });
+  };
+  // Función para manejar la redirección a la página anterior
+  const handleGoBack = () => {
+    navigate(-1); // Redirige a la página anterior en el historial
   };
 
   return (
@@ -29,10 +35,11 @@ export const JoinRoom = () => {
           placeholder="Ingrese el ID de la Sala"
           className="mb-4 p-2 border w-80 text-center border-gray-300 rounded"
         />
-        <div className="w-80 text-center">
+        <div className="flex flex-col gap-2">
           <Button onClick={joinRoom} isLight={false}>
             Unirse a la Sala
           </Button>
+          <Button onClick={handleGoBack}>Volver al inicio</Button>
         </div>
       </div>
     </div>
