@@ -31,7 +31,7 @@ export const JoinRoom = () => {
           value={roomId}
           onChange={(e) => setRoomId(e.target.value)}
           placeholder="Ingrese el ID de la Sala"
-          className="mb-4 p-2 border text-center border-gray-300 rounded"
+          className="mb-4 p-2 border w-full text-center border-gray-300 rounded"
         />
         <div className="flex flex-col gap-2">
           <Button onClick={joinRoom} isLight={false}>
