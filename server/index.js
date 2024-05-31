@@ -85,6 +85,14 @@ const roomHandler = (socket) => {
     if (!chats[roomId]) chats[roomId] = [];
     socket.emit("get-messages", chats[roomId]);
     console.log("user joined the room", roomId, peerId, userName);
+
+    rooms[roomId][peerId] = { peerId, userName };
+    socket.join(roomId);
+    socket.to(roomId).emit("user-joined", { peerId, userName });
+    socket.emit("get-users", {
+      roomId,
+      participants: rooms[roomId],
+    });
     socket.emit("room-joined", { roomId });
     usersList.push({
       id: peerId,
@@ -99,15 +107,6 @@ const roomHandler = (socket) => {
       users.position = position;
       io.emit("usersList", usersList);
     });
-
-    rooms[roomId][peerId] = { peerId, userName };
-    socket.join(roomId);
-    socket.to(roomId).emit("user-joined", { peerId, userName });
-    socket.emit("get-users", {
-      roomId,
-      participants: rooms[roomId],
-    });
-
     socket.on("disconnect", () => {
       console.log("user left the room", peerId);
       leaveRoom({ peerId, roomId });
