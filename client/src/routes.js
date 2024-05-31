@@ -55,7 +55,11 @@ const RoleProtectedRoute = ({ element, roles }) => {
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
-  if (!roles.includes(user.rol)) {
+  if (user) {
+    if (!roles.includes(user.rol)) {
+      return <Navigate to="/access-denied" />;
+    }
+  } else {
     return <Navigate to="/access-denied" />;
   }
 
