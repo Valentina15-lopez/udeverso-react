@@ -33,7 +33,7 @@ export const JoinRoom = () => {
 
   return (
     <>
-      <div className="flex flex-row  items-center justify-center  bg-gray-100">
+      <div className="flex flex-row  items-center  gap-36 justify-center  bg-gray-100">
         <AvatarConfigPage />
         <div className="max-w-md w-full overflow-hidden my-8 bg-white shadow-lg rounded-lg p-6">
           <h2 className="text-2xl font-semibold text-center py-4 bg-gray-800 text-white mb-4">

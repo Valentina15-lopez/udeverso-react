@@ -28,7 +28,7 @@ export const Join = () => {
 
   return (
     <>
-      <div className="flex flex-row items-center justify-center bg-gray-100">
+      <div className="flex flex-row  gap-36 items-center justify-center bg-gray-100">
         <div>
           <AvatarConfigPage />
         </div>
