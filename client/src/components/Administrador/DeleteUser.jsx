@@ -149,7 +149,7 @@ const DeleteUser = () => {
             />
           </label>
           <label className="block mb-2">
-            Es Estudiante:
+            Rol:
             <input
               type="text"
               name="rol"
