@@ -31,6 +31,11 @@ const AulaScene = () => {
     console.log("newPosition", newPosition);
     socket.emit("move", newPosition);
   };
+  const getColor = (e) => {
+    users.map((user) => {
+      return avatarConfig[user.id];
+    });
+  };
 
   return (
     <>
@@ -85,9 +90,9 @@ const AulaScene = () => {
                 user.position[2]
               )
             }
-            hairColor={avatarConfig.hairColor}
-            topColor={avatarConfig.topColor}
-            bottomColor={avatarConfig.bottomColor}
+            hairColor={getColor().hairColor}
+            topColor={getColor().topColor}
+            bottomColor={getColor().bottomColor}
           />
         ))}
       </group>
