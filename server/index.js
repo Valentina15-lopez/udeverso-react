@@ -80,26 +80,10 @@ const roomHandler = (socket) => {
     console.log("user created the room");
   };
 
-  const joinRoom = ({ roomId, peerId, userName }) => {
+  const joinRoom = (roomId, peerId, userName) => {
     if (!rooms[roomId]) rooms[roomId] = {};
     if (!chats[roomId]) chats[roomId] = [];
-
     socket.emit("get-messages", chats[roomId]);
-    socket.emit("room-joined", { roomId });
-    usersList.push({
-      id: peerId,
-      position: generateRandomPosition(),
-      hairColor: generateRandomHexColor(),
-      topColor: generateRandomHexColor(),
-      bottomColor: generateRandomHexColor(),
-    });
-    io.emit("usersList", usersList);
-    socket.on("move", (position) => {
-      const users = usersList.find((user) => user.id === peerId);
-      users.position = position;
-      io.emit("usersList", usersList);
-    });
-
     console.log("user joined the room", roomId, peerId, userName);
     rooms[roomId][peerId] = { peerId, userName };
     socket.join(roomId);
@@ -111,26 +95,21 @@ const roomHandler = (socket) => {
 
     socket.on("disconnect", () => {
       console.log("user left the room", peerId);
-      usersList.splice(
-        usersList.findIndex((user) => user.id === peerId),
-        1
-      );
-      io.emit("usersList", usersList);
-      leaveRoom({ peerId });
+      leaveRoom({ peerId, roomId });
     });
   };
 
   const leaveRoom = ({ peerId }) => {
-    socket.emit("user-disconnected", peerId);
+    socket.to(roomId).emit("user-disconnected", peerId);
   };
 
   const startSharing = ({ peerId, roomId }) => {
     console.log({ roomId, peerId });
-    socket.emit("user-started-sharing", peerId);
+    socket.to(roomId).emit("user-started-sharing", peerId);
   };
 
   const stopSharing = (roomId) => {
-    socket.emit("user-stopped-sharing");
+    socket.to(roomId).emit("user-stopped-sharing");
   };
 
   const addMessage = (roomId, message) => {
