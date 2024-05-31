@@ -86,6 +86,13 @@ const roomHandler = (socket) => {
     socket.emit("get-messages", chats[roomId]);
     console.log("user joined the room", roomId, peerId, userName);
     socket.emit("room-joined", { roomId });
+    usersList.push({
+      id: peerId,
+      position: generateRandomPosition(),
+      hairColor: generateRandomHexColor(),
+      topColor: generateRandomHexColor(),
+      bottomColor: generateRandomHexColor(),
+    });
     rooms[roomId][peerId] = { peerId, userName };
     socket.join(roomId);
     socket.to(roomId).emit("user-joined", { peerId, userName });
