@@ -83,8 +83,8 @@ const roomHandler = (socket) => {
   const joinRoom = ({ roomId, peerId, userName }) => {
     if (!rooms[roomId]) rooms[roomId] = {};
     if (!chats[roomId]) chats[roomId] = [];
-    socket.emit("room-joined", { roomId });
     socket.emit("get-messages", chats[roomId]);
+
     console.log("user joined the room", roomId, peerId, userName);
     rooms[roomId][peerId] = { peerId, userName };
     socket.join(roomId);
@@ -93,27 +93,10 @@ const roomHandler = (socket) => {
       roomId,
       participants: rooms[roomId],
     });
-    usersList.push({
-      id: peerId,
-      position: generateRandomPosition(),
-      hairColor: generateRandomHexColor(),
-      topColor: generateRandomHexColor(),
-      bottomColor: generateRandomHexColor(),
-    });
-    io.emit("usersList", usersList);
-    socket.on("move", (position) => {
-      const users = usersList.find((user) => user.id === peerId);
-      users.position = position;
-      io.emit("usersList", usersList);
-    });
+
     socket.on("disconnect", () => {
       console.log("user left the room", peerId);
-      leaveRoom({ peerId, roomId });
-      usersList.splice(
-        usersList.findIndex((user) => user.id === peerId),
-        1
-      );
-      io.emit("usersList", usersList);
+      leaveRoom({ roomId, peerId });
     });
   };
 
@@ -156,10 +139,30 @@ const roomHandler = (socket) => {
 };
 
 io.on("connection", (socket) => {
+  usersList.push({
+    id: socket.id,
+    position: generateRandomPosition(),
+    hairColor: generateRandomHexColor(),
+    topColor: generateRandomHexColor(),
+    bottomColor: generateRandomHexColor(),
+  });
+  io.emit("usersList", usersList);
+
+  socket.on("move", (position) => {
+    const user = usersList.find((item) => item.id === socket.id);
+    user.position = position;
+    io.emit("usersList", usersList);
+  });
+
   console.log("a user connected");
   roomHandler(socket);
   socket.on("disconnect", () => {
     console.log("user disconnected");
+    usersList.splice(
+      usersList.findIndex((item) => item.id === socket.id),
+      1
+    );
+    io.emit("usersList", usersList);
   });
 });
 
