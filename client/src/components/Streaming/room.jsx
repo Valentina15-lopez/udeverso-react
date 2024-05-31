@@ -25,11 +25,6 @@ export const Room = () => {
   const { userName, userId } = useContext(UserContext);
 
   useEffect(() => {
-    if (stream)
-      socket.emit("join-room", { roomId: roomId, peerId: userId, userName });
-  }, [roomId, userId, stream, userName]);
-
-  useEffect(() => {
     setRoomId(roomId || "");
   }, [roomId, setRoomId]);
 
