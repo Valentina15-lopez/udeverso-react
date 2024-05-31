@@ -7,9 +7,21 @@ import { OrbitControls } from "@react-three/drei";
 import { Button } from "../common/Button";
 
 const colors = {
-  hair: ["#00ff00", "#ff0000", "#0000ff"],
-  top: ["#ff00ff", "#00ffff", "#ffff00"],
-  bottom: ["#a52a2a", "#8b4513", "#2e8b57"],
+  hair: [
+    { value: "#00ff00", label: "Verde" },
+    { value: "#ff0000", label: "Rojo" },
+    { value: "#0000ff", label: "Azul" },
+  ],
+  top: [
+    { value: "#ff00ff", label: "Magenta" },
+    { value: "#00ffff", label: "Cian" },
+    { value: "#ffff00", label: "Amarillo" },
+  ],
+  bottom: [
+    { value: "#a52a2a", label: "Marrón" },
+    { value: "#8b4513", label: "Siena" },
+    { value: "#2e8b57", label: "Verde mar" },
+  ],
 };
 
 export const AvatarConfigPage = () => {
@@ -26,11 +38,13 @@ export const AvatarConfigPage = () => {
   };
 
   return (
-    <div className="flex flex-row items-center justify-center h-screen bg-gray-100">
+    <div className="flex flex-row gap-36 items-center justify-center h-screen bg-gray-100">
       <div className="max-w-md w-full overflow-hidden my-8 bg-white shadow-lg rounded-lg p-6">
-        <h1>Configura tu Avatar</h1>
+        <h2 className="text-2xl font-semibold text-center py-4 bg-gray-800 text-white mb-4">
+          Configura tu Avatar
+        </h2>
         <div>
-          <label>
+          <label className="block mb-2">
             Color de Pelo:
             <select
               value={hairColor}
@@ -46,7 +60,7 @@ export const AvatarConfigPage = () => {
           </label>
         </div>
         <div>
-          <label>
+          <label className="block mb-2">
             Color de Remera:
             <select
               value={topColor}
@@ -62,7 +76,7 @@ export const AvatarConfigPage = () => {
           </label>
         </div>
         <div>
-          <label>
+          <label className="block mb-2">
             Color de Pantalón:
             <select
               value={bottomColor}
