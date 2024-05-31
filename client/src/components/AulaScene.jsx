@@ -31,6 +31,15 @@ const AulaScene = () => {
     console.log("newPosition", newPosition);
     socket.emit("move", newPosition);
   };
+  const applyAvatarConfig = (user) => {
+    if (avatarConfig) {
+      user.hairColor = avatarConfig.hairColor;
+      user.topColor = avatarConfig.topColor;
+      user.bottomColor = avatarConfig.bottomColor;
+    }
+    return user;
+  };
+
   return (
     <>
       <Environment preset="sunset" />
@@ -84,9 +93,9 @@ const AulaScene = () => {
                 user.position[2]
               )
             }
-            hairColor={user.topColor}
-            topColor={user.topColor}
-            bottomColor={user.bottomColor}
+            hairColor={applyAvatarConfig(user).hairColor}
+            topColor={applyAvatarConfig(user).topColor}
+            bottomColor={applyAvatarConfig(user).bottomColor}
           />
         ))}
       </group>
