@@ -118,7 +118,7 @@ const roomHandler = (socket) => {
     });
   };
 
-  const leaveRoom = ({ peerId }) => {
+  const leaveRoom = ({ peerId, roomId }) => {
     socket.to(roomId).emit("user-disconnected", peerId);
   };
 
