@@ -1,7 +1,7 @@
 // AvatarConfigContext.js
 import React, { createContext, useState, useContext } from "react";
 
-const AvatarConfigContext = createContext();
+export const AvatarConfigContext = createContext();
 
 export const AvatarConfigProvider = ({ children }) => {
   const [avatarConfigs, setAvatarConfigs] = useState({});
