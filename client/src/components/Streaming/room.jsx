@@ -23,7 +23,7 @@ export const Room = () => {
     setRoomId,
   } = useContext(RoomContext);
   const { userName, userId } = useContext(UserContext);
-
+  const { id } = useParams();
   useEffect(() => {
     setRoomId(roomId || "");
   }, [roomId, setRoomId]);
@@ -32,6 +32,11 @@ export const Room = () => {
     screenSharingId === userId ? screenStream : peers[screenSharingId]?.stream;
 
   const { [screenSharingId]: sharing, ...peersToShow } = peers;
+
+  useEffect(() => {
+    if (stream)
+      socket.emit("join-room", { roomId: id, peerId: userId, userName });
+  }, [id, userId, stream, userName]);
 
   return (
     <div className="flex flex-col min-h-screen">
