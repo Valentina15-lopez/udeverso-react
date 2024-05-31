@@ -90,24 +90,22 @@ export const UploadButton = () => {
                 <p className="text-white text-lg">Cargando materiales...</p>
               </div>
             </div>
-          ) : (
+          ) : materiales ? (
             materiales.map((material) => (
               <div className="mb-2">
-                {material ? (
-                  <Button
-                    onClick={() => selectMaterial(material.nombre)}
-                    isLight={true}
-                  >
-                    <span>{material.nombre}</span>
-                  </Button>
-                ) : (
-                  <h1 className="text-lg font-semibold mb-4">
-                    No tiene materiales asociados a tu usuario.Cargue materiales
-                    y vuelva a intentar
-                  </h1>
-                )}
+                <Button
+                  onClick={() => selectMaterial(material.nombre)}
+                  isLight={true}
+                >
+                  <span>{material.nombre}</span>
+                </Button>
               </div>
             ))
+          ) : (
+            <h1 className="text-lg font-semibold mb-4">
+              No tiene materiales asociados a tu usuario.Cargue materiales y
+              vuelva a intentar
+            </h1>
           )}
         </div>
       </Modal>
