@@ -35,7 +35,7 @@ export const Room = () => {
 
   useEffect(() => {
     if (stream)
-      socket.emit("join-room", { roomId: id, peerId: userId, userName });
+      socket.emit("join-room", { roomId: roomId, peerId: userId, userName });
   }, [id, userId, stream, userName]);
 
   return (
