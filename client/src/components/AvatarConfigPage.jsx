@@ -100,12 +100,12 @@ export const AvatarConfigPage = () => {
         </div>
         <Button onClick={handleSave}>Guardar Avatar</Button>
         <div className="mt-8" style={{ width: "500px", height: "500px" }}>
-          <Canvas camera={{ position: [0, 0, 0], fov: 50 }}>
+          <Canvas camera={{ position: [0, 2, 5], fov: 50 }}>
             <ambientLight intensity={0.5} />
             <directionalLight position={[10, 10, 5]} intensity={1} />
             <OrbitControls />
             <Avatar
-              position={[0, 0, 0]} // Ajusta la posición para centrar el avatar
+              position={[0, -1.5, 0]} // Ajusta la posición para centrar el avatar
               hairColor={hairColor}
               topColor={topColor}
               bottomColor={bottomColor}
