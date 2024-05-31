@@ -113,7 +113,10 @@ const routes = [
   {
     path: "/abm/material",
     element: (
-      <RoleProtectedRoute element={<Material />} roles={["administrador"]} />
+      <RoleProtectedRoute
+        element={<Material />}
+        roles={["administrador", "profesor"]}
+      />
     ),
   },
   {
@@ -121,7 +124,7 @@ const routes = [
     element: (
       <RoleProtectedRoute
         element={<ListMaterials />}
-        roles={["administrador"]}
+        roles={["administrador", "profesor"]}
       />
     ),
   },
