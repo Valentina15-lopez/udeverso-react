@@ -16,17 +16,21 @@ export const JoinRoom = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
       <h1 className="text-2xl font-bold mb-4">Unirse a una Sala</h1>
-      <NameInput />
+      <div className="w-80">
+        <NameInput />
+      </div>
       <input
         type="text"
         value={roomId}
         onChange={(e) => setRoomId(e.target.value)}
         placeholder="Ingrese el ID de la Sala"
-        className="mb-4 p-2 border border-gray-300 rounded"
+        className="mb-4 p-2 border w-80 h-32 border-gray-300 rounded"
       />
-      <Button onClick={joinRoom} isLight={false}>
-        Unirse a la Sala
-      </Button>
+      <div className="w-80">
+        <Button onClick={joinRoom} isLight={false}>
+          Unirse a la Sala
+        </Button>
+      </div>
     </div>
   );
 };
