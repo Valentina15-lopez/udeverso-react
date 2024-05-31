@@ -85,7 +85,6 @@ const roomHandler = (socket) => {
     if (!chats[roomId]) chats[roomId] = [];
     socket.emit("get-messages", chats[roomId]);
     console.log("user joined the room", roomId, peerId, userName);
-
     rooms[roomId][peerId] = { peerId, userName };
     socket.join(roomId);
     socket.to(roomId).emit("user-joined", { peerId, userName });
@@ -93,7 +92,6 @@ const roomHandler = (socket) => {
       roomId,
       participants: rooms[roomId],
     });
-    socket.emit("room-joined", { roomId });
     usersList.push({
       id: peerId,
       position: generateRandomPosition(),
