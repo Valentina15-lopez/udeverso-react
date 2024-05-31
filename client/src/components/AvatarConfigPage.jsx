@@ -78,16 +78,20 @@ export const AvatarConfigPage = () => {
           </label>
         </div>
         <Button onClick={handleSave}>Guardar Avatar</Button>
-        <Canvas>
-          <ambientLight />
-          <OrbitControls />
-          <Avatar
-            position={[0, 0, 0]}
-            hairColor={hairColor}
-            topColor={topColor}
-            bottomColor={bottomColor}
-          />
-        </Canvas>
+        <div className="mt-8" style={{ width: "500px", height: "500px" }}>
+          <Canvas camera={{ position: [0, 2, 5], fov: 50 }}>
+            <ambientLight intensity={0.5} />
+            <directionalLight position={[10, 10, 5]} intensity={1} />
+            <OrbitControls />
+            <Avatar
+              position={[0, -1.5, 0]} // Ajusta la posición para centrar el avatar
+              hairColor={hairColor}
+              topColor={topColor}
+              bottomColor={bottomColor}
+              scale={[1.5, 1.5, 1.5]} // Ajusta la escala para aumentar el tamaño
+            />
+          </Canvas>
+        </div>
       </div>
     </div>
   );
