@@ -86,6 +86,19 @@ const roomHandler = (socket) => {
 
     socket.emit("get-messages", chats[roomId]);
     socket.emit("room-joined", { roomId });
+    usersList.push({
+      id: socket.id,
+      position: generateRandomPosition(),
+      hairColor: generateRandomHexColor(),
+      topColor: generateRandomHexColor(),
+      bottomColor: generateRandomHexColor(),
+    });
+    io.emit("usersList", usersList);
+    socket.on("move", (position) => {
+      const users = usersList.find((user) => user.id === socket.id);
+      users.position = position;
+      io.emit("usersList", usersList);
+    });
 
     console.log("user joined the room", roomId, peerId, userName);
     rooms[roomId][peerId] = { peerId, userName };
@@ -98,11 +111,16 @@ const roomHandler = (socket) => {
 
     socket.on("disconnect", () => {
       console.log("user left the room", peerId);
-      leaveRoom({ roomId, peerId });
+      usersList.splice(
+        usersList.findIndex((user) => user.id === socket.id),
+        1
+      );
+      io.emit("usersList", usersList);
+      leaveRoom({ peerId });
     });
   };
 
-  const leaveRoom = ({ peerId, roomId }) => {
+  const leaveRoom = ({ peerId }) => {
     socket.emit("user-disconnected", peerId);
   };
 
@@ -141,28 +159,10 @@ const roomHandler = (socket) => {
 };
 
 io.on("connection", (socket) => {
-  usersList.push({
-    id: socket.id,
-    position: generateRandomPosition(),
-    hairColor: generateRandomHexColor(),
-    topColor: generateRandomHexColor(),
-    bottomColor: generateRandomHexColor(),
-  });
-  io.emit("usersList", usersList);
-  socket.on("move", (position) => {
-    const users = usersList.find((user) => user.id === socket.id);
-    users.position = position;
-    io.emit("usersList", usersList);
-  });
   console.log("a user connected");
   roomHandler(socket);
   socket.on("disconnect", () => {
     console.log("user disconnected");
-    usersList.splice(
-      usersList.findIndex((user) => user.id === socket.id),
-      1
-    );
-    io.emit("usersList", usersList);
   });
 });
 
