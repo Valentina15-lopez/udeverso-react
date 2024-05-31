@@ -17,6 +17,8 @@ export const Join = () => {
   const createRoom = () => {
     if (saveAvatar) {
       socket.emit("create-room");
+    } else {
+      setisModalOpen(true);
     }
   };
   // Función para manejar la redirección a la página anterior
