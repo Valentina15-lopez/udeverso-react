@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import pdfjs from "pdfjs-dist";
+import * as pdfjsLib from 'pdfjs-dist/build/pdf';
 
-pdfjs.GlobalWorkerOptions.workerSrc =
+pdfjsLib.GlobalWorkerOptions.workerSrc =
   window.location.origin + "/pdf.worker.min.js";
 
 export const PDFView = ({ file }) => {
@@ -12,7 +12,7 @@ export const PDFView = ({ file }) => {
     const loadAndRenderPDF = async (file) => {
       setLoading(true);
       // eslint-disable-next-line no-undef
-      const loadingTask = pdfjs.getDocument(file);
+      const loadingTask = pdfjsLib.getDocument(file);
 
       try {
         const pdf = await loadingTask.promise;
