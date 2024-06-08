@@ -6,7 +6,6 @@ import React, {
   useContext,
 } from "react";
 import * as THREE from "three";
-
 import { useNavigate } from "react-router-dom";
 import Peer from "peerjs";
 import { peersReducer } from "../reducers/peerReducer";
@@ -41,6 +40,7 @@ export const RoomProvider = ({ children }) => {
   const [screenSharingId, setScreenSharingId] = useState("");
   const [roomId, setRoomId] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [connections, setConnections] = useState({});
 
   const enterRoom = ({ roomId }) => {
     navigate(`/aulavirtual/${roomId}`);
@@ -54,48 +54,38 @@ export const RoomProvider = ({ children }) => {
     dispatch(removePeerStreamAction(peerId));
   };
 
-  const [connections, setConnections] = useState({});
-
-  useEffect(() => {
-    if (!me) return;
-
-    me.on("connection", (conn) => {
-      // Almacenar la nueva conexión en el estado
-      setConnections((prevConnections) => ({
-        ...prevConnections,
-        [conn.peer]: conn,
-      }));
-    });
-
-    return () => {
-      me.off("connection");
-    };
-  }, [me]);
-
   const switchStream = (stream) => {
     setScreenSharingId(me?.id || "");
     Object.values(connections).forEach((connection) => {
       const videoTrack = stream
-        ?.getTracks()
-        .find((track) => track.kind === "video");
+          ?.getTracks()
+          .find((track) => track.kind === "video");
       connection.peerConnection
-        .getSenders()
-        .find((sender) => sender.track.kind === "video")
-        .replaceTrack(videoTrack)
-        .catch((err) => console.error(err));
+          .getSenders()
+          .find((sender) => sender.track.kind === "video")
+          .replaceTrack(videoTrack)
+          .catch((err) => console.error(err));
     });
   };
 
-  const shareScreen = () => {
+  const shareScreen = async () => {
     if (screenSharingId) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
-        .then(switchStream);
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        switchStream(stream);
+      } catch (error) {
+        console.error("Error al obtener medios de usuario", error);
+        setModalOpen(true);
+      }
     } else {
-      navigator.mediaDevices.getDisplayMedia({}).then((stream) => {
+      try {
+        const stream = await navigator.mediaDevices.getDisplayMedia({});
         switchStream(stream);
         setScreenStream(stream);
-      });
+      } catch (error) {
+        console.error("Error al compartir pantalla", error);
+        setModalOpen(true);
+      }
     }
   };
 
@@ -118,14 +108,14 @@ export const RoomProvider = ({ children }) => {
 
     try {
       navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
-        .then((stream) => {
-          setStream(stream);
-        })
-        .catch((error) => {
-          console.error(error);
-          setModalOpen(true); // Abrir el modal si no se concede el permiso
-        });
+          .getUserMedia({ video: true, audio: true })
+          .then((stream) => {
+            setStream(stream);
+          })
+          .catch((error) => {
+            console.error(error);
+            setModalOpen(true); // Abrir el modal si no se concede el permiso
+          });
     } catch (error) {
       console.error(error);
       setModalOpen(true); // Abrir el modal si no se concede el permiso
@@ -146,9 +136,8 @@ export const RoomProvider = ({ children }) => {
       socket.off("user-disconnected");
       socket.off("user-started-sharing");
       socket.off("user-stopped-sharing");
-      socket.off("user-joined");
       socket.off("name-changed");
-      me?.disconnect();
+      peer.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -162,19 +151,17 @@ export const RoomProvider = ({ children }) => {
   }, [screenSharingId, roomId]);
 
   useEffect(() => {
-    if (!me) return;
-    if (!stream) return;
-    socket.on("user-joined", ({ peerId, userName: name }) => {
-      const call = me.call(peerId, stream, {
-        metadata: {
-          userName,
-        },
-      });
+    if (!me || !stream) return;
+
+    const handleUserJoined = ({ peerId, userName: name }) => {
+      const call = me.call(peerId, stream, { metadata: { userName } });
       call.on("stream", (peerStream) => {
         dispatch(addPeerStreamAction(peerId, peerStream));
       });
       dispatch(addPeerNameAction(peerId, name));
-    });
+    };
+
+    socket.on("user-joined", handleUserJoined);
 
     me.on("call", (call) => {
       const { userName } = call.metadata;
@@ -186,33 +173,73 @@ export const RoomProvider = ({ children }) => {
     });
 
     return () => {
-      socket.off("user-joined");
+      socket.off("user-joined", handleUserJoined);
     };
-  }, [me, stream, userName]);
+  }, [me, stream, userName, socket]);
+
+  useEffect(() => {
+    if (!me) return;
+
+    const handleConnection = (conn) => {
+      setConnections((prevConnections) => ({
+        ...prevConnections,
+        [conn.peer]: conn,
+      }));
+
+      conn.on('close', () => {
+        setConnections((prevConnections) => {
+          const { [conn.peer]: _, ...remaining } = prevConnections;
+          return remaining;
+        });
+      });
+    };
+
+    me.on("connection", handleConnection);
+
+    return () => {
+      me.off("connection", handleConnection);
+    };
+  }, [me]);
+
+  useEffect(() => {
+    return () => {
+      // Detener todos los streams cuando el componente se desmonte
+      stream?.getTracks().forEach(track => track.stop());
+      screenStream?.getTracks().forEach(track => track.stop());
+
+      // Desconectar todas las conexiones de PeerJS
+      Object.values(connections).forEach(conn => conn.close());
+
+      // Desconectar el peer
+      me?.disconnect();
+    };
+  }, [stream, screenStream, connections, me]);
 
   console.log("fileTexture", fileTexture);
 
   return (
-    <RoomContext.Provider
-      value={{
-        stream,
-        screenStream,
-        peers,
-        shareScreen,
-        roomId,
-        setRoomId,
-        screenSharingId,
-        setFileTexture,
-        fileTexture,
-        setScreenStream,
-      }}
-    >
-      {children}
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <h1>Acceso a la cámara denegado</h1>
-        <p>No puede interactuar en UDEVERSO sin habilitar la cámara.</p>
-        <p>Por favor, conceda el permiso y recargue la pagina.</p>
-      </Modal>
-    </RoomContext.Provider>
+      <RoomContext.Provider
+          value={{
+            stream,
+            screenStream,
+            peers,
+            shareScreen,
+            roomId,
+            setRoomId,
+            screenSharingId,
+            setFileTexture,
+            fileTexture,
+            setScreenStream,
+          }}
+      >
+        {children}
+        {modalOpen && (
+            <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+              <h1>Acceso a la cámara denegado</h1>
+              <p>No puede interactuar en UDEVERSO sin habilitar la cámara.</p>
+              <p>Por favor, conceda el permiso y recargue la página.</p>
+            </Modal>
+        )}
+      </RoomContext.Provider>
   );
 };
