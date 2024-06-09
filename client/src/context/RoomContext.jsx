@@ -173,18 +173,8 @@ export const RoomProvider = ({ children }) => {
       } else {
         console.error("La llamada (call) está indefinida.");
       }
-
-      // Mostrar el modal si se deniega el acceso a la cámara para cualquiera de los usuarios
-      const showErrorModal = () => {
-        console.log('Denegado el acceso a la cámara');
-        setModalOpen(true);
-      };
-
-      stream.getTracks().forEach(track => {
-        track.onended = showErrorModal;
-        track.onmute = showErrorModal;
-      });
     };
+
 
 
     socket.on("user-joined", handleUserJoined);
