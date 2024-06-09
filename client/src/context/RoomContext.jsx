@@ -227,6 +227,16 @@ export const RoomProvider = ({ children }) => {
       });
       call.on("stream", (peerStream) => {
         dispatch(addPeerStreamAction(peerId, peerStream));
+
+        // Agregar la llamada a las conexiones
+        setConnections((prevConnections) => {
+          const newConnections = {
+            ...prevConnections,
+            [peerId]: call,
+          };
+          console.log('Updated connections:', newConnections); // Agregar registro de consola para las conexiones actualizadas
+          return newConnections;
+        });
       });
       dispatch(addPeerNameAction(peerId, name));
     });
