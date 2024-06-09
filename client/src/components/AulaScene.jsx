@@ -82,7 +82,6 @@ const AulaScene = () => {
           )}
         </CubeCamera>
         <Pizarron />
-        <!--{console.log("screenStreamENEL AULA", screenStream)}-->
         {users.map((user) => (
           <Avatar
             key={user.id}
