@@ -61,8 +61,12 @@ export const RoomProvider = ({ children }) => {
   useEffect(() => {
     if (!me) return;
 
+    me.on("call", (call) => {
+      console.log('Call established 65:', call);
+    });
+
     me.on("connection", (conn) => {
-      console.log('New connection:', conn); // Agregar registro de consola para las nuevas conexiones
+      console.log('New connection 65:', conn); // Agregar registro de consola para las nuevas conexiones
       // Almacenar la nueva conexión en el estado
       setConnections((prevConnections) => {
         const newConnections = {
@@ -85,6 +89,10 @@ export const RoomProvider = ({ children }) => {
         });
         dispatch(addPeerNameAction(conn.peer, userName));
       }
+    });
+
+    me.on('error', (err) => {
+      console.error('PeerJS error 95:', err);
     });
 
     return () => {
@@ -158,6 +166,10 @@ export const RoomProvider = ({ children }) => {
       console.log('PeerJS connection established. ID:', id);
     });
 
+    peer.on('error', (err) => {
+      console.error('PeerJS error:', err);
+    });
+
     try {
       navigator.mediaDevices
         .getUserMedia({ video: true, audio: true })
@@ -219,13 +231,21 @@ export const RoomProvider = ({ children }) => {
     });
 
     me.on("call", (call) => {
-      console.log('Call established:', call);
+      console.log('Call established 234:', call);
       const { userName } = call.metadata;
       dispatch(addPeerNameAction(call.peer, userName));
       call.answer(stream);
       call.on("stream", (peerStream) => {
         dispatch(addPeerStreamAction(call.peer, peerStream));
       });
+    });
+
+    me.on("connection", (conn) => {
+      console.log('New connection 240:', conn);
+    });
+
+    me.on('error', (err) => {
+      console.error('PeerJS error 248:', err);
     });
 
     return () => {
