@@ -219,6 +219,7 @@ export const RoomProvider = ({ children }) => {
     if (!me) return;
     if (!stream) return;
     socket.on("user-joined", ({ peerId, userName: name }) => {
+      console.log('UserJoined con peerId ' +  peerId + ' y name ' + name);
       const call = me.call(peerId, stream, {
         metadata: {
           userName,
