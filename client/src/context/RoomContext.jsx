@@ -140,6 +140,10 @@ export const RoomProvider = ({ children }) => {
 
     setMe(peer);
 
+    peer.on('open', (id) => {
+      console.log('PeerJS connection established. ID:', id);
+    });
+
     try {
       navigator.mediaDevices
         .getUserMedia({ video: true, audio: true })
