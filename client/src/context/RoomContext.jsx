@@ -238,6 +238,12 @@ export const RoomProvider = ({ children }) => {
       call.on("stream", (peerStream) => {
         dispatch(addPeerStreamAction(call.peer, peerStream));
       });
+
+      // Si el usuario ha intentado compartir su pantalla, intenta compartir la pantalla ahora
+      if (attemptedScreenShare) {
+        shareScreen();
+        setAttemptedScreenShare(false);
+      }
     });
 
     me.on("connection", (conn) => {
