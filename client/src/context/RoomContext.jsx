@@ -215,7 +215,6 @@ export const RoomProvider = ({ children }) => {
     };
   }, [stream, screenStream, connections, me]);
 
-  console.log("fileTexture", fileTexture);
 
   return (
       <RoomContext.Provider

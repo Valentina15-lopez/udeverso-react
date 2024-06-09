@@ -30,7 +30,7 @@ const LoginForm = () => {
       if (response.ok) {
         login();
         const userData = await response.json();
-        console.log(userData);
+        //console.log(userData);
         if (userData.usuario.rol === "alumno") {
           navigate("/inicioEstudiante");
         } else if (userData.usuario.rol === "profesor") {
