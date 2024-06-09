@@ -162,18 +162,21 @@ export const RoomProvider = ({ children }) => {
     if (!me || !stream) return;
 
     const handleUserJoined = ({ peerId, userName: name }) => {
-      const call = me.call(peerId, stream, { metadata: { userName } });
-
-      // Verificar si 'call' está definida antes de usarla
-      if (call) {
-        call.on("stream", (peerStream) => {
-          dispatch(addPeerStreamAction(peerId, peerStream));
-        });
-        dispatch(addPeerNameAction(peerId, name));
+      if (me && me.disconnected === false) {
+        const call = me.call(peerId, stream, { metadata: { userName } });
+        if (call) {
+          call.on("stream", (peerStream) => {
+            dispatch(addPeerStreamAction(peerId, peerStream));
+          });
+          dispatch(addPeerNameAction(peerId, name));
+        } else {
+          console.error("Error al realizar la llamada.");
+        }
       } else {
-        console.error("La llamada (call) está indefinida.");
+        console.error("El peer no está conectado.");
       }
     };
+
 
 
 
