@@ -41,6 +41,7 @@ export const RoomProvider = ({ children }) => {
   const [screenSharingId, setScreenSharingId] = useState("");
   const [roomId, setRoomId] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [currentStream, setCurrentStream] = useState(null); // Nuevo estado para almacenar el flujo actual
 
   const enterRoom = ({ roomId }) => {
     navigate(`/aulavirtual/${roomId}`);
@@ -65,24 +66,38 @@ export const RoomProvider = ({ children }) => {
         ...prevConnections,
         [conn.peer]: conn,
       }));
+
+      // Si ya hay un flujo actual, envíalo al nuevo par
+      if (currentStream) {
+        const call = me.call(conn.peer, currentStream, {
+          metadata: {
+            userName,
+          },
+        });
+        call.on("stream", (peerStream) => {
+          dispatch(addPeerStreamAction(conn.peer, peerStream));
+        });
+        dispatch(addPeerNameAction(conn.peer, userName));
+      }
     });
 
     return () => {
       me.off("connection");
     };
-  }, [me]);
+  }, [me, currentStream]); // Agregar currentStream a las dependencias del efecto
 
-  const switchStream = (stream) => {
+  const switchStream = (newStream) => {
+    setCurrentStream(newStream); // Actualizar el flujo actual
     setScreenSharingId(me?.id || "");
     Object.values(connections).forEach((connection) => {
-      const videoTrack = stream
-        ?.getTracks()
-        .find((track) => track.kind === "video");
+      const videoTrack = newStream
+          ?.getTracks()
+          .find((track) => track.kind === "video");
       connection.peerConnection
-        .getSenders()
-        .find((sender) => sender.track.kind === "video")
-        .replaceTrack(videoTrack)
-        .catch((err) => console.error(err));
+          .getSenders()
+          .find((sender) => sender.track.kind === "video")
+          .replaceTrack(videoTrack)
+          .catch((err) => console.error(err));
     });
   };
 
