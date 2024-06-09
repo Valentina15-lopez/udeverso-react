@@ -89,6 +89,7 @@ export const RoomProvider = ({ children }) => {
   const switchStream = (newStream) => {
     setCurrentStream(newStream); // Actualizar el flujo actual
     setScreenSharingId(me?.id || "");
+    console.log('Switching stream. Current connections:', connections); // Agregar registro de consola para las conexiones actuales
     Object.values(connections).forEach((connection) => {
       const videoTrack = newStream
           ?.getTracks()
@@ -97,7 +98,10 @@ export const RoomProvider = ({ children }) => {
           .getSenders()
           .find((sender) => sender.track.kind === "video")
           .replaceTrack(videoTrack)
-          .catch((err) => console.error(err));
+          .then(() => console.log('Stream switched for connection:', connection)) // Agregar registro de consola cuando el flujo se cambia exitosamente
+          .catch((err) => {
+            console.error('Error switching stream for connection:', connection, err); // Agregar registro de consola cuando ocurre un error al cambiar el flujo
+          });
     });
   };
 
