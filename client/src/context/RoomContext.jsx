@@ -95,7 +95,7 @@ export const RoomProvider = ({ children }) => {
 
   useEffect(() => {
     socket.emit("change-name", { peerId: userId, userName, roomId });
-  }, [userName, userId, roomId]);
+  }, [userName, userId, roomId, socket]);
 
   useEffect(() => {
     const peer = new Peer(userId, {
@@ -104,27 +104,40 @@ export const RoomProvider = ({ children }) => {
       path: "/",
     });
 
-    setMe(peer);
-
     peer.on('open', () => {
-      navigator.mediaDevices
-          .getUserMedia({ video: true, audio: true })
-          .then((stream) => {
-            setStream(stream);
-          })
-          .catch((error) => {
-            console.error(error);
-            setModalOpen(true); // Abrir el modal si no se concede el permiso
-          });
-
-      socket.on("room-created", enterRoom);
-      socket.on("room-joined", enterRoom);
-      socket.on("get-users", getUsers);
-      socket.on("user-disconnected", removePeer);
-      socket.on("user-started-sharing", (peerId) => setScreenSharingId(peerId));
-      socket.on("user-stopped-sharing", () => setScreenSharingId(""));
-      socket.on("name-changed", nameChangedHandler);
+      setMe(peer);
     });
+
+    peer.on('error', (err) => {
+      console.error("PeerJS error:", err);
+      setModalOpen(true); // Abrir el modal si hay un error en PeerJS
+    });
+
+    return () => {
+      peer.disconnect();
+    };
+  }, [userId]);
+
+  useEffect(() => {
+    if (!me) return;
+
+    navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+          setStream(stream);
+        })
+        .catch((error) => {
+          console.error(error);
+          setModalOpen(true); // Abrir el modal si no se concede el permiso
+        });
+
+    socket.on("room-created", enterRoom);
+    socket.on("room-joined", enterRoom);
+    socket.on("get-users", getUsers);
+    socket.on("user-disconnected", removePeer);
+    socket.on("user-started-sharing", (peerId) => setScreenSharingId(peerId));
+    socket.on("user-stopped-sharing", () => setScreenSharingId(""));
+    socket.on("name-changed", nameChangedHandler);
 
     return () => {
       socket.off("room-created", enterRoom);
@@ -134,10 +147,8 @@ export const RoomProvider = ({ children }) => {
       socket.off("user-started-sharing", (peerId) => setScreenSharingId(peerId));
       socket.off("user-stopped-sharing", () => setScreenSharingId(""));
       socket.off("name-changed", nameChangedHandler);
-      peer.disconnect();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [me, socket]);
 
   useEffect(() => {
     if (screenSharingId) {
@@ -145,7 +156,7 @@ export const RoomProvider = ({ children }) => {
     } else {
       socket.emit("stop-sharing");
     }
-  }, [screenSharingId, roomId]);
+  }, [screenSharingId, roomId, socket]);
 
   useEffect(() => {
     if (!me || !stream) return;
