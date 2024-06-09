@@ -98,7 +98,7 @@ export const RoomProvider = ({ children }) => {
     const peer = new Peer(userId, {
       host: "localhost",
       port: 9000,
-      path: "/",
+      path: "/peerjs",
     });
 
     peer.on('open', () => {
