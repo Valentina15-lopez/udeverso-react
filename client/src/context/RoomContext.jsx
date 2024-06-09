@@ -111,10 +111,15 @@ export const RoomProvider = ({ children }) => {
   };
 
   const shareScreen = () => {
+    if (Object.keys(connections).length === 0) {
+      console.log('No connections established. Delaying screen share.');
+      return;
+    }
+
     if (screenSharingId) {
       navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
-        .then(switchStream);
+          .getUserMedia({ video: true, audio: true })
+          .then(switchStream);
     } else {
       navigator.mediaDevices.getDisplayMedia({}).then((stream) => {
         switchStream(stream);
