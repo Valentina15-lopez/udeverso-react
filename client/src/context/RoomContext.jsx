@@ -205,6 +205,7 @@ export const RoomProvider = ({ children }) => {
     });
 
     me.on("call", (call) => {
+      console.log('Call established:', call);
       const { userName } = call.metadata;
       dispatch(addPeerNameAction(call.peer, userName));
       call.answer(stream);
