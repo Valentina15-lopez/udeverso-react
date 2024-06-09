@@ -42,6 +42,7 @@ export const RoomProvider = ({ children }) => {
   const [roomId, setRoomId] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [currentStream, setCurrentStream] = useState(null); // Nuevo estado para almacenar el flujo actual
+  const [attemptedScreenShare, setAttemptedScreenShare] = useState(false);
 
   const enterRoom = ({ roomId }) => {
     navigate(`/aulavirtual/${roomId}`);
@@ -113,6 +114,7 @@ export const RoomProvider = ({ children }) => {
   const shareScreen = () => {
     if (Object.keys(connections).length === 0) {
       console.log('No connections established. Delaying screen share.');
+      setAttemptedScreenShare(true);
       return;
     }
 
@@ -127,6 +129,13 @@ export const RoomProvider = ({ children }) => {
       });
     }
   };
+
+  useEffect(() => {
+    if (attemptedScreenShare && Object.keys(connections).length > 0) {
+      shareScreen();
+      setAttemptedScreenShare(false);
+    }
+  }, [connections, attemptedScreenShare]);
 
   const nameChangedHandler = ({ peerId, userName }) => {
     dispatch(addPeerNameAction(peerId, userName));
