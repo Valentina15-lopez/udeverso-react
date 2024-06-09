@@ -61,11 +61,16 @@ export const RoomProvider = ({ children }) => {
     if (!me) return;
 
     me.on("connection", (conn) => {
+      console.log('New connection:', conn); // Agregar registro de consola para las nuevas conexiones
       // Almacenar la nueva conexión en el estado
-      setConnections((prevConnections) => ({
-        ...prevConnections,
-        [conn.peer]: conn,
-      }));
+      setConnections((prevConnections) => {
+        const newConnections = {
+          ...prevConnections,
+          [conn.peer]: conn,
+        };
+        console.log('Updated connections:', newConnections); // Agregar registro de consola para las conexiones actualizadas
+        return newConnections;
+      });
 
       // Si ya hay un flujo actual, envíalo al nuevo par
       if (currentStream) {
