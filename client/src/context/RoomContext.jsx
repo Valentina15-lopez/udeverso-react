@@ -151,6 +151,12 @@ export const RoomProvider = ({ children }) => {
       setModalOpen(true);
     });
 
+    peer.on('disconnected', () => {
+      console.log('Peer connection disconnected');
+      // Intenta reconectar
+      peer.reconnect();
+    });
+
     peer.on('close', () => {
       console.log('Peer connection closed');
     });
