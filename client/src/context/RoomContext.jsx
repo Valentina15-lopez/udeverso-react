@@ -190,8 +190,6 @@ export const RoomProvider = ({ children }) => {
     };
   }, [me, stream, userName]);
 
-  console.log("fileTexture", fileTexture);
-
   return (
     <RoomContext.Provider
       value={{
