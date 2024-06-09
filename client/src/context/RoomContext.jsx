@@ -163,10 +163,16 @@ export const RoomProvider = ({ children }) => {
 
     const handleUserJoined = ({ peerId, userName: name }) => {
       const call = me.call(peerId, stream, { metadata: { userName } });
-      call.on("stream", (peerStream) => {
-        dispatch(addPeerStreamAction(peerId, peerStream));
-      });
-      dispatch(addPeerNameAction(peerId, name));
+
+      // Verificar si 'call' está definida antes de usarla
+      if (call) {
+        call.on("stream", (peerStream) => {
+          dispatch(addPeerStreamAction(peerId, peerStream));
+        });
+        dispatch(addPeerNameAction(peerId, name));
+      } else {
+        console.error("La llamada (call) está indefinida.");
+      }
     };
 
     socket.on("user-joined", handleUserJoined);
