@@ -102,6 +102,7 @@ export const RoomProvider = ({ children }) => {
     });
 
     peer.on('open', () => {
+      console.log('Peer connection opened');
       setMe(peer);
 
       navigator.mediaDevices
@@ -148,6 +149,10 @@ export const RoomProvider = ({ children }) => {
     peer.on('error', (err) => {
       console.error("PeerJS error:", err);
       setModalOpen(true);
+    });
+
+    peer.on('close', () => {
+      console.log('Peer connection closed');
     });
 
     return () => {
