@@ -17,9 +17,8 @@ import {
 } from "../reducers/peerActions";
 import { SocketContext } from "../context/ContexProvider";
 import { UserContext } from "../context/UserContext";
-import { Modal } from "../common/Modal"; // Asegúrate de importar el modal
+import { Modal } from "../common/Modal";
 
-// Creación del contexto de la sala
 export const RoomContext = createContext({
   peers: {},
   shareScreen: () => {},
@@ -104,11 +103,51 @@ export const RoomProvider = ({ children }) => {
 
     peer.on('open', () => {
       setMe(peer);
+
+      navigator.mediaDevices
+          .getUserMedia({ video: true, audio: true })
+          .then((stream) => {
+            setStream(stream);
+            if (roomId) {
+              socket.emit("join-room", { roomId: roomId, peerId: userId, userName });
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+            setModalOpen(true);
+          });
+
+      const handleUserJoined = ({ peerId, userName: name }) => {
+        if (peer && peer.disconnected === false) {
+          const call = peer.call(peerId, stream, { metadata: { userName } });
+          if (call) {
+            call.on("stream", (peerStream) => {
+              dispatch(addPeerStreamAction(peerId, peerStream));
+            });
+            dispatch(addPeerNameAction(peerId, name));
+          } else {
+            console.error("Error al realizar la llamada.");
+          }
+        } else {
+          console.error("El peer no está conectado.");
+        }
+      };
+
+      socket.on("user-joined", handleUserJoined);
+
+      peer.on("call", (call) => {
+        const { userName } = call.metadata;
+        dispatch(addPeerNameAction(call.peer, userName));
+        call.answer(stream);
+        call.on("stream", (peerStream) => {
+          dispatch(addPeerStreamAction(call.peer, peerStream));
+        });
+      });
     });
 
     peer.on('error', (err) => {
       console.error("PeerJS error:", err);
-      setModalOpen(true); // Abrir el modal si hay un error en PeerJS
+      setModalOpen(true);
     });
 
     return () => {
@@ -118,19 +157,6 @@ export const RoomProvider = ({ children }) => {
 
   useEffect(() => {
     if (!me) return;
-
-    navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
-        .then((stream) => {
-          setStream(stream);
-          if (roomId) {
-            socket.emit("join-room", { roomId: roomId, peerId: userId, userName });
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-          setModalOpen(true); // Abrir el modal si no se concede el permiso
-        });
 
     socket.on("room-created", enterRoom);
     socket.on("room-joined", enterRoom);
@@ -150,41 +176,6 @@ export const RoomProvider = ({ children }) => {
       socket.off("name-changed", nameChangedHandler);
     };
   }, [me, socket, roomId, userId]);
-
-  useEffect(() => {
-    if (!me || !stream) return;
-
-    const handleUserJoined = ({ peerId, userName: name }) => {
-      if (me && me.disconnected === false) {
-        const call = me.call(peerId, stream, { metadata: { userName } });
-        if (call) {
-          call.on("stream", (peerStream) => {
-            dispatch(addPeerStreamAction(peerId, peerStream));
-          });
-          dispatch(addPeerNameAction(peerId, name));
-        } else {
-          console.error("Error al realizar la llamada.");
-        }
-      } else {
-        console.error("El peer no está conectado.");
-      }
-    };
-
-    socket.on("user-joined", handleUserJoined);
-
-    me.on("call", (call) => {
-      const { userName } = call.metadata;
-      dispatch(addPeerNameAction(call.peer, userName));
-      call.answer(stream);
-      call.on("stream", (peerStream) => {
-        dispatch(addPeerStreamAction(call.peer, peerStream));
-      });
-    });
-
-    return () => {
-      socket.off("user-joined", handleUserJoined);
-    };
-  }, [me, stream, userId, socket]);
 
   useEffect(() => {
     if (!me) return;
@@ -212,14 +203,9 @@ export const RoomProvider = ({ children }) => {
 
   useEffect(() => {
     return () => {
-      // Detener todos los streams cuando el componente se desmonte
       stream?.getTracks().forEach(track => track.stop());
       screenStream?.getTracks().forEach(track => track.stop());
-
-      // Desconectar todas las conexiones de PeerJS
       Object.values(connections).forEach(conn => conn.close());
-
-      // Desconectar el peer
       me?.disconnect();
     };
   }, [stream, screenStream, connections, me]);
