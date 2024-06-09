@@ -36,7 +36,7 @@ const RoleProtectedRoute = ({ element, roles }) => {
         );
         if (response.status === 200) {
           setIsAuthenticated(true);
-          console.log(response.data);
+          //console.log(response.data);
         }
       } catch (error) {
         setIsAuthenticated(false);

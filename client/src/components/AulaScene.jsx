@@ -19,7 +19,7 @@ const AulaScene = () => {
 
   const [users] = useAtom(userAtom);
 
-  console.log(users);
+  //console.log(users);
   const { screenStream, peers, screenSharingId, fileTexture } =
     useContext(RoomContext);
   const { userId } = useContext(UserContext);
@@ -28,7 +28,7 @@ const AulaScene = () => {
   useCursor(onFloor);
   const handleFloorClick = (e) => {
     const newPosition = [e.point.x, 0, e.point.z];
-    console.log("newPosition", newPosition);
+    //console.log("newPosition", newPosition);
     socket.emit("move", newPosition);
   };
   const applyAvatarConfig = (user) => {
@@ -82,7 +82,7 @@ const AulaScene = () => {
           )}
         </CubeCamera>
         <Pizarron />
-        {console.log("screenStreamENEL AULA", screenStream)}
+        <!--{console.log("screenStreamENEL AULA", screenStream)}-->
         {users.map((user) => (
           <Avatar
             key={user.id}
