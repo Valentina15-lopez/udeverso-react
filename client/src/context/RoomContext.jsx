@@ -1,4 +1,10 @@
-import React, { createContext, useEffect, useState, useReducer, useContext } from "react";
+import React, {
+  createContext,
+  useEffect,
+  useState,
+  useReducer,
+  useContext,
+} from "react";
 import * as THREE from "three";
 import { useNavigate } from "react-router-dom";
 import Peer from "peerjs";
@@ -11,8 +17,9 @@ import {
 } from "../reducers/peerActions";
 import { SocketContext } from "../context/ContexProvider";
 import { UserContext } from "../context/UserContext";
-import { Modal } from "../common/Modal";
+import { Modal } from "../common/Modal"; // Asegúrate de importar el modal
 
+// Creación del contexto de la sala
 export const RoomContext = createContext({
   peers: {},
   shareScreen: () => {},
@@ -51,7 +58,10 @@ export const RoomProvider = ({ children }) => {
     setScreenSharingId(me?.id || "");
     Object.values(connections).forEach((connection) => {
       const videoTrack = stream?.getTracks().find((track) => track.kind === "video");
-      connection.peerConnection.getSenders().find((sender) => sender.track.kind === "video").replaceTrack(videoTrack)
+      connection.peerConnection
+          .getSenders()
+          .find((sender) => sender.track.kind === "video")
+          .replaceTrack(videoTrack)
           .catch((err) => console.error(err));
     });
   };
@@ -98,7 +108,7 @@ export const RoomProvider = ({ children }) => {
 
     peer.on('error', (err) => {
       console.error("PeerJS error:", err);
-      setModalOpen(true);
+      setModalOpen(true); // Abrir el modal si hay un error en PeerJS
     });
 
     return () => {
@@ -109,13 +119,17 @@ export const RoomProvider = ({ children }) => {
   useEffect(() => {
     if (!me) return;
 
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
         .then((stream) => {
           setStream(stream);
+          if (roomId) {
+            socket.emit("join-room", { roomId: roomId, peerId: userId, userName });
+          }
         })
         .catch((error) => {
           console.error(error);
-          setModalOpen(true);
+          setModalOpen(true); // Abrir el modal si no se concede el permiso
         });
 
     socket.on("room-created", enterRoom);
@@ -135,23 +149,13 @@ export const RoomProvider = ({ children }) => {
       socket.off("user-stopped-sharing", () => setScreenSharingId(""));
       socket.off("name-changed", nameChangedHandler);
     };
-  }, [me, socket]);
-
-  useEffect(() => {
-    if (!screenSharingId) return;
-
-    if (screenSharingId === userId) {
-      socket.emit("start-sharing", { peerId: userId, roomId });
-    } else {
-      socket.emit("stop-sharing");
-    }
-  }, [screenSharingId, userId, roomId, socket]);
+  }, [me, socket, roomId, userId]);
 
   useEffect(() => {
     if (!me || !stream) return;
 
     const handleUserJoined = ({ peerId, userName: name }) => {
-      if (me && !me.disconnected) {
+      if (me && me.disconnected === false) {
         const call = me.call(peerId, stream, { metadata: { userName } });
         if (call) {
           call.on("stream", (peerStream) => {
@@ -208,21 +212,33 @@ export const RoomProvider = ({ children }) => {
 
   useEffect(() => {
     return () => {
+      // Detener todos los streams cuando el componente se desmonte
       stream?.getTracks().forEach(track => track.stop());
       screenStream?.getTracks().forEach(track => track.stop());
+
+      // Desconectar todas las conexiones de PeerJS
       Object.values(connections).forEach(conn => conn.close());
+
+      // Desconectar el peer
       me?.disconnect();
     };
   }, [stream, screenStream, connections, me]);
 
+  console.log("fileTexture", fileTexture);
+
   return (
       <RoomContext.Provider
           value={{
+            stream,
+            screenStream,
             peers,
             shareScreen,
+            roomId,
             setRoomId,
             screenSharingId,
-            roomId,
+            setFileTexture,
+            fileTexture,
+            setScreenStream,
           }}
       >
         {children}
