@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useEffect,
-  useState,
-  useReducer,
-  useContext,
-} from "react";
+import React, { createContext, useEffect, useState, useReducer, useContext } from "react";
 import * as THREE from "three";
 import { useNavigate } from "react-router-dom";
 import Peer from "peerjs";
@@ -56,13 +50,8 @@ export const RoomProvider = ({ children }) => {
   const switchStream = (stream) => {
     setScreenSharingId(me?.id || "");
     Object.values(connections).forEach((connection) => {
-      const videoTrack = stream
-          ?.getTracks()
-          .find((track) => track.kind === "video");
-      connection.peerConnection
-          .getSenders()
-          .find((sender) => sender.track.kind === "video")
-          .replaceTrack(videoTrack)
+      const videoTrack = stream?.getTracks().find((track) => track.kind === "video");
+      connection.peerConnection.getSenders().find((sender) => sender.track.kind === "video").replaceTrack(videoTrack)
           .catch((err) => console.error(err));
     });
   };
@@ -120,8 +109,7 @@ export const RoomProvider = ({ children }) => {
   useEffect(() => {
     if (!me) return;
 
-    navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
         .then((stream) => {
           setStream(stream);
         })
@@ -150,18 +138,20 @@ export const RoomProvider = ({ children }) => {
   }, [me, socket]);
 
   useEffect(() => {
-    if (screenSharingId) {
-      socket.emit("start-sharing", { peerId: screenSharingId, roomId });
+    if (!screenSharingId) return;
+
+    if (screenSharingId === userId) {
+      socket.emit("start-sharing", { peerId: userId, roomId });
     } else {
       socket.emit("stop-sharing");
     }
-  }, [screenSharingId, roomId, socket]);
+  }, [screenSharingId, userId, roomId, socket]);
 
   useEffect(() => {
     if (!me || !stream) return;
 
     const handleUserJoined = ({ peerId, userName: name }) => {
-      if (me && me.disconnected === false) {
+      if (me && !me.disconnected) {
         const call = me.call(peerId, stream, { metadata: { userName } });
         if (call) {
           call.on("stream", (peerStream) => {
@@ -190,7 +180,7 @@ export const RoomProvider = ({ children }) => {
     return () => {
       socket.off("user-joined", handleUserJoined);
     };
-  }, [me, stream, userName, socket]);
+  }, [me, stream, userId, socket]);
 
   useEffect(() => {
     if (!me) return;
@@ -225,21 +215,14 @@ export const RoomProvider = ({ children }) => {
     };
   }, [stream, screenStream, connections, me]);
 
-  console.log("fileTexture", fileTexture);
-
   return (
       <RoomContext.Provider
           value={{
-            stream,
-            screenStream,
             peers,
             shareScreen,
-            roomId,
             setRoomId,
             screenSharingId,
-            setFileTexture,
-            fileTexture,
-            setScreenStream,
+            roomId,
           }}
       >
         {children}
