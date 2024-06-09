@@ -17,9 +17,8 @@ import {
 } from "../reducers/peerActions";
 import { SocketContext } from "../context/ContexProvider";
 import { UserContext } from "../context/UserContext";
-import { Modal } from "../common/Modal"; // Asegúrate de importar el modal
+import { Modal } from "../common/Modal";
 
-// Creación del contexto de la sala
 export const RoomContext = createContext({
   peers: {},
   shareScreen: () => {},
@@ -110,7 +109,7 @@ export const RoomProvider = ({ children }) => {
 
     peer.on('error', (err) => {
       console.error("PeerJS error:", err);
-      setModalOpen(true); // Abrir el modal si hay un error en PeerJS
+      setModalOpen(true);
     });
 
     return () => {
@@ -128,7 +127,7 @@ export const RoomProvider = ({ children }) => {
         })
         .catch((error) => {
           console.error(error);
-          setModalOpen(true); // Abrir el modal si no se concede el permiso
+          setModalOpen(true);
         });
 
     socket.on("room-created", enterRoom);
@@ -177,9 +176,6 @@ export const RoomProvider = ({ children }) => {
       }
     };
 
-
-
-
     socket.on("user-joined", handleUserJoined);
 
     me.on("call", (call) => {
@@ -222,14 +218,9 @@ export const RoomProvider = ({ children }) => {
 
   useEffect(() => {
     return () => {
-      // Detener todos los streams cuando el componente se desmonte
       stream?.getTracks().forEach(track => track.stop());
       screenStream?.getTracks().forEach(track => track.stop());
-
-      // Desconectar todas las conexiones de PeerJS
       Object.values(connections).forEach(conn => conn.close());
-
-      // Desconectar el peer
       me?.disconnect();
     };
   }, [stream, screenStream, connections, me]);
@@ -262,3 +253,4 @@ export const RoomProvider = ({ children }) => {
       </RoomContext.Provider>
   );
 };
+
