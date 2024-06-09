@@ -96,10 +96,9 @@ export const RoomProvider = ({ children }) => {
 
   useEffect(() => {
     const peer = new Peer(userId, {
-      host: "localhost",
+      host: "metaversoude2.ddns.net",
       port: 9000,
       path: "/",
-      secure: true,
     });
 
     peer.on('open', () => {
