@@ -41,7 +41,7 @@ export const RoomProvider = ({ children }) => {
   const [screenSharingId, setScreenSharingId] = useState("");
   const [roomId, setRoomId] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  const [currentStream, setCurrentStream] = useState(null); // Nuevo estado para almacenar el flujo actual
+  //const [currentStream, setCurrentStream] = useState(null); // Nuevo estado para almacenar el flujo actual
   const [attemptedScreenShare, setAttemptedScreenShare] = useState(false);
 
   const enterRoom = ({ roomId }) => {
@@ -78,6 +78,7 @@ export const RoomProvider = ({ children }) => {
       });
 
       // Si ya hay un flujo actual, envíalo al nuevo par
+      /*
       if (currentStream) {
         const call = me.call(conn.peer, currentStream, {
           metadata: {
@@ -89,7 +90,7 @@ export const RoomProvider = ({ children }) => {
         });
         dispatch(addPeerNameAction(conn.peer, userName));
       }
-    });
+    });*/
 
     me.on('error', (err) => {
       console.error('PeerJS error 95:', err);
@@ -98,10 +99,11 @@ export const RoomProvider = ({ children }) => {
     return () => {
       me.off("connection");
     };
-  }, [me, currentStream]); // Agregar currentStream a las dependencias del efecto
+  //}, [me, currentStream]); // Agregar currentStream a las dependencias del efecto
+  }, [me]); // Agregar currentStream a las dependencias del efecto
 
   const switchStream = (newStream) => {
-    setCurrentStream(newStream); // Actualizar el flujo actual
+    //setCurrentStream(newStream); // Actualizar el flujo actual
     setScreenSharingId(me?.id || "");
     console.log('Switching stream. Current connections:', connections); // Agregar registro de consola para las conexiones actuales
     Object.values(connections).forEach((connection) => {
