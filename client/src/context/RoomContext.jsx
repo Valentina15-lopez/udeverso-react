@@ -216,13 +216,10 @@ export const RoomProvider = ({ children }) => {
   }, [screenSharingId, roomId]);
 
   useEffect(() => {
-
     if (!me) return;
     if (!stream) return;
-
     socket.on("user-joined", ({ peerId, userName: name }) => {
       console.log('UserJoined con peerId ' +  peerId + ' y name ' + name);
-      if (!me || !stream) return; // Verificar que 'me' y 'stream' estén definidos
       const call = me.call(peerId, stream, {
         metadata: {
           userName,
@@ -264,7 +261,7 @@ export const RoomProvider = ({ children }) => {
       socket.off("user-joined");
       me.off("call");
     };
-  }, []); // Array de dependencias vacío para que se ejecute solo una vez
+  }, [me, stream, userName]);
 
   return (
     <RoomContext.Provider
