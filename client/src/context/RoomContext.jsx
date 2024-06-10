@@ -216,10 +216,9 @@ export const RoomProvider = ({ children }) => {
   }, [screenSharingId, roomId]);
 
   useEffect(() => {
-    if (!me) return;
-    if (!stream) return;
     socket.on("user-joined", ({ peerId, userName: name }) => {
       console.log('UserJoined con peerId ' +  peerId + ' y name ' + name);
+      if (!me || !stream) return; // Verificar que 'me' y 'stream' estén definidos
       const call = me.call(peerId, stream, {
         metadata: {
           userName,
@@ -241,6 +240,15 @@ export const RoomProvider = ({ children }) => {
       dispatch(addPeerNameAction(peerId, name));
     });
 
+    return () => {
+      socket.off("user-joined");
+    };
+  }, []); // Array de dependencias vacío para que se ejecute solo una vez
+
+  useEffect(() => {
+    if (!me) return;
+    if (!stream) return;
+
     me.on("call", (call) => {
       console.log('Call established 234:', call);
       const { userName } = call.metadata;
@@ -257,18 +265,11 @@ export const RoomProvider = ({ children }) => {
       }
     });
 
-    me.on("connection", (conn) => {
-      console.log('New connection 240:', conn);
-    });
-
-    me.on('error', (err) => {
-      console.error('PeerJS error 248:', err);
-    });
-
     return () => {
-      socket.off("user-joined");
+      me.off("call");
     };
-  }, [me, stream, userName]);
+  }, [me, stream, attemptedScreenShare]); // Agregar attemptedScreenShare a las dependencias del efecto
+
 
   return (
     <RoomContext.Provider
