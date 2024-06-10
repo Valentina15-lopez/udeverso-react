@@ -41,8 +41,6 @@ export const RoomProvider = ({ children }) => {
   const [screenSharingId, setScreenSharingId] = useState("");
   const [roomId, setRoomId] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  //const [currentStream, setCurrentStream] = useState(null); // Nuevo estado para almacenar el flujo actual
-  //const [attemptedScreenShare, setAttemptedScreenShare] = useState(false);
 
   const enterRoom = ({ roomId }) => {
     navigate(`/aulavirtual/${roomId}`);
@@ -77,19 +75,6 @@ export const RoomProvider = ({ children }) => {
         return newConnections;
       });
 
-      // Si ya hay un flujo actual, envíalo al nuevo par
-      /*
-      if (currentStream) {
-        const call = me.call(conn.peer, currentStream, {
-          metadata: {
-            userName,
-          },
-        });
-        call.on("stream", (peerStream) => {
-          dispatch(addPeerStreamAction(conn.peer, peerStream));
-        });
-        dispatch(addPeerNameAction(conn.peer, userName));
-      }*/
     });
 
     me.on('error', (err) => {
@@ -99,11 +84,9 @@ export const RoomProvider = ({ children }) => {
     return () => {
       me.off("connection");
     };
-  //}, [me, currentStream]); // Agregar currentStream a las dependencias del efecto
   }, [me]); // Agregar currentStream a las dependencias del efecto
 
   const switchStream = (newStream) => {
-    //setCurrentStream(newStream); // Actualizar el flujo actual
     setScreenSharingId(me?.id || "");
     console.log('Switching stream. Current connections:', connections); // Agregar registro de consola para las conexiones actuales
     Object.values(connections).forEach((connection) => {
@@ -124,7 +107,6 @@ export const RoomProvider = ({ children }) => {
   const shareScreen = () => {
     if (Object.keys(connections).length === 0) {
       console.log('No connections established. Delaying screen share.');
-      //setAttemptedScreenShare(true);
       return;
     }
 
@@ -139,14 +121,7 @@ export const RoomProvider = ({ children }) => {
       });
     }
   };
-/*
-  useEffect(() => {
-    if (attemptedScreenShare && Object.keys(connections).length > 0) {
-      shareScreen();
-      setAttemptedScreenShare(false);
-    }
-  }, [connections, attemptedScreenShare]);
-*/
+
   const nameChangedHandler = ({ peerId, userName }) => {
     dispatch(addPeerNameAction(peerId, userName));
   };
@@ -252,12 +227,6 @@ export const RoomProvider = ({ children }) => {
         dispatch(addPeerStreamAction(call.peer, peerStream));
       });
 
-      /*
-      // Si el usuario ha intentado compartir su pantalla, intenta compartir la pantalla ahora
-      if (attemptedScreenShare) {
-        shareScreen();
-        setAttemptedScreenShare(false);
-      }*/
     });
 
     return () => {
