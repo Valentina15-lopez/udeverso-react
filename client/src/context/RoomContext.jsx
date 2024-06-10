@@ -89,8 +89,8 @@ export const RoomProvider = ({ children }) => {
           dispatch(addPeerStreamAction(conn.peer, peerStream));
         });
         dispatch(addPeerNameAction(conn.peer, userName));
-      }
-    });*/
+      }*/
+    });
 
     me.on('error', (err) => {
       console.error('PeerJS error 95:', err);
