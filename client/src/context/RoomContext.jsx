@@ -38,9 +38,13 @@ export const RoomProvider = ({ children }) => {
   const [stream, setStream] = useState();
   const [screenStream, setScreenStream] = useState();
   const [peers, dispatch] = useReducer(peersReducer, {});
-  const [screenSharingId, setScreenSharingId] = useState("");
+  const [screenSharingId, _setScreenSharingId] = useState("");
   const [roomId, setRoomId] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+
+  const setScreenSharingId = (id) => {
+    _setScreenSharingId(id);
+  };
 
   const enterRoom = ({ roomId }) => {
     navigate(`/aulavirtual/${roomId}`);
@@ -245,6 +249,7 @@ export const RoomProvider = ({ children }) => {
         roomId,
         setRoomId,
         screenSharingId,
+        setScreenSharingId,
         setFileTexture,
         fileTexture,
         setScreenStream,
