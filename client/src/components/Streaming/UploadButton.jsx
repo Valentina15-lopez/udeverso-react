@@ -6,7 +6,7 @@ import { Modal } from "../../common/Modal";
 import { UserContext } from "../../context/UserContext";
 
 export const UploadButton = () => {
-  const { setScreenSharingId, shareScreen } = useContext(RoomContext); // Asegúrate de tener una función para actualizar la textura
+  const {setFileTexture, setScreenSharingId, shareScreen } = useContext(RoomContext); // Asegúrate de tener una función para actualizar la textura
   const [materiales, setMateriales] = useState([]);
   const { userName } = useContext(UserContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
