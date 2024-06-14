@@ -9,7 +9,7 @@ import { Chat } from "../../components/Streaming/Chat";
 import { RoomContext } from "../../context/RoomContext";
 import { ShareScreenButton } from "./ShareScreenButton";
 import { ChatButton } from "./ChatButton";
-
+import { UploadButton } from "./UploadButton";
 export const Room = () => {
   const { socket } = useContext(SocketContext);
   const { roomId } = useParams();
@@ -23,12 +23,7 @@ export const Room = () => {
     setRoomId,
   } = useContext(RoomContext);
   const { userName, userId } = useContext(UserContext);
-
-  useEffect(() => {
-    if (stream)
-      socket.emit("join-room", { roomId: roomId, peerId: userId, userName });
-  }, [roomId, userId, stream, userName]);
-
+  const { id } = useParams();
   useEffect(() => {
     setRoomId(roomId || "");
   }, [roomId, setRoomId]);
@@ -38,14 +33,20 @@ export const Room = () => {
 
   const { [screenSharingId]: sharing, ...peersToShow } = peers;
 
+  useEffect(() => {
+    if (stream)
+      socket.emit("join-room", { roomId: roomId, peerId: userId, userName });
+  }, [id, userId, stream, userName]);
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex grow">
-        <div
-          className={`grid gap-4 ${
-            screenSharingVideo ? "w-1/5 grid-cols-2" : "grid-cols-3"
-          }`}
-        >
+        {screenSharingVideo && (
+          <div className="w-4/5 pr-4">
+            <VideoPlayer stream={screenSharingVideo} />
+          </div>
+        )}
+        <div className={`grid gap-4 grid-cols-3`}>
           {screenSharingId !== userId && (
             <div>
               <VideoPlayer stream={stream} isOwnStream={true} />
@@ -64,15 +65,10 @@ export const Room = () => {
         </div>
         {chat.isChatOpen && <Chat />}
       </div>
-      {screenSharingVideo && (
-        <div className="w-4/5 pr-4">
-          <VideoPlayer stream={screenSharingVideo} />
-        </div>
-      )}
       <div className="fixed bottom-0 right-0 mr-16 mb-16 gap-3">
         <div className="flex gap-3">
-          <ShareScreenButton onClick={shareScreen} />
           <ChatButton onClick={toggleChat} />
+          <UploadButton />
         </div>
       </div>
     </div>

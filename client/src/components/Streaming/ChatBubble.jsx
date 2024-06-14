@@ -14,7 +14,7 @@ export const ChatBubble = ({ message }) => {
       <div className="flex flex-col">
         <div
           className={`inline-block py-2 px-4 rounded ${
-            isSelf ? "bg-red-200" : "bg-red-300"
+            isSelf ? "bg-blue-200" : "bg-blue-400"
           }`}
         >
           {message.content}

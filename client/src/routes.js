@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Login from "./pages/Login";
 import AulaVirtual from "./pages/AulaVirtual";
 import Abm from "./pages/ABM";
@@ -14,10 +14,16 @@ import axios from "axios";
 import { Navigate, useLocation } from "react-router-dom";
 import { Join } from "./components/Streaming/Join";
 import MenuDocente from "./pages/MenuDocente";
+import { JoinRoom } from "./components/Streaming/JoinRoom";
+import { UserContext } from "../src/context/UserContext";
+import AccessDenied from "./pages/AccessDenied";
 
-const ProtectedRoute = ({ element }) => {
+const RoleProtectedRoute = ({ element, roles }) => {
+  const { user } = useContext(UserContext);
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -30,11 +36,13 @@ const ProtectedRoute = ({ element }) => {
         );
         if (response.status === 200) {
           setIsAuthenticated(true);
+          console.log(response.data);
         }
       } catch (error) {
         setIsAuthenticated(false);
       }
       setIsCheckingAuth(false);
+      setLoading(false);
     };
 
     checkAuth();
@@ -47,53 +55,85 @@ const ProtectedRoute = ({ element }) => {
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
+  if (user) {
+    if (!roles.includes(user.rol)) {
+      return <Navigate to="/access-denied" />;
+    }
+  } else {
+    return <Navigate to="/access-denied" />;
+  }
 
   return element;
 };
 
 const routes = [
   {
-    path: "/aulavirtual/:roomId", // Agrega el parámetro de ruta para el ID
-    element: <ProtectedRoute element={<AulaVirtual />} />,
+    path: "/aulavirtual/:roomId",
+    element: (
+      <RoleProtectedRoute
+        element={<AulaVirtual />}
+        roles={["alumno", "profesor", "administrador"]}
+      />
+    ),
   },
   {
-    path: "/aulavirtual", // Agrega el parámetro de ruta para el ID
-    element: <ProtectedRoute element={<Join />} />,
+    path: "/inicioDocente",
+    element: <RoleProtectedRoute element={<Join />} roles={["profesor"]} />,
+  },
+  {
+    path: "/inicioEstudiante",
+    element: <RoleProtectedRoute element={<JoinRoom />} roles={["alumno"]} />,
   },
   {
     path: "/abm",
-    element: <ProtectedRoute element={<Abm />} />,
+    element: <RoleProtectedRoute element={<Abm />} roles={["administrador"]} />,
   },
   {
     path: "/abm/listUsers",
-    element: <ProtectedRoute element={<ListUsers />} />,
+    element: (
+      <RoleProtectedRoute element={<ListUsers />} roles={["administrador"]} />
+    ),
   },
   {
     path: "/abm/modifyUsers",
-    element: <ProtectedRoute element={<ModifyUsers />} />,
+    element: (
+      <RoleProtectedRoute element={<ModifyUsers />} roles={["administrador"]} />
+    ),
   },
   {
     path: "/abm/deleteUsers",
-    element: <ProtectedRoute element={<DeleteUsers />} />,
+    element: (
+      <RoleProtectedRoute element={<DeleteUsers />} roles={["administrador"]} />
+    ),
   },
   {
     path: "/abm/createUsers",
-    element: <ProtectedRoute element={<CreateUsers />} />,
+    element: <CreateUsers />,
   },
   {
     path: "/abm/material",
-    element: <ProtectedRoute element={<Material />} />,
+    element: (
+      <RoleProtectedRoute
+        element={<Material />}
+        roles={["administrador", "profesor"]}
+      />
+    ),
   },
   {
     path: "/abm/listMaterials",
-    element: <ProtectedRoute element={<ListMaterials />} />,
+    element: (
+      <RoleProtectedRoute
+        element={<ListMaterials />}
+        roles={["administrador", "profesor"]}
+      />
+    ),
   },
   {
-    path: "/", // Redirige la ruta raíz al menú
+    path: "/",
     element: <Navigate to="/login" replace />,
   },
   {
-    path: "/login", // Redirige la ruta raíz al menú
+    path: "/login",
     element: <Login />,
   },
   {
@@ -102,7 +142,13 @@ const routes = [
   },
   {
     path: "/MenuDocente*",
-    element: <ProtectedRoute element={<MenuDocente />} />,
+    element: (
+      <RoleProtectedRoute element={<MenuDocente />} roles={["profesor"]} />
+    ),
+  },
+  {
+    path: "/access-denied",
+    element: <AccessDenied />,
   },
 ];
 

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const CreateUser = () => {
   const [formData, setFormData] = useState({
@@ -35,6 +36,11 @@ const CreateUser = () => {
         console.error("Error al configurar la solicitud:", error.message);
       }
     }
+  };
+  const navigate = useNavigate();
+
+  const handleBackToHome = () => {
+    navigate("/abm");
   };
 
   return (
@@ -90,7 +96,7 @@ const CreateUser = () => {
             />
           </label>
           <label className="block mb-2">
-            Es Estudiante:
+            Rol:
             <input
               type="text"
               name="rol"
@@ -105,7 +111,8 @@ const CreateUser = () => {
             Enviar
           </button>
           <button
-            type="reset"
+            type="button"
+            onClick={handleBackToHome}
             className="w-full mt-2.5 bg-indigo-300 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-600 transition duration-300"
           >
             Volver al inicio

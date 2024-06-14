@@ -19,6 +19,7 @@ export const VideoPlayer = ({ stream, isOwnStream }) => {
     <>
       <video
         data-testid="peer-video"
+        id="camara-web"
         style={{ width: "100%" }}
         ref={videoRef}
         autoPlay

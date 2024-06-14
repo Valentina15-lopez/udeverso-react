@@ -12,10 +12,10 @@ const MenuDocente = () => {
           <ul>
             <li>
               <Link
-                to="/aulavirtual"
+                to="/inicioDocente"
                 className="block py-2 px-4 mb-2 bg-indigo-500 text-white font-semibold rounded-md text-center hover:bg-indigo-600 transition duration-300"
               >
-                Ingresar a sala
+                Crear sala
               </Link>
             </li>
             <li>

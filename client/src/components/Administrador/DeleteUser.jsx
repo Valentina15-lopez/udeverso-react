@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const DeleteUser = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -16,9 +17,11 @@ const DeleteUser = () => {
   useEffect(() => {
     const loadUsers = async () => {
       try {
+        //const response = await axios.get("http://localhost:3001/api/users");
         const response = await axios.get(
           "https://metaversoude2.ddns.net:3001/api/users"
         );
+
         setUsuarios(response.data);
       } catch (error) {
         console.error("Error al cargar los usuarios:", error);
@@ -35,6 +38,9 @@ const DeleteUser = () => {
         // Solo cargar si hay un usuario seleccionado
         console.log("Usuarios.js seleccionado:", formData.usuario); // Añadir este console.log
         try {
+          // const response = await axios.get(
+          //   `http://localhost:3001/api/users/${formData.usuario}`
+          // );
           const response = await axios.get(
             `https://metaversoude2.ddns.net:3001/api/users/${formData.usuario}`
           );
@@ -70,13 +76,20 @@ const DeleteUser = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      //await axios.delete(`http://localhost:3001/api/users/${formData.usuario}`);
       await axios.delete(
         `https://metaversoude2.ddns.net:3001/api/users/${formData.usuario}`
       );
+
       console.log("Usuarios.js borrado exitosamente");
     } catch (error) {
       console.error("Error al borrar el usuario:", error);
     }
+  };
+  const navigate = useNavigate();
+
+  const handleBackToHome = () => {
+    navigate("/abm");
   };
 
   return (
@@ -136,7 +149,7 @@ const DeleteUser = () => {
             />
           </label>
           <label className="block mb-2">
-            Es Estudiante:
+            Rol:
             <input
               type="text"
               name="rol"
@@ -153,7 +166,8 @@ const DeleteUser = () => {
             Borrar
           </button>
           <button
-            type="reset"
+            type="button"
+            onClick={handleBackToHome}
             className="w-full mt-2.5 bg-indigo-300 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-600 transition duration-300"
           >
             Volver al inicio

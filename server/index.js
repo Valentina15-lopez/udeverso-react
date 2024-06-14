@@ -32,7 +32,7 @@ const server = https.createServer(credentials, app);
 export const io = new Server(server, {
   cors: {
     origin: "*",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT"],
     credentials: true, // Habilitar el intercambio de cookies y otros datos de autenticación
   },
 });
@@ -40,8 +40,9 @@ export const io = new Server(server, {
 app.use(express.json());
 app.use(
   cors({
+    //origin: "http://localhost:3000",
     origin: "https://metaversoude2.ddns.net:3000",
-    methods: ["GET", "POST"], // Métodos HTTP permitidos
+    methods: ["GET", "POST", "PUT"], // Métodos HTTP permitidos
     credentials: true,
   })
 );
@@ -83,6 +84,8 @@ const roomHandler = (socket) => {
     if (!rooms[roomId]) rooms[roomId] = {};
     if (!chats[roomId]) chats[roomId] = [];
     socket.emit("get-messages", chats[roomId]);
+    socket.emit("room-joined", { roomId });
+
     console.log("user joined the room", roomId, peerId, userName);
     rooms[roomId][peerId] = { peerId, userName };
     socket.join(roomId);
@@ -139,17 +142,28 @@ const roomHandler = (socket) => {
 io.on("connection", (socket) => {
   usersList.push({
     id: socket.id,
-    roomId: null,
     position: generateRandomPosition(),
     hairColor: generateRandomHexColor(),
     topColor: generateRandomHexColor(),
     bottomColor: generateRandomHexColor(),
   });
   io.emit("usersList", usersList);
+
+  socket.on("move", (position) => {
+    const user = usersList.find((item) => item.id === socket.id);
+    user.position = position;
+    io.emit("usersList", usersList);
+  });
+
   console.log("a user connected");
   roomHandler(socket);
   socket.on("disconnect", () => {
     console.log("user disconnected");
+    usersList.splice(
+      usersList.findIndex((item) => item.id === socket.id),
+      1
+    );
+    io.emit("usersList", usersList);
   });
 });
 
@@ -161,7 +175,6 @@ sequelize
   })
   .catch((error) => {
     console.error("Error al conectarse a la base de datos:", error.message);
-    process.exit(1); // Termina la aplicación si no se puede conectar
   });
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));

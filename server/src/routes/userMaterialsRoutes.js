@@ -1,9 +1,10 @@
 import express from "express"; //importamos express
-import multer from 'multer'; //importamos multer
+import multer from "multer"; //importamos multer
 import {
-    addMaterialToUser,
-    deleteMaterialOfUser,
-    getAllMaterialsOfUser
+  addMaterialToUser,
+  deleteMaterialOfUser,
+  getAllMaterialsOfUser,
+  getMaterialOfUser,
 } from "../controllers/usersMaterialsController.js"; //importamos los controladores
 
 const router = express.Router(); //creamos el router
@@ -58,7 +59,8 @@ const upload = multer({ storage }); // Configurar multer con la opción de almac
  *      500:
  *        description: Error al agregar material
  */
-router.post("/api/users/material", upload.single('archivo'), addMaterialToUser); // 'archivo' es el nombre del campo que esperas recibir
+
+router.post("/api/users/material", upload.single("archivo"), addMaterialToUser); // 'archivo' es el nombre del campo que esperas recibir
 /**
  * @swagger
  * /api/users/{usuario}/material:
@@ -110,6 +112,8 @@ router.get("/api/users/:usuario/material", getAllMaterialsOfUser);
  *      500:
  *        description: Error al eliminar material
  */
-router.delete("/api/users/:usuario/material/:nombre",deleteMaterialOfUser);
+router.delete("/api/users/:usuario/material/:nombre", deleteMaterialOfUser);
+
+router.get("/api/users/:usuario/material/:nombre", getMaterialOfUser);
 
 export default router;

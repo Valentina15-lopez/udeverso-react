@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useAuth } from "../AuthContext";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../context/UserContext";
 
 const LoginForm = () => {
   const [nombreUsuario, setNombreUsuario] = useState("");
@@ -8,6 +9,7 @@ const LoginForm = () => {
   const [mensaje, setMensaje] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate(); // Inicializa el hook useHistory
+  const { setUser } = useContext(UserContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,9 +30,15 @@ const LoginForm = () => {
       if (response.ok) {
         login();
         const userData = await response.json();
-        navigate("/aulavirtual"); // Redirige a la página de aulavirtual si el inicio de sesión es exitoso
-        // Aquí manejas los datos del usuario recibidos del servidor
         console.log(userData);
+        if (userData.usuario.rol === "alumno") {
+          navigate("/inicioEstudiante");
+        } else if (userData.usuario.rol === "profesor") {
+          navigate("/MenuDocente");
+        } else {
+          navigate("/abm");
+        }
+        setUser(userData.usuario);
       } else {
         // Maneja errores de autenticación
         const errorMessage = await response.text();
