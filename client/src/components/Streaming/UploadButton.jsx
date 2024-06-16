@@ -23,7 +23,6 @@ export const UploadButton = () => {
   const openModal = () => {
     if (isSharing) {
       setIsModalOpen(false);
-      setScreenSharingId('');
       shareScreen();
     } else {
       setIsModalOpen(true);
