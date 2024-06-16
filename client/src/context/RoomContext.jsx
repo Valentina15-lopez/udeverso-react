@@ -106,18 +106,22 @@ export const RoomProvider = ({ children }) => {
       return;
     }
 
-    if (screenSharingId) {
-      navigator.mediaDevices
-          .getUserMedia({ video: true, audio: true })
-          .then(switchStream);
-    } else if (switchToCamera) {
+    if (switchToCamera) {
+      setScreenSharingId("");
+      console.log("En sharScreen tengo que switchear a la camara"); // Agregar registro de consola para el screenSharingId
       navigator.mediaDevices
           .getUserMedia({ video: true, audio: true })
           .then((stream) => {
             switchStream(stream);
             setScreenStream(stream);
           });
+    } else if (screenSharingId) {
+      console.log("En shareScreen el screeSharingId es':",screenSharingId); // Agregar registro de consola para el screenSharingId
+      navigator.mediaDevices
+          .getUserMedia({ video: true, audio: true })
+          .then(switchStream);
     } else {
+      console.log("En shareScreen el screenSharingId es:",screenSharingId); // Agregar registro de consola para el screenSharingId
       navigator.mediaDevices.getDisplayMedia({}).then((stream) => {
         switchStream(stream);
         setScreenStream(stream);
