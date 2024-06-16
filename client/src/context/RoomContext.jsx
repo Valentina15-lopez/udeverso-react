@@ -59,32 +59,23 @@ export const RoomProvider = ({ children }) => {
   useEffect(() => {
     if (!me) return;
 
-    me.on("call", (call) => {
-      console.log('Call established 65:', call);
-    });
-
     me.on("connection", (conn) => {
-      console.log('New connection 65:', conn); // Agregar registro de consola para las nuevas conexiones
       // Almacenar la nueva conexión en el estado
       setConnections((prevConnections) => {
         const newConnections = {
           ...prevConnections,
           [conn.peer]: conn,
         };
-        console.log('Updated connections:', newConnections); // Agregar registro de consola para las conexiones actualizadas
         return newConnections;
       });
 
     });
 
-    me.on('error', (err) => {
-      console.error('PeerJS error 95:', err);
-    });
 
     return () => {
       me.off("connection");
     };
-  }, [me]); // Agregar currentStream a las dependencias del efecto
+  }, [me]);
 
   const switchStream = (newStream) => {
     setScreenSharingId(me?.id || "");
@@ -106,7 +97,6 @@ export const RoomProvider = ({ children }) => {
 
   const shareScreen = () => {
     if (Object.keys(connections).length === 0) {
-      console.log('No connections established. Delaying screen share.');
       return;
     }
 
@@ -138,10 +128,6 @@ export const RoomProvider = ({ children }) => {
     });
 
     setMe(peer);
-
-    peer.on('open', (id) => {
-      console.log('PeerJS connection established. ID:', id);
-    });
 
     peer.on('error', (err) => {
       console.error('PeerJS error:', err);
@@ -196,7 +182,6 @@ export const RoomProvider = ({ children }) => {
     if (!me) return;
     if (!stream) return;
     socket.on("user-joined", ({ peerId, userName: name }) => {
-      console.log('UserJoined con peerId ' +  peerId + ' y name ' + name);
       const call = me.call(peerId, stream, {
         metadata: {
           userName,
@@ -211,7 +196,6 @@ export const RoomProvider = ({ children }) => {
             ...prevConnections,
             [peerId]: call,
           };
-          console.log('Updated connections:', newConnections); // Agregar registro de consola para las conexiones actualizadas
           return newConnections;
         });
       });
@@ -219,7 +203,6 @@ export const RoomProvider = ({ children }) => {
     });
 
     me.on("call", (call) => {
-      console.log('Call established 234:', call);
       const { userName } = call.metadata;
       dispatch(addPeerNameAction(call.peer, userName));
       call.answer(stream);

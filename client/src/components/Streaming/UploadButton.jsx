@@ -21,12 +21,13 @@ export const UploadButton = () => {
   };
 
   const openModal = () => {
-    if (isSharing) {
+    /*if (isSharing) {
       setIsModalOpen(false);
       shareScreen();
     } else {
       setIsModalOpen(true);
-    }
+    }*/
+    shareScreen();
     setIsSharing(!isSharing);
   };
   const loadmaterials = async () => {
