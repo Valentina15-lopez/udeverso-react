@@ -48,19 +48,19 @@ export const RoomProvider = ({ children }) => {
   };
 
   const getUsers = ({ participants }) => {
-    console.log("En 51 el screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
+    console.log("El screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
     dispatch(addAllPeersAction(participants));
   };
 
   const removePeer = (peerId) => {
-    console.log("En 56 el screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
+    console.log("El screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
     dispatch(removePeerStreamAction(peerId));
   };
 
   const [connections, setConnections] = useState({});
 
   useEffect(() => {
-    console.log("En 63 el screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
+    console.log("El screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
     if (!me) return;
 
     me.on("connection", (conn) => {
@@ -82,7 +82,7 @@ export const RoomProvider = ({ children }) => {
   }, [me]);
 
   const switchStream = (newStream) => {
-    console.log("En 85 el screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
+    console.log("El screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
     setScreenSharingId(me?.id || "");
     console.log('Switching stream. Current connections:', connections); // Agregar registro de consola para las conexiones actuales
     Object.values(connections).forEach((connection) => {
@@ -101,7 +101,7 @@ export const RoomProvider = ({ children }) => {
   };
 
   const shareScreen = (switchToCamera = false) => {
-    console.log("En 104 el screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
+    console.log("El screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
     if (Object.keys(connections).length === 0) {
       return;
     }
@@ -138,7 +138,7 @@ export const RoomProvider = ({ children }) => {
   }, [userName, userId, roomId]);
 
   useEffect(() => {
-    console.log("En 130 el screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
+    console.log("El screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
     const peer = new Peer(userId, {
       host: "metaversoude2.ddns.net",
       port: 9000,
@@ -189,7 +189,7 @@ export const RoomProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    console.log("En 181 el screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
+    console.log("El screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
     if (screenSharingId) {
       socket.emit("start-sharing", { peerId: screenSharingId, roomId });
     } else {
@@ -198,18 +198,18 @@ export const RoomProvider = ({ children }) => {
   }, [screenSharingId, roomId]);
 
   useEffect(() => {
-    console.log("En 190 el screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
+    console.log("El screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
     if (!me) return;
     if (!stream) return;
     socket.on("user-joined", ({ peerId, userName: name }) => {
-      console.log("En 194 el screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
+      console.log("El screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
       const call = me.call(peerId, stream, {
         metadata: {
           userName,
         },
       });
       call.on("stream", (peerStream) => {
-        console.log("En 201 el screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
+        console.log("El screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
         dispatch(addPeerStreamAction(peerId, peerStream));
 
         // Agregar la llamada a las conexiones
@@ -225,7 +225,7 @@ export const RoomProvider = ({ children }) => {
     });
 
     me.on("call", (call) => {
-      console.log("En 217 el screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
+      console.log("El screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
       const { userName } = call.metadata;
       dispatch(addPeerNameAction(call.peer, userName));
       call.answer(stream);
