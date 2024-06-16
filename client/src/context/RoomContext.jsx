@@ -100,7 +100,7 @@ export const RoomProvider = ({ children }) => {
     });
   };
 
-  const shareScreen = () => {
+  const shareScreen = (switchToCamera = false) => {
     console.log("En 104 el screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
     if (Object.keys(connections).length === 0) {
       return;
@@ -110,6 +110,13 @@ export const RoomProvider = ({ children }) => {
       navigator.mediaDevices
           .getUserMedia({ video: true, audio: true })
           .then(switchStream);
+    } else if (switchToCamera) {
+      navigator.mediaDevices
+          .getUserMedia({ video: true, audio: true })
+          .then((stream) => {
+            switchStream(stream);
+            setScreenStream(stream);
+          });
     } else {
       navigator.mediaDevices.getDisplayMedia({}).then((stream) => {
         switchStream(stream);
