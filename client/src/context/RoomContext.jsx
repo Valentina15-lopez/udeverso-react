@@ -116,7 +116,7 @@ export const RoomProvider = ({ children }) => {
             setScreenStream(stream);
           });
     } else {
-      setScreenSharingId(me.id);
+      setScreenSharingId(me?.id || "");
       console.log("En shareScreen el screenSharingId es:",screenSharingId); // Agregar registro de consola para el screenSharingId
       navigator.mediaDevices.getDisplayMedia({}).then((stream) => {
         switchStream(stream);
