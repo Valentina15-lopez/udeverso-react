@@ -83,7 +83,7 @@ export const RoomProvider = ({ children }) => {
 
   const switchStream = (newStream) => {
     console.log("El screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
-    setScreenSharingId(me?.id || "");
+    //setScreenSharingId(me?.id || "");
     console.log('Switching stream. Current connections:', connections); // Agregar registro de consola para las conexiones actuales
     Object.values(connections).forEach((connection) => {
       const videoTrack = newStream
