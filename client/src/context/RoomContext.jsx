@@ -108,7 +108,7 @@ export const RoomProvider = ({ children }) => {
 
     if (switchToCamera) {
       setScreenSharingId("");
-      console.log("En sharScreen tengo que switchear a la camara"); // Agregar registro de consola para el screenSharingId
+      console.log("En sharScreen tengo que switchear a la camara, el screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
       navigator.mediaDevices
           .getUserMedia({ video: true, audio: true })
           .then((stream) => {
