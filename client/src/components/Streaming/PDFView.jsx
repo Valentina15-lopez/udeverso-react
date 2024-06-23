@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import * as pdfjsLib from "pdfjs-dist/build/pdf";
+import pdfjs from "pdfjs-dist";
 
 export const PDFView = ({ file }) => {
   const [loading, setLoading] = useState(false);
@@ -9,7 +9,7 @@ export const PDFView = ({ file }) => {
     const loadAndRenderPDF = async (file) => {
       setLoading(true);
       // eslint-disable-next-line no-undef
-      const loadingTask = pdfjsLib.getDocument(file);
+      const loadingTask = pdfjs.getDocument(file);
 
       try {
         const pdf = await loadingTask.promise;
