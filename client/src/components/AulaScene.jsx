@@ -77,6 +77,7 @@ const AulaScene = () => {
         {console.log("screenStreamENEL AULA", screenStream)}
         {users.map((user) => {
           const isCurrentUser = user.id === userId;
+          console.log("user", user);
           return (
             <Avatar
               key={user.id}
