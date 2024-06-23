@@ -139,28 +139,6 @@ const roomHandler = (socket) => {
   socket.on("change-name", changeName);
 };
 
-// Endpoint para actualizar el avatar
-app.post("/api/updateAvatar", (req, res) => {
-  const { id, hairColor, topColor, bottomColor } = req.body;
-
-  // Buscar al usuario en la lista
-  const user = usersList.find((user) => user.id === id);
-
-  if (user) {
-    // Actualizar los datos del avatar del usuario
-    user.hairColor = hairColor;
-    user.topColor = topColor;
-    user.bottomColor = bottomColor;
-
-    // Emitir el evento de actualización de la lista de usuarios
-    io.emit("usersList", usersList);
-
-    res.status(200).send("Avatar actualizado con éxito");
-  } else {
-    res.status(404).send("Usuario no encontrado");
-  }
-});
-
 io.on("connection", (socket) => {
   usersList.push({
     id: socket.id,
