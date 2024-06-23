@@ -39,9 +39,33 @@ export const AvatarConfigPage = () => {
   const [topColor, setTopColor] = useState(avatarConfig.topColor);
   const [bottomColor, setBottomColor] = useState(avatarConfig.bottomColor);
 
-  const handleSave = () => {
-    setAvatarConfig({ hairColor, topColor, bottomColor });
+  const handleSave = async () => {
+    const newConfig = { hairColor, topColor, bottomColor };
+    setAvatarConfig(newConfig);
     setSaveAvatar(true);
+
+    // Llamada al servidor para actualizar el avatar
+    try {
+      const response = await fetch(
+        "https://metaversoude2.ddns.net:3001/api/updateAvatar",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newConfig),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error al actualizar el avatar en el servidor");
+      }
+
+      // Si la respuesta es exitosa, puedes manejarlo aquí
+      console.log("Avatar actualizado con éxito");
+    } catch (error) {
+      console.error("Error al enviar los datos al servidor:", error);
+    }
   };
 
   return (

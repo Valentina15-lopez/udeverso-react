@@ -1,5 +1,11 @@
 import express from "express"; //importamos express
-import {addRoom, deleteRoom, getAllRooms, getRoom, updateSchedules} from "../controllers/roomController.js"; //importamos los controladores
+import {
+  addRoom,
+  deleteRoom,
+  getAllRooms,
+  getRoom,
+  updateSchedules,
+} from "../controllers/roomController.js"; //importamos los controladores
 
 const router = express.Router(); //creamos el router
 
@@ -53,7 +59,7 @@ const router = express.Router(); //creamos el router
  *       500:
  *         description: Error al agregar sala y horarios
  */
-router.post("/api/salas",addRoom);
+router.post("/api/salas", addRoom);
 /**
  * @swagger
  * /api/salas/{salaId}/horarios:
@@ -93,7 +99,7 @@ router.post("/api/salas",addRoom);
  *          500:
  *              description: Error al actualizar horarios
  */
-router.put("/api/salas/:salaId/horarios",updateSchedules);
+router.put("/api/salas/:salaId/horarios", updateSchedules);
 /**
  * @swagger
  * /api/salas/{salaId}:
@@ -154,7 +160,16 @@ router.get("/api/salas", getAllRooms);
  *          404:
  *              description: Sala no encontrada
  */
-router.get("/api/salas/:salaId",getRoom);
+router.get("/api/salas/:salaId", getRoom);
 
+// Endpoint para actualizar el avatar
+router.post("/api/updateAvatar", (req, res) => {
+  const { hairColor, topColor, bottomColor } = req.body;
+  // Aquí podrías actualizar la información del usuario en una base de datos
+  console.log("Datos recibidos:", { hairColor, topColor, bottomColor });
+
+  // Responde con un mensaje de éxito
+  res.status(200).send("Avatar actualizado con éxito");
+});
 
 export default router;
