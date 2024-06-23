@@ -12,32 +12,24 @@ import { UserContext } from "../context/UserContext";
 import modeloGlb from "../assets/modeloAula3.glb";
 import { AvatarConfigContext } from "../context/AvatarConfigContext";
 import { Pizarron } from "./Pizarron";
-//esta es la version final
+
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
   const { avatarConfig } = useContext(AvatarConfigContext);
 
   const [users] = useAtom(userAtom);
 
-  console.log(users);
   const { screenStream, peers, screenSharingId, fileTexture } =
     useContext(RoomContext);
   const { userId } = useContext(UserContext);
 
   const [onFloor, setOnFloor] = useState(false);
   useCursor(onFloor);
+
   const handleFloorClick = (e) => {
     const newPosition = [e.point.x, 0, e.point.z];
     console.log("newPosition", newPosition);
     socket.emit("move", newPosition);
-  };
-  const applyAvatarConfig = (user) => {
-    if (avatarConfig) {
-      user.hairColor = avatarConfig.hairColor;
-      user.topColor = avatarConfig.topColor;
-      user.bottomColor = avatarConfig.bottomColor;
-    }
-    return user;
   };
 
   return (
@@ -83,21 +75,28 @@ const AulaScene = () => {
         </CubeCamera>
         <Pizarron />
         {console.log("screenStreamENEL AULA", screenStream)}
-        {users.map((user) => (
-          <Avatar
-            key={user.id}
-            position={
-              new THREE.Vector3(
-                user.position[0],
-                user.position[1],
-                user.position[2]
-              )
-            }
-            hairColor={applyAvatarConfig(user).hairColor}
-            topColor={applyAvatarConfig(user).topColor}
-            bottomColor={applyAvatarConfig(user).bottomColor}
-          />
-        ))}
+        {users.map((user) => {
+          const isCurrentUser = user.id === userId;
+          return (
+            <Avatar
+              key={user.id}
+              position={
+                new THREE.Vector3(
+                  user.position[0],
+                  user.position[1],
+                  user.position[2]
+                )
+              }
+              hairColor={
+                isCurrentUser ? avatarConfig.hairColor : user.hairColor
+              }
+              topColor={isCurrentUser ? avatarConfig.topColor : user.topColor}
+              bottomColor={
+                isCurrentUser ? avatarConfig.bottomColor : user.bottomColor
+              }
+            />
+          );
+        })}
       </group>
     </>
   );
