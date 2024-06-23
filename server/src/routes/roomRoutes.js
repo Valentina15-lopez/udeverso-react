@@ -162,15 +162,4 @@ router.get("/api/salas", getAllRooms);
  */
 router.get("/api/salas/:salaId", getRoom);
 
-// Endpoint para actualizar el avatar
-router.post("/api/updateAvatar", (req, res) => {
-  const { id, hairColor, topColor, bottomColor } = req.body;
-  console.log("request", req.body);
-  // Aquí podrías actualizar la información del usuario en una base de datos
-  console.log("Datos recibidos:", { hairColor, topColor, bottomColor });
-
-  // Responde con un mensaje de éxito
-  res.status(200).send("Avatar actualizado con éxito");
-});
-
 export default router;
