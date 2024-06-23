@@ -16,7 +16,7 @@ const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   // Estado local para almacenar el ID de usuario
-  const [userId] = useState(localStorage.getItem("userId") || uuidV4());
+  const [userId] = useState(socket.id);
   // Estado local para almacenar el nombre de usuario
   const [userName, setUserName] = useState(
     localStorage.getItem("userName") || ""
