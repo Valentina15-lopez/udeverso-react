@@ -82,21 +82,32 @@ const AulaScene = () => {
           )}
         </CubeCamera>
         <Pizarron />
-        {users.map((user) => (
-          <Avatar
-            key={user.id}
-            position={
-              new THREE.Vector3(
-                user.position[0],
-                user.position[1],
-                user.position[2]
-              )
-            }
-            hairColor={applyAvatarConfig(user).hairColor}
-            topColor={applyAvatarConfig(user).topColor}
-            bottomColor={applyAvatarConfig(user).bottomColor}
-          />
-        ))}
+        {users.map((user) => {
+          const isCurrentUser = user.peerId === userId;
+          console.log(" userId ", userId);
+          console.log(" user.peerId ", user.peerId);
+          console.log("isCurrentUser", isCurrentUser);
+
+          return (
+            <Avatar
+              key={user.id}
+              position={
+                new THREE.Vector3(
+                  user.position[0],
+                  user.position[1],
+                  user.position[2]
+                )
+              }
+              hairColor={
+                isCurrentUser ? avatarConfig.hairColor : user.hairColor
+              }
+              topColor={isCurrentUser ? avatarConfig.topColor : user.topColor}
+              bottomColor={
+                isCurrentUser ? avatarConfig.bottomColor : user.bottomColor
+              }
+            />
+          );
+        })}
       </group>
     </>
   );

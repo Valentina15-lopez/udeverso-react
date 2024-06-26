@@ -142,11 +142,13 @@ const roomHandler = (socket) => {
 io.on("connection", (socket) => {
   usersList.push({
     id: socket.id,
+    peerId: peerId,
     position: generateRandomPosition(),
     hairColor: generateRandomHexColor(),
     topColor: generateRandomHexColor(),
     bottomColor: generateRandomHexColor(),
   });
+
   io.emit("usersList", usersList);
 
   socket.on("move", (position) => {
