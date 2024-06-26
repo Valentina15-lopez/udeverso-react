@@ -83,7 +83,7 @@ const AulaScene = () => {
         </CubeCamera>
         <Pizarron />
         {users.map((user) => {
-          const isCurrentUser = user.peerId === userId;
+          const isCurrentUser = user.id === userId;
           console.log(" userId ", userId);
           console.log(" user.peerId ", user.peerId);
           console.log("isCurrentUser", isCurrentUser);
