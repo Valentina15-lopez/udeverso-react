@@ -65,16 +65,12 @@ export const RoomProvider = ({ children }) => {
 
     me.on("connection", (conn) => {
       // Almacenar la nueva conexión en el estado
-      setConnections((prevConnections) => {
-        const newConnections = {
-          ...prevConnections,
-          [conn.peer]: conn,
-        };
-        return newConnections;
-      });
 
+      setConnections((prevConnections) => ({
+        ...prevConnections,
+        [conn.peer]: conn,
+      }));
     });
-
 
     return () => {
       me.off("connection");
@@ -84,19 +80,23 @@ export const RoomProvider = ({ children }) => {
   const switchStream = (newStream) => {
     console.log("El screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
     //setScreenSharingId(me?.id || "");
-    console.log('Switching stream. Current connections:', connections); // Agregar registro de consola para las conexiones actuales
+    console.log("Switching stream. Current connections:", connections); // Agregar registro de consola para las conexiones actuales
     Object.values(connections).forEach((connection) => {
       const videoTrack = newStream
-          ?.getTracks()
-          .find((track) => track.kind === "video");
+        ?.getTracks()
+        .find((track) => track.kind === "video");
       connection.peerConnection
-          .getSenders()
-          .find((sender) => sender.track.kind === "video")
-          .replaceTrack(videoTrack)
-          .then(() => console.log('Stream switched for connection:', connection)) // Agregar registro de consola cuando el flujo se cambia exitosamente
-          .catch((err) => {
-            console.error('Error switching stream for connection:', connection, err); // Agregar registro de consola cuando ocurre un error al cambiar el flujo
-          });
+        .getSenders()
+        .find((sender) => sender.track.kind === "video")
+        .replaceTrack(videoTrack)
+        .then(() => console.log("Stream switched for connection:", connection)) // Agregar registro de consola cuando el flujo se cambia exitosamente
+        .catch((err) => {
+          console.error(
+            "Error switching stream for connection:",
+            connection,
+            err
+          ); // Agregar registro de consola cuando ocurre un error al cambiar el flujo
+        });
     });
   };
 
@@ -108,16 +108,19 @@ export const RoomProvider = ({ children }) => {
 
     if (switchToCamera) {
       setScreenSharingId("");
-      console.log("En sharScreen tengo que switchear a la camara, el screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
+      console.log(
+        "En sharScreen tengo que switchear a la camara, el screenSharingId es:",
+        screenSharingId
+      ); // Agregar registro de consola para el screenSharingId
       navigator.mediaDevices
-          .getUserMedia({ video: true, audio: true })
-          .then((stream) => {
-            switchStream(stream);
-            setScreenStream(stream);
-          });
+        .getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+          switchStream(stream);
+          setScreenStream(stream);
+        });
     } else {
       setScreenSharingId(me?.id || "");
-      console.log("En shareScreen el screenSharingId es:",screenSharingId); // Agregar registro de consola para el screenSharingId
+      console.log("En shareScreen el screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
       navigator.mediaDevices.getDisplayMedia({}).then((stream) => {
         switchStream(stream);
         setScreenStream(stream);
@@ -143,8 +146,8 @@ export const RoomProvider = ({ children }) => {
 
     setMe(peer);
 
-    peer.on('error', (err) => {
-      console.error('PeerJS error:', err);
+    peer.on("error", (err) => {
+      console.error("PeerJS error:", err);
     });
 
     try {
@@ -208,14 +211,10 @@ export const RoomProvider = ({ children }) => {
         console.log("El screenSharingId es:", screenSharingId); // Agregar registro de consola para el screenSharingId
         dispatch(addPeerStreamAction(peerId, peerStream));
 
-        // Agregar la llamada a las conexiones
-        setConnections((prevConnections) => {
-          const newConnections = {
-            ...prevConnections,
-            [peerId]: call,
-          };
-          return newConnections;
-        });
+        setConnections((prevConnections) => ({
+          ...prevConnections,
+          [peerId]: call,
+        }));
       });
       dispatch(addPeerNameAction(peerId, name));
     });
@@ -228,7 +227,6 @@ export const RoomProvider = ({ children }) => {
       call.on("stream", (peerStream) => {
         dispatch(addPeerStreamAction(call.peer, peerStream));
       });
-
     });
 
     return () => {
