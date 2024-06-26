@@ -54,7 +54,6 @@ const CreateMaterial = () => {
           },
         }
       );
-      console.log("Material agregado exitosamente");
     } catch (error) {
       console.error("Error al enviar el material:", error);
     }

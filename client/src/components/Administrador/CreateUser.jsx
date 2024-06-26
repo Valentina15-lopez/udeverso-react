@@ -23,7 +23,6 @@ const CreateUser = () => {
         "https://metaversoude2.ddns.net:3001/api/users",
         formData
       );
-      console.log("Usuario creado exitosamente");
     } catch (error) {
       if (error.response) {
         // La solicitud fue realizada y el servidor respondió con un código de estado que no está en el rango 2xx

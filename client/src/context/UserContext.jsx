@@ -23,8 +23,6 @@ const UserProvider = ({ children }) => {
   );
   const [usersList, setUsersList] = useState([]);
 
-  //console.log("userId", userId);
-
   // Efecto para guardar el nombre de usuario en el almacenamiento local
   useEffect(() => {
     localStorage.setItem("userName", userName);
@@ -34,14 +32,10 @@ const UserProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem("userId", userId);
     socket.on("usersList", (usersList) => {
-      //console.log("Lista de usuarios:", usersList);
       setUsersList(usersList);
       // Aquí puedes hacer lo que necesites con la lista de usuarios
     });
   }, [userId]);
-  {
-    //console.log("entro al user provider");
-  }
 
   // Renderiza el proveedor de contexto de usuario con sus valores proporcionados a los hijos
   return (
