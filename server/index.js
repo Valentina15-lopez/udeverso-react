@@ -83,16 +83,6 @@ const roomHandler = (socket) => {
   const joinRoom = ({ roomId, peerId, userName }) => {
     if (!rooms[roomId]) rooms[roomId] = {};
     if (!chats[roomId]) chats[roomId] = [];
-    usersList.push({
-      id: socket.id,
-      peerId: peerId,
-      position: generateRandomPosition(),
-      hairColor: generateRandomHexColor(),
-      topColor: generateRandomHexColor(),
-      bottomColor: generateRandomHexColor(),
-    });
-
-    io.emit("usersList", usersList);
 
     socket.emit("get-messages", chats[roomId]);
     socket.emit("room-joined", { roomId });
@@ -154,6 +144,16 @@ const roomHandler = (socket) => {
 };
 
 io.on("connection", (socket) => {
+  usersList.push({
+    id: socket.id,
+    position: generateRandomPosition(),
+    hairColor: generateRandomHexColor(),
+    topColor: generateRandomHexColor(),
+    bottomColor: generateRandomHexColor(),
+  });
+
+  io.emit("usersList", usersList);
+
   socket.on("move", (position) => {
     const user = usersList.find((item) => item.id === socket.id);
     user.position = position;
