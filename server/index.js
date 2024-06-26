@@ -153,7 +153,7 @@ const roomHandler = (socket) => {
   socket.on("change-name", changeName);
 };
 
-io.on("connection", (socket, peerId) => {
+io.on("connection", (socket) => {
   socket.on("move", (position) => {
     const user = usersList.find((item) => item.id === socket.id);
     user.position = position;
