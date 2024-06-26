@@ -106,11 +106,12 @@ const roomHandler = (socket) => {
   };
 
   const startSharing = ({ peerId, roomId }) => {
-    console.log({ roomId, peerId });
+    console.log("El peerId " + peerId + " empezó a compartir en el romm " + roomId);
     socket.to(roomId).emit("user-started-sharing", peerId);
   };
 
   const stopSharing = (roomId) => {
+    console.log("Se dejo de compartir en el roomId " + roomId);
     socket.to(roomId).emit("user-stopped-sharing");
   };
 
