@@ -56,7 +56,7 @@ export const AvatarConfigPage = () => {
 
       fetchAvatarConfig();
     }
-  }, [user, setAvatarConfig]);
+  }, [userId, setAvatarConfig]);
 
   const handleSave = async () => {
     if (userId) {
