@@ -11,8 +11,9 @@ export const AvatarConfigProvider = ({ children }) => {
     bottomColor: "#000000",
   });
   const [saveAvatar, setSaveAvatar] = useState(false);
-  const { userId } = useContext(UserContext);
+  const { userId, userName } = useContext(UserContext);
   console.log("userId", userId);
+  console.log("userName", userName);
 
   useEffect(() => {
     if (userId) {
