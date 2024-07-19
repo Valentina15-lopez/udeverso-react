@@ -51,6 +51,7 @@ export const AvatarConfigPage = () => {
 
   const handleSave = () => {
     setId(userName);
+    console.log("userName", userName);
     setAvatarConfig({ hairColor, topColor, bottomColor, userId });
     setSaveAvatar(true);
   };
