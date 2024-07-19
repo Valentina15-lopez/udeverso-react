@@ -1,13 +1,13 @@
 // src/routes/userRoutes.js
 import express from "express"; //importamos express
 import {
-    checkAuth,
-    login,
-    createUser,
-    getAllUsers,
-    getUser,
-    updateUser,
-    deleteUser
+  checkAuth,
+  login,
+  createUser,
+  getAllUsers,
+  getUser,
+  updateUser,
+  deleteUser,
 } from "../controllers/userController.js"; //importamos los controladores
 
 const router = express.Router(); //creamos el router
@@ -135,7 +135,7 @@ router.get("/api/users", getAllUsers);
  *      404:
  *        description: Usuario no encontrado
  */
-router.get("/api/users/:id", getUser);
+router.get("/api/users/:usuario", getUser);
 /**
  * @swagger
  * /api/users/{usuario}:
@@ -161,7 +161,7 @@ router.get("/api/users/:id", getUser);
  *      404:
  *        description: Usuario no encontrado
  */
-router.put("/api/users/:usuario",updateUser);
+router.put("/api/users/:usuario", updateUser);
 /**
  * @swagger
  * /api/users/{usuario}:
@@ -181,6 +181,6 @@ router.put("/api/users/:usuario",updateUser);
  *      404:
  *        description: Usuario no encontrado
  */
-router.delete("/api/users/:usuario",deleteUser);
+router.delete("/api/users/:usuario", deleteUser);
 
 export default router;
