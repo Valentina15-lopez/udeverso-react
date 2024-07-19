@@ -4,6 +4,7 @@ import { Avatar } from "./Avatar";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Button } from "../common/Button";
+import { UserContext } from "../context/UserContext";
 
 const colors = {
   hair: [
@@ -34,19 +35,23 @@ export const AvatarConfigPage = () => {
   const { avatarConfig, setAvatarConfig, setSaveAvatar } =
     useContext(AvatarConfigContext);
 
+  const { userName } = useContext(UserContext);
+
   const [hairColor, setHairColor] = useState(avatarConfig.hairColor);
   const [topColor, setTopColor] = useState(avatarConfig.topColor);
   const [bottomColor, setBottomColor] = useState(avatarConfig.bottomColor);
+  const [userId, setId] = useState("");
 
   useEffect(() => {
     setHairColor(avatarConfig.hairColor);
     setTopColor(avatarConfig.topColor);
     setBottomColor(avatarConfig.bottomColor);
+    setId(avatarConfig.userName);
   }, [avatarConfig]);
 
   const handleSave = () => {
-    setAvatarConfig({ hairColor, topColor, bottomColor });
-    console.log("se ejecuta handleSave");
+    setId(userName);
+    setAvatarConfig({ hairColor, topColor, bottomColor, userId });
     setSaveAvatar(true);
   };
 

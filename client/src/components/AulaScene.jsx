@@ -29,6 +29,8 @@ const AulaScene = () => {
     const newPosition = [e.point.x, 0, e.point.z];
     socket.emit("move", newPosition);
   };
+  console.log("avatarConfig.userName", avatarConfig.userName);
+
   const applyAvatarConfig = (user) => {
     if (avatarConfig) {
       user.hairColor = avatarConfig.hairColor;
