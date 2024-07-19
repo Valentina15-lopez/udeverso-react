@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { AvatarConfigContext } from "../context/AvatarConfigContext";
 import { Avatar } from "./Avatar";
 import { Canvas } from "@react-three/fiber";
@@ -34,24 +34,14 @@ const colors = {
 export const AvatarConfigPage = () => {
   const { avatarConfig, setAvatarConfig, setSaveAvatar } =
     useContext(AvatarConfigContext);
-
   const { userName } = useContext(UserContext);
-
   const [hairColor, setHairColor] = useState(avatarConfig.hairColor);
   const [topColor, setTopColor] = useState(avatarConfig.topColor);
   const [bottomColor, setBottomColor] = useState(avatarConfig.bottomColor);
-  const [userId, setId] = useState("");
-
-  useEffect(() => {
-    setHairColor(avatarConfig.hairColor);
-    setTopColor(avatarConfig.topColor);
-    setBottomColor(avatarConfig.bottomColor);
-    setId(avatarConfig.userName);
-  }, [avatarConfig]);
+  const [userId, setUserId] = useState(avatarConfig.userId);
 
   const handleSave = () => {
-    setId(userName);
-    console.log("userName", userName);
+    setUserId(userName);
     setAvatarConfig({ hairColor, topColor, bottomColor, userId });
     setSaveAvatar(true);
   };
@@ -67,7 +57,7 @@ export const AvatarConfigPage = () => {
             Color de Pelo:
             <select
               value={hairColor}
-              className="w-full py-2 px-8 text-xl rounded-md transition duration-300 bg-blue-200 text-blue-900 hover:bg-blue-300"
+              className={`w-full py-2 px-8 text-xl rounded-md transition duration-300 ${"bg-blue-200 text-blue-900 hover:bg-blue-300"}`}
               onChange={(e) => setHairColor(e.target.value)}
             >
               {colors.hair.map((color) => (
@@ -83,7 +73,7 @@ export const AvatarConfigPage = () => {
             Color de Remera:
             <select
               value={topColor}
-              className="w-full py-2 px-8 text-xl rounded-md transition duration-300 bg-blue-200 text-blue-900 hover:bg-blue-300"
+              className={`w-full py-2 px-8 text-xl rounded-md transition duration-300 ${"bg-blue-200 text-blue-900 hover:bg-blue-300"}`}
               onChange={(e) => setTopColor(e.target.value)}
             >
               {colors.top.map((color) => (
@@ -99,7 +89,7 @@ export const AvatarConfigPage = () => {
             Color de Pantalón:
             <select
               value={bottomColor}
-              className="w-full py-2 px-8 text-xl rounded-md transition duration-300 bg-blue-200 text-blue-900 hover:bg-blue-300"
+              className={`w-full py-2 px-8 text-xl rounded-md transition duration-300 ${"bg-blue-200 text-blue-900 hover:bg-blue-300"}`}
               onChange={(e) => setBottomColor(e.target.value)}
             >
               {colors.bottom.map((color) => (

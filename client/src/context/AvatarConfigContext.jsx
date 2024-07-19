@@ -1,21 +1,19 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
-import axios from "axios";
-import { UserContext } from "../context/UserContext";
+import React, { createContext, useState } from "react";
 
 export const AvatarConfigContext = createContext();
 
 export const AvatarConfigProvider = ({ children }) => {
   const [avatarConfig, setAvatarConfig] = useState({
-    hairColor: "#000000",
-    topColor: "#ffffff",
-    bottomColor: "#000000",
-    userName: "",
+    hairColor: "#00ff00",
+    topColor: "#ff00ff",
+    bottomColor: "#a52a2a",
+    userId: "",
   });
-  const [saveAvatar, setSaveAvatar] = useState(false);
 
+  const [saveAvatar, setSaveAvatar] = useState(false);
   return (
     <AvatarConfigContext.Provider
-      value={{ avatarConfig, setAvatarConfig, setSaveAvatar }}
+      value={{ avatarConfig, setAvatarConfig, saveAvatar, setSaveAvatar }}
     >
       {children}
     </AvatarConfigContext.Provider>
