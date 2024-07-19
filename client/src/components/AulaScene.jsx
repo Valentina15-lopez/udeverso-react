@@ -96,11 +96,15 @@ const AulaScene = () => {
                 )
               }
               hairColor={
-                isCurrentUser ? avatarConfig.hairColor : user.hairColor
+                isCurrentUser ? avatarConfig.hairColor : avatarConfig.hairColor
               }
-              topColor={isCurrentUser ? avatarConfig.topColor : user.topColor}
+              topColor={
+                isCurrentUser ? avatarConfig.topColor : avatarConfig.topColor
+              }
               bottomColor={
-                isCurrentUser ? avatarConfig.bottomColor : user.bottomColor
+                isCurrentUser
+                  ? avatarConfig.bottomColor
+                  : avatarConfig.bottomColor
               }
             />
           );
