@@ -1,45 +1,51 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { UserContext } from "../../context/UserContext";
 
 export const AvatarConfigContext = createContext();
 
 export const AvatarConfigProvider = ({ children }) => {
   const [avatarConfig, setAvatarConfig] = useState({
-    hairColor: "#ffffff",
-    topColor: "#00ff00",
+    hairColor: "#000000",
+    topColor: "#ffffff",
     bottomColor: "#000000",
   });
-
   const [saveAvatar, setSaveAvatar] = useState(false);
+  const { userId } = useContext(UserContext);
 
   useEffect(() => {
-    // Fetch the avatar configuration from the server when the component mounts
-    const fetchAvatarConfig = async () => {
-      try {
-        const response = await axios.get("/api/user/avatar");
-        setAvatarConfig(response.data);
-      } catch (error) {
-        console.error("Error fetching avatar config:", error);
-      }
-    };
+    if (userId) {
+      // Obtener la configuración del avatar del usuario
+      const fetchAvatarConfig = async () => {
+        try {
+          const response = await axios.get(`/api/users/${userId}/avatar`);
+          setAvatarConfig(response.data);
+        } catch (error) {
+          console.error("Error fetching avatar config:", error);
+        }
+      };
 
-    fetchAvatarConfig();
-  }, []);
+      fetchAvatarConfig();
+    }
+  }, [userId]);
 
   useEffect(() => {
-    if (saveAvatar) {
+    if (saveAvatar && userId) {
+      // Guardar la configuración del avatar del usuario
       const saveAvatarConfig = async () => {
         try {
-          await axios.post("/api/user/avatar", avatarConfig);
+          await axios.post(`/api/users/${userId}/avatar`, avatarConfig);
+          setSaveAvatar(false);
+          alert("Configuración del avatar guardada con éxito");
         } catch (error) {
           console.error("Error saving avatar config:", error);
+          alert("Error al guardar la configuración del avatar");
         }
       };
 
       saveAvatarConfig();
-      setSaveAvatar(false);
     }
-  }, [saveAvatar, avatarConfig]);
+  }, [saveAvatar, userId, avatarConfig]);
 
   return (
     <AvatarConfigContext.Provider
