@@ -111,11 +111,11 @@ export const getUser = async (req, res) => {
   //console.log("Se llamó al endpoint GET /api/users/:id con " + JSON.stringify(req.body));
 
   try {
-    const { usuario } = req.params; // El usuario a actualizar
+    const id = req.params.id; // Obtener el identificador del usuario desde la URL
 
     // Buscar un usuario por el campo `usuario`
     const user = await Usuarios.findOne({
-      where: { usuario }, // Condición para buscar el usuario
+      where: { usuario: id }, // Condición para buscar el usuario
     });
 
     // Verificamos si se encontró el usuario
