@@ -52,7 +52,7 @@ const Abm = () => {
               <button
                 type="button"
                 onClick={handleBackToHome}
-                className="w-full mt-2.5 bg-indigo-300 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-600 transition duration-300"
+                className="block py-2 px-4 mb-2 bg-indigo-500 text-white font-semibold rounded-md text-center hover:bg-indigo-600 transition duration-300"
               >
                 Volver al inicio
               </button>
