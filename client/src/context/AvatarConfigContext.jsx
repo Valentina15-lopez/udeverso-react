@@ -11,16 +11,16 @@ export const AvatarConfigProvider = ({ children }) => {
     bottomColor: "#000000",
   });
   const [saveAvatar, setSaveAvatar] = useState(false);
-  const { userId, userName } = useContext(UserContext);
-  console.log("userId", userId);
+  const { userName } = useContext(UserContext);
+  console.log("userId", userName);
   console.log("userName", userName);
 
   useEffect(() => {
-    if (userId) {
+    if (userName) {
       // Obtener la configuración del avatar del usuario
       const fetchAvatarConfig = async () => {
         try {
-          const response = await axios.get(`/api/users/${userId}/avatar`);
+          const response = await axios.get(`/api/users/${userName}/avatar`);
           setAvatarConfig(response.data);
         } catch (error) {
           console.error("Error fetching avatar config:", error);
@@ -29,14 +29,14 @@ export const AvatarConfigProvider = ({ children }) => {
 
       fetchAvatarConfig();
     }
-  }, [userId]);
+  }, [userName]);
 
   useEffect(() => {
-    if (saveAvatar && userId) {
+    if (saveAvatar && userName) {
       // Guardar la configuración del avatar del usuario
       const saveAvatarConfig = async () => {
         try {
-          await axios.post(`/api/users/${userId}/avatar`, avatarConfig);
+          await axios.post(`/api/users/${userName}/avatar`, avatarConfig);
           setSaveAvatar(false);
           alert("Configuración del avatar guardada con éxito");
         } catch (error) {
@@ -47,7 +47,7 @@ export const AvatarConfigProvider = ({ children }) => {
 
       saveAvatarConfig();
     }
-  }, [saveAvatar, userId, avatarConfig]);
+  }, [saveAvatar, userName, avatarConfig]);
 
   return (
     <AvatarConfigContext.Provider
