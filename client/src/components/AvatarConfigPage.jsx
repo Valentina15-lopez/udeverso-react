@@ -46,6 +46,7 @@ export const AvatarConfigPage = () => {
 
   const handleSave = () => {
     setAvatarConfig({ hairColor, topColor, bottomColor });
+    console.log("se ejecuta handleSave");
     setSaveAvatar(true);
   };
 

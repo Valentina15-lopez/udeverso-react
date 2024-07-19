@@ -12,6 +12,7 @@ export const AvatarConfigProvider = ({ children }) => {
   });
   const [saveAvatar, setSaveAvatar] = useState(false);
   const { userId } = useContext(UserContext);
+  console.log("userId", userId);
 
   useEffect(() => {
     if (userId) {
