@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AvatarConfigContext } from "../context/AvatarConfigContext";
-import { AuthContext } from "../context/AuthContext";
+import { UserContext } from "../context/UserContext";
 import { Avatar } from "./Avatar";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
@@ -36,18 +36,18 @@ const colors = {
 export const AvatarConfigPage = () => {
   const { avatarConfig, setAvatarConfig, setSaveAvatar } =
     useContext(AvatarConfigContext);
-  const { user } = useContext(AuthContext);
+  const { userId } = useContext(UserContext);
 
   const [hairColor, setHairColor] = useState(avatarConfig.hairColor);
   const [topColor, setTopColor] = useState(avatarConfig.topColor);
   const [bottomColor, setBottomColor] = useState(avatarConfig.bottomColor);
 
   useEffect(() => {
-    if (user) {
+    if (userId) {
       // Fetch the avatar configuration for the logged-in user
       const fetchAvatarConfig = async () => {
         try {
-          const response = await axios.get(`/api/users/${user.id}/avatar`);
+          const response = await axios.get(`/api/users/${userId}/avatar`);
           setAvatarConfig(response.data);
         } catch (error) {
           console.error("Error fetching avatar config:", error);
@@ -59,11 +59,11 @@ export const AvatarConfigPage = () => {
   }, [user, setAvatarConfig]);
 
   const handleSave = async () => {
-    if (user) {
+    if (userId) {
       try {
         setAvatarConfig({ hairColor, topColor, bottomColor });
         setSaveAvatar(true);
-        await axios.post(`/api/users/${user.id}/avatar`, {
+        await axios.post(`/api/users/${userId}/avatar`, {
           hairColor,
           topColor,
           bottomColor,
