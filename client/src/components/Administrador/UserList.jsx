@@ -18,7 +18,7 @@ const UserList = () => {
     const loadUsers = async () => {
       try {
         const response = await axios.get(
-          "https://metaversoude2:3001/api/users"
+          "https://metaversoude2.ddns.net:3001/api/users"
         );
         setUsuarios(response.data);
       } catch (error) {
