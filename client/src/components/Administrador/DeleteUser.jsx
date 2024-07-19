@@ -39,8 +39,9 @@ const DeleteUser = () => {
         console.log("Usuarios.js seleccionado:", formData.usuario); // Añadir este console.log
         try {
           const response = await axios.get(
-            `https://metaversoude2.ddns.net:3001/api/users`
+            `https://metaversoude2.ddns.net:3001/api/users/${formData.usuario}`
           );
+
           const userData = response.data;
           // Actualizar formData con los datos del usuario
           setFormData({
