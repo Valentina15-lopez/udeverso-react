@@ -205,3 +205,43 @@ export const deleteUser = async (req, res) => {
     res.status(500).json({ message: "Error interno del servidor" }); // Manejar errores del servidor
   }
 };
+export const postAvatar = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    user.avatarConfig = req.body;
+    await user.save();
+    res.json({ message: "Configuración del avatar guardada con éxito" });
+  } catch (error) {
+    console.error("Error al guardar la configuración del avatar:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+export const getAvatar = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    res.json(user.avatarConfig);
+  } catch (error) {
+    console.error("Error al obtener la configuración del avatar:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+export const verifyToken = (req, res, next) => {
+  const token = req.cookies.sessionToken;
+  if (!token) {
+    return res.status(401).json({ message: "No autenticado" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, secretKey);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: "Token inválido" });
+  }
+};

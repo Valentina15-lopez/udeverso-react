@@ -8,6 +8,9 @@ import {
   getUser,
   updateUser,
   deleteUser,
+  verifyToken,
+  getAvatar,
+  postAvatar,
 } from "../controllers/userController.js"; //importamos los controladores
 
 const router = express.Router(); //creamos el router
@@ -182,5 +185,8 @@ router.put("/api/users/:usuario", updateUser);
  *        description: Usuario no encontrado
  */
 router.delete("/api/users/:usuario", deleteUser);
+
+router.post("/api/user/avatar", verifyToken, postAvatar);
+router.get("/api/user/avatar", verifyToken, getAvatar);
 
 export default router;
