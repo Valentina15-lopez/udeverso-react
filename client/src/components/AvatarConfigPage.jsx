@@ -38,12 +38,10 @@ export const AvatarConfigPage = () => {
   const [hairColor, setHairColor] = useState(avatarConfig.hairColor);
   const [topColor, setTopColor] = useState(avatarConfig.topColor);
   const [bottomColor, setBottomColor] = useState(avatarConfig.bottomColor);
-  const [userId, setUserId] = useState(avatarConfig.userId);
 
   const handleSave = () => {
-    setUserId(userName);
     console.log("userName", userName);
-    setAvatarConfig({ hairColor, topColor, bottomColor, userId });
+    setAvatarConfig({ hairColor, topColor, bottomColor, userName });
     setSaveAvatar(true);
   };
 
