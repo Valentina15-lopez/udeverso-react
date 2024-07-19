@@ -1,10 +1,12 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AvatarConfigContext } from "../context/AvatarConfigContext";
+import { AuthContext } from "../context/AuthContext";
 import { Avatar } from "./Avatar";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Button } from "../common/Button";
+import axios from "axios";
 
 const colors = {
   hair: [
@@ -34,14 +36,44 @@ const colors = {
 export const AvatarConfigPage = () => {
   const { avatarConfig, setAvatarConfig, setSaveAvatar } =
     useContext(AvatarConfigContext);
+  const { user } = useContext(AuthContext);
 
   const [hairColor, setHairColor] = useState(avatarConfig.hairColor);
   const [topColor, setTopColor] = useState(avatarConfig.topColor);
   const [bottomColor, setBottomColor] = useState(avatarConfig.bottomColor);
 
-  const handleSave = () => {
-    setAvatarConfig({ hairColor, topColor, bottomColor });
-    setSaveAvatar(true);
+  useEffect(() => {
+    if (user) {
+      // Fetch the avatar configuration for the logged-in user
+      const fetchAvatarConfig = async () => {
+        try {
+          const response = await axios.get(`/api/users/${user.id}/avatar`);
+          setAvatarConfig(response.data);
+        } catch (error) {
+          console.error("Error fetching avatar config:", error);
+        }
+      };
+
+      fetchAvatarConfig();
+    }
+  }, [user, setAvatarConfig]);
+
+  const handleSave = async () => {
+    if (user) {
+      try {
+        setAvatarConfig({ hairColor, topColor, bottomColor });
+        setSaveAvatar(true);
+        await axios.post(`/api/users/${user.id}/avatar`, {
+          hairColor,
+          topColor,
+          bottomColor,
+        });
+        alert("Configuración del avatar guardada con éxito");
+      } catch (error) {
+        console.error("Error saving avatar config:", error);
+        alert("Error al guardar la configuración del avatar");
+      }
+    }
   };
 
   return (
@@ -55,7 +87,7 @@ export const AvatarConfigPage = () => {
             Color de Pelo:
             <select
               value={hairColor}
-              className={`w-full py-2 px-8 text-xl rounded-md transition duration-300 ${"bg-blue-200 text-blue-900 hover:bg-blue-300"}`}
+              className="w-full py-2 px-8 text-xl rounded-md transition duration-300 bg-blue-200 text-blue-900 hover:bg-blue-300"
               onChange={(e) => setHairColor(e.target.value)}
             >
               {colors.hair.map((color) => (
@@ -71,7 +103,7 @@ export const AvatarConfigPage = () => {
             Color de Remera:
             <select
               value={topColor}
-              className={`w-full py-2 px-8 text-xl rounded-md transition duration-300 ${"bg-blue-200 text-blue-900 hover:bg-blue-300"}`}
+              className="w-full py-2 px-8 text-xl rounded-md transition duration-300 bg-blue-200 text-blue-900 hover:bg-blue-300"
               onChange={(e) => setTopColor(e.target.value)}
             >
               {colors.top.map((color) => (
@@ -87,7 +119,7 @@ export const AvatarConfigPage = () => {
             Color de Pantalón:
             <select
               value={bottomColor}
-              className={`w-full py-2 px-8 text-xl rounded-md transition duration-300 ${"bg-blue-200 text-blue-900 hover:bg-blue-300"}`}
+              className="w-full py-2 px-8 text-xl rounded-md transition duration-300 bg-blue-200 text-blue-900 hover:bg-blue-300"
               onChange={(e) => setBottomColor(e.target.value)}
             >
               {colors.bottom.map((color) => (

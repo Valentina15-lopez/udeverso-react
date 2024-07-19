@@ -186,7 +186,33 @@ router.put("/api/users/:usuario", updateUser);
  */
 router.delete("/api/users/:usuario", deleteUser);
 
-router.post("/api/user/avatar", verifyToken, postAvatar);
-router.get("/api/user/avatar", verifyToken, getAvatar);
+router.get("/api/users/:usuario/avatar", verifyToken, async (req, res) => {
+  try {
+    const { usuario } = req.params; // Obtener el ID del usuario a eliminar
 
+    const user = await User.findById(usuario);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    res.json(user.avatarConfig);
+  } catch (error) {
+    console.error("Error al obtener la configuración del avatar:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+});
+router.post("/api/users/:usuario/avatar", verifyToken, async (req, res) => {
+  try {
+    const userId = req.params.usuario;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    user.avatarConfig = req.body;
+    await user.save();
+    res.json({ message: "Configuración del avatar guardada con éxito" });
+  } catch (error) {
+    console.error("Error al guardar la configuración del avatar:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+});
 export default router;
