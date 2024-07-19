@@ -135,7 +135,7 @@ router.get("/api/users", getAllUsers);
  *      404:
  *        description: Usuario no encontrado
  */
-router.get("/api/users/:usuario", getUser);
+router.get("/api/users/:id", getUser);
 /**
  * @swagger
  * /api/users/{usuario}:

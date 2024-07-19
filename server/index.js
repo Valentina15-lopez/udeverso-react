@@ -32,7 +32,7 @@ const server = https.createServer(credentials, app);
 export const io = new Server(server, {
   cors: {
     origin: "*",
-    methods: ["GET", "POST", "PUT"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true, // Habilitar el intercambio de cookies y otros datos de autenticación
   },
 });
@@ -42,7 +42,7 @@ app.use(
   cors({
     //origin: "http://localhost:3000",
     origin: "https://metaversoude2.ddns.net:3000",
-    methods: ["GET", "POST", "PUT"], // Métodos HTTP permitidos
+    methods: ["GET", "POST", "PUT", "DELETE"], // Métodos HTTP permitidos
     credentials: true,
   })
 );
