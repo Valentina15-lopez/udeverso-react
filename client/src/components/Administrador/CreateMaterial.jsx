@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const CreateMaterial = () => {
   const [usuarios, setUsuarios] = useState([]); // Estado para almacenar la lista de usuarios
@@ -10,6 +11,11 @@ const CreateMaterial = () => {
     ext: "",
     archivo: null, // Modificamos el estado para almacenar el archivo
   });
+  const navigate = useNavigate();
+
+  const handleBackToHome = () => {
+    navigate("/abm");
+  };
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -138,7 +144,8 @@ const CreateMaterial = () => {
             Enviar
           </button>
           <button
-            type="reset"
+            type="button"
+            onClick={handleBackToHome}
             className="w-full mt-2.5 bg-indigo-300 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-600 transition duration-300"
           >
             Volver al inicio
