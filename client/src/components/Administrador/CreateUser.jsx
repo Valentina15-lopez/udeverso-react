@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const CreateUser = () => {
+  const [mensaje, setMensaje] = useState("");
   const [formData, setFormData] = useState({
     usuario: "",
     contrasenia: "",
@@ -23,6 +24,7 @@ const CreateUser = () => {
         "https://metaversoude2.ddns.net:3001/api/users",
         formData
       );
+      setMensaje(`Usuario ${formData.usuario} creado exitosamente `);
     } catch (error) {
       if (error.response) {
         // La solicitud fue realizada y el servidor respondió con un código de estado que no está en el rango 2xx
@@ -117,6 +119,7 @@ const CreateUser = () => {
             Volver al inicio
           </button>
         </form>
+        {mensaje && <p className="text-green-500 text-center">{mensaje}</p>}
       </div>
     </div>
   );
