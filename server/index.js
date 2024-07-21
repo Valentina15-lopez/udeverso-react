@@ -151,6 +151,7 @@ io.on("connection", (socket) => {
   socket.on("update-avatar-config", ({ userName, newAvatarConfig }) => {
     const user = {
       id: socket.id,
+      position: generateRandomPosition(),
       userName: userName,
       hairColor: newAvatarConfig.hairColor,
       topColor: newAvatarConfig.topColor,
