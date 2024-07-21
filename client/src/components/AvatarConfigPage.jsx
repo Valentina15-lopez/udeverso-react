@@ -35,7 +35,8 @@ const colors = {
 };
 
 export const AvatarConfigPage = () => {
-  const { avatarConfig, setAvatarConfig } = useContext(AvatarConfigContext);
+  const { avatarConfig, setAvatarConfig, setSaveAvatar } =
+    useContext(AvatarConfigContext);
   const { userName } = useContext(UserContext);
   const [users] = useAtom(userAtom);
 
@@ -61,7 +62,7 @@ export const AvatarConfigPage = () => {
   const handleSave = () => {
     const newAvatarConfig = { hairColor, topColor, bottomColor };
     setAvatarConfig(newAvatarConfig);
-    setAvatarConfig(true);
+    setSaveAvatar(true);
     fetchAvatarConfig();
     console.log("newAvatarConfig", newAvatarConfig);
     // Emit the updated avatar config to the server
