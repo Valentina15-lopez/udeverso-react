@@ -12,6 +12,7 @@ import {
   getAvatar,
   postAvatar,
 } from "../controllers/userController.js"; //importamos los controladores
+import usersList from "../../index.js";
 
 const router = express.Router(); //creamos el router
 

@@ -48,7 +48,7 @@ app.use(
 );
 
 app.use(cookieParser());
-const usersList = [];
+export const usersList = [];
 
 app.use(express.json());
 
