@@ -7,7 +7,6 @@ export const AvatarConfigProvider = ({ children }) => {
     hairColor: "#00ff00",
     topColor: "#ff00ff",
     bottomColor: "#a52a2a",
-    userId: "",
   });
 
   const [saveAvatar, setSaveAvatar] = useState(false);

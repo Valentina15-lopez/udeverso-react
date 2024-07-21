@@ -29,7 +29,6 @@ const AulaScene = () => {
     const newPosition = [e.point.x, 0, e.point.z];
     socket.emit("move", newPosition);
   };
-  console.log("avatarConfig.userId", avatarConfig.userId);
 
   const applyAvatarConfig = (user) => {
     if (avatarConfig) {
