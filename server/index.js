@@ -140,22 +140,23 @@ const roomHandler = (socket) => {
 app.post("/api/updateAvatar/:userName", (req, res) => {
   const { userName } = req.params;
   const { hairColor, topColor, bottomColor } = req.body;
-  console.log(usersList);
-  usersList.push({
-    id: socket.id,
-    userName: userName,
-    position: generateRandomPosition(),
-    hairColor: hairColor,
-    topColor: topColor,
-    bottomColor: bottomColor,
-  });
-  io.emit("usersList", usersList);
+  const newAvatarConfig = { hairColor, topColor, bottomColor };
+  io.emit("update-avatar-config", userName, newAvatarConfig);
   console.log(usersList);
   res.status(200).json({ usersList });
 });
 
 io.on("connection", (socket) => {
   console.log("usersList", usersList);
+  socket.on("update-avatar-config", ({ userName, newAvatarConfig }) => {
+    const user = usersList.find((user) => user.userName === userName);
+    user.id = socket.id;
+    user.hairColor = newAvatarConfig.hairColor;
+    user.topColor = newAvatarConfig.topColor;
+    user.bottomColor = newAvatarConfig.bottomColor;
+    usersList.push(user);
+    io.emit("usersList", usersList);
+  });
   socket.on("move", (position) => {
     const user = usersList.find((item) => item.id === socket.id);
     if (user) {
@@ -163,15 +164,7 @@ io.on("connection", (socket) => {
       io.emit("usersList", usersList);
     }
   });
-  socket.on("update-avatar-config", ({ userName, newAvatarConfig }) => {
-    const user = usersList.find((user) => user.userName === userName);
-    if (user) {
-      user.hairColor = newAvatarConfig.hairColor;
-      user.topColor = newAvatarConfig.topColor;
-      user.bottomColor = newAvatarConfig.bottomColor;
-      io.emit("usersList", usersList);
-    }
-  });
+
   console.log("a user connected");
   roomHandler(socket);
   socket.on("disconnect", () => {
