@@ -50,7 +50,7 @@ export const AvatarConfigPage = () => {
   const fetchAvatarConfig = async () => {
     try {
       await axios.post(
-        `https://metaversoude2.ddns.net:3001/api/updateAvatar/${userName}/${users}`,
+        `https://metaversoude2.ddns.net:3001/api/updateAvatar/${userName}`,
         avatarConfig
       );
     } catch (error) {
@@ -59,9 +59,9 @@ export const AvatarConfigPage = () => {
   };
 
   const handleSave = () => {
-    fetchAvatarConfig();
     const newAvatarConfig = { hairColor, topColor, bottomColor };
     setAvatarConfig(newAvatarConfig);
+    fetchAvatarConfig();
     console.log("newAvatarConfig", newAvatarConfig);
     // Emit the updated avatar config to the server
     socket.emit("update-avatar-config", { userName, newAvatarConfig });
