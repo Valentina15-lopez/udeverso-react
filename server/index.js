@@ -136,6 +136,7 @@ const roomHandler = (socket) => {
 };
 
 io.on("connection", (socket) => {
+  console.log("usersList", usersList);
   socket.on("move", (position) => {
     const user = usersList.find((item) => item.id === socket.id);
     user.position = position;
