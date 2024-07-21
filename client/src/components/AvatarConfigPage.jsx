@@ -50,7 +50,7 @@ export const AvatarConfigPage = () => {
     const fetchAvatarConfig = async () => {
       try {
         const response = await fetch(
-          `https://metaversoude2.ddns.net:3001/api/getAvatar/${userName}/${users}`
+          `https://metaversoude2.ddns.net:3001/api/updateAvatar/${userName}/${users}`
         );
         const data = await response.json();
         setHairColor(data.hairColor);
@@ -72,13 +72,16 @@ export const AvatarConfigPage = () => {
     socket.emit("update-avatar-config", { userName, newAvatarConfig });
 
     // Optionally, send the new config to the server to update the user list
-    fetch(`https://metaversoude2.ddns.net:3001/api/updateAvatar/${userName}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newAvatarConfig),
-    }).catch((error) => {
+    fetch(
+      `https://metaversoude2.ddns.net:3001/api/updateAvatar/${userName}/${users}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newAvatarConfig),
+      }
+    ).catch((error) => {
       console.error("Error updating avatar config:", error);
     });
   };
