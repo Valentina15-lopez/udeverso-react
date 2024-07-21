@@ -198,21 +198,16 @@ router.post("/api/updateAvatar/:userName", (req, res) => {
   const { userName } = req.params;
   const { hairColor, topColor, bottomColor } = req.body;
   console.log(usersList);
-
-  const user = usersList.find((user) => user.userName === userName);
-  if (user) {
-    usersList.push({
-      userName: user.userName,
-      position: generateRandomPosition(),
-      hairColor: hairColor,
-      topColor: topColor,
-      bottomColor: bottomColor,
-    });
-    io.emit("usersList", usersList);
-    res.status(200).json({ message: "Avatar actualizado" });
-  } else {
-    res.status(404).json({ message: "Usuario no encontrado" });
-  }
+  usersList.push({
+    userName: userName,
+    position: generateRandomPosition(),
+    hairColor: hairColor,
+    topColor: topColor,
+    bottomColor: bottomColor,
+  });
+  console.log(usersList);
+  io.emit("usersList", usersList);
+  res.status(200).json({ message: "Avatar actualizado" });
 });
 
 export default router;
