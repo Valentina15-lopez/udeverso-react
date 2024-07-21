@@ -142,6 +142,7 @@ app.post("/api/updateAvatar/:userName", (req, res) => {
   const { hairColor, topColor, bottomColor } = req.body;
   console.log(usersList);
   usersList.push({
+    id: socket.id,
     userName: userName,
     position: generateRandomPosition(),
     hairColor: hairColor,
