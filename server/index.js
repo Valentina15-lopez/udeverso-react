@@ -48,7 +48,6 @@ app.use(
 );
 
 app.use(cookieParser());
-export const usersList = [];
 
 app.use(express.json());
 
@@ -67,11 +66,9 @@ const generateRandomPosition = () => {
   return [Math.random() * 3, 0, Math.random() * 3];
 };
 
-const generateRandomHexColor = () => {
-  return "#" + Math.floor(Math.random() * 16777215).toString(16);
-};
 const roomHandler = (socket) => {
   const createRoom = () => {
+    const usersList = [];
     const roomId = uuidV4();
     rooms[roomId] = {};
     socket.emit("room-created", { roomId });
