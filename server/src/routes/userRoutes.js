@@ -194,19 +194,4 @@ router.put("/api/users/:usuario", updateUser);
  */
 router.delete("/api/users/:usuario", deleteUser);
 
-router.post("/api/updateAvatar/:userName", (req, res) => {
-  const { userName } = req.params;
-  const { hairColor, topColor, bottomColor } = req.body;
-  console.log(usersList);
-  usersList.push({
-    userName: userName,
-    position: generateRandomPosition(),
-    hairColor: hairColor,
-    topColor: topColor,
-    bottomColor: bottomColor,
-  });
-  console.log(usersList);
-  res.status(200).json({ usersList });
-});
-
 export default router;

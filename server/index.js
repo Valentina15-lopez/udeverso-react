@@ -134,6 +134,21 @@ const roomHandler = (socket) => {
   socket.on("send-message", addMessage);
   socket.on("change-name", changeName);
 };
+app.post("/api/updateAvatar/:userName", (req, res) => {
+  const { userName } = req.params;
+  const { hairColor, topColor, bottomColor } = req.body;
+  console.log(usersList);
+  usersList.push({
+    userName: userName,
+    position: generateRandomPosition(),
+    hairColor: hairColor,
+    topColor: topColor,
+    bottomColor: bottomColor,
+  });
+  io.emit("usersList", usersList);
+  console.log(usersList);
+  res.status(200).json({ usersList });
+});
 
 io.on("connection", (socket) => {
   console.log("usersList", usersList);
