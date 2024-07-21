@@ -6,6 +6,8 @@ import { OrbitControls } from "@react-three/drei";
 import { Button } from "../common/Button";
 import { socket, userAtom } from "./../context/ContexProvider";
 import { useAtom } from "jotai";
+import axios from "axios";
+
 import { UserContext } from "../context/UserContext";
 const colors = {
   hair: [
@@ -47,13 +49,10 @@ export const AvatarConfigPage = () => {
 
   const fetchAvatarConfig = async () => {
     try {
-      const response = await fetch(
-        `https://metaversoude2.ddns.net:3001/api/updateAvatar/${userName}/${users}`
+      await axios.post(
+        "https://metaversoude2.ddns.net:3001/api/users",
+        avatarConfig
       );
-      const data = await response.json();
-      setHairColor(data.hairColor);
-      setTopColor(data.topColor);
-      setBottomColor(data.bottomColor);
     } catch (error) {
       console.error("Error fetching avatar config:", error);
     }
@@ -63,7 +62,7 @@ export const AvatarConfigPage = () => {
     fetchAvatarConfig();
     const newAvatarConfig = { hairColor, topColor, bottomColor };
     setAvatarConfig(newAvatarConfig);
-
+    console.log("newAvatarConfig", newAvatarConfig);
     // Emit the updated avatar config to the server
     socket.emit("update-avatar-config", { userName, newAvatarConfig });
   };
