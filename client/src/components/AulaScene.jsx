@@ -24,7 +24,6 @@ const AulaScene = () => {
     const newPosition = [e.point.x, 0, e.point.z];
     socket.emit("move", newPosition);
   };
-  socket.emit("move", newPosition);
 
   return (
     <>
