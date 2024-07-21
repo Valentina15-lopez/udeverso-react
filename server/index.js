@@ -149,11 +149,13 @@ app.post("/api/updateAvatar/:userName", (req, res) => {
 io.on("connection", (socket) => {
   console.log("usersList", usersList);
   socket.on("update-avatar-config", ({ userName, newAvatarConfig }) => {
-    const user = usersList.find((user) => user.userName === userName);
-    user.id = socket.id;
-    user.hairColor = newAvatarConfig.hairColor;
-    user.topColor = newAvatarConfig.topColor;
-    user.bottomColor = newAvatarConfig.bottomColor;
+    const user = {
+      id: socket.id,
+      userName: userName,
+      hairColor: newAvatarConfig.hairColor,
+      topColor: newAvatarConfig.topColor,
+      bottomColor: newAvatarConfig.bottomColor,
+    };
     usersList.push(user);
     io.emit("usersList", usersList);
   });
