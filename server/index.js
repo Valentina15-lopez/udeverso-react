@@ -179,10 +179,7 @@ io.on("connection", (socket) => {
       usersList.findIndex((item) => item.id === socket.id),
       1
     );
-    if (index !== -1) {
-      usersList.splice(index, 1);
-      io.emit("usersList", usersList);
-    }
+
     io.emit("usersList", usersList);
   });
 });
