@@ -61,6 +61,7 @@ export const AvatarConfigPage = () => {
   const handleSave = () => {
     const newAvatarConfig = { hairColor, topColor, bottomColor };
     setAvatarConfig(newAvatarConfig);
+    setAvatarConfig(true);
     fetchAvatarConfig();
     console.log("newAvatarConfig", newAvatarConfig);
     // Emit the updated avatar config to the server
