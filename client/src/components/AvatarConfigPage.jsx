@@ -1,11 +1,11 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { AvatarConfigContext } from "../context/AvatarConfigContext";
 import { Avatar } from "./Avatar";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Button } from "../common/Button";
+import { socket } from "./../context/ContexProvider";
 import { UserContext } from "../context/UserContext";
-
 const colors = {
   hair: [
     { value: "#ffffff", label: "Blanco" },
@@ -32,16 +32,53 @@ const colors = {
 };
 
 export const AvatarConfigPage = () => {
-  const { avatarConfig, setAvatarConfig, setSaveAvatar } =
-    useContext(AvatarConfigContext);
+  const { avatarConfig, setAvatarConfig } = useContext(AvatarConfigContext);
   const { userName } = useContext(UserContext);
-  const [hairColor, setHairColor] = useState(avatarConfig.hairColor);
-  const [topColor, setTopColor] = useState(avatarConfig.topColor);
-  const [bottomColor, setBottomColor] = useState(avatarConfig.bottomColor);
+
+  const [hairColor, setHairColor] = useState(
+    avatarConfig.hairColor || "#ffffff"
+  );
+  const [topColor, setTopColor] = useState(avatarConfig.topColor || "#ffffff");
+  const [bottomColor, setBottomColor] = useState(
+    avatarConfig.bottomColor || "#ffffff"
+  );
+
+  useEffect(() => {
+    // Fetch initial avatar config for the user
+    const fetchAvatarConfig = async () => {
+      try {
+        const response = await fetch(
+          `https://metaversoude2.ddns.net:3001/api/getAvatar/${userName}`
+        );
+        const data = await response.json();
+        setHairColor(data.hairColor);
+        setTopColor(data.topColor);
+        setBottomColor(data.bottomColor);
+      } catch (error) {
+        console.error("Error fetching avatar config:", error);
+      }
+    };
+
+    fetchAvatarConfig();
+  }, [userName]);
 
   const handleSave = () => {
-    setAvatarConfig({ hairColor, topColor, bottomColor });
-    setSaveAvatar(true);
+    const newAvatarConfig = { hairColor, topColor, bottomColor };
+    setAvatarConfig(newAvatarConfig);
+
+    // Emit the updated avatar config to the server
+    socket.emit("update-avatar-config", { userName, newAvatarConfig });
+
+    // Optionally, send the new config to the server to update the user list
+    fetch(`https://metaversoude2.ddns.net:3001/api/updateAvatar/${userName}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newAvatarConfig),
+    }).catch((error) => {
+      console.error("Error updating avatar config:", error);
+    });
   };
 
   return (

@@ -144,22 +144,33 @@ const roomHandler = (socket) => {
 };
 
 io.on("connection", (socket) => {
-  usersList.push({
-    id: socket.id,
-    position: generateRandomPosition(),
-    hairColor: generateRandomHexColor(),
-    topColor: generateRandomHexColor(),
-    bottomColor: generateRandomHexColor(),
-  });
+  socket.on("user-joined", (userName) => {
+    usersList.push({
+      id: socket.id,
+      userName: userName,
+      position: generateRandomPosition(),
+      hairColor: generateRandomHexColor(),
+      topColor: generateRandomHexColor(),
+      bottomColor: generateRandomHexColor(),
+    });
 
-  io.emit("usersList", usersList);
+    io.emit("usersList", usersList);
+  });
 
   socket.on("move", (position) => {
     const user = usersList.find((item) => item.id === socket.id);
     user.position = position;
     io.emit("usersList", usersList);
   });
-
+  socket.on("update-avatar-config", ({ userName, newAvatarConfig }) => {
+    const user = usersList.find((user) => user.userName === userName);
+    if (user) {
+      user.hairColor = newAvatarConfig.hairColor;
+      user.topColor = newAvatarConfig.topColor;
+      user.bottomColor = newAvatarConfig.bottomColor;
+      io.emit("usersList", usersList);
+    }
+  });
   console.log("a user connected");
   roomHandler(socket);
   socket.on("disconnect", () => {
@@ -168,6 +179,10 @@ io.on("connection", (socket) => {
       usersList.findIndex((item) => item.id === socket.id),
       1
     );
+    if (index !== -1) {
+      usersList.splice(index, 1);
+      io.emit("usersList", usersList);
+    }
     io.emit("usersList", usersList);
   });
 });

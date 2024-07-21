@@ -4,17 +4,13 @@ export const AvatarConfigContext = createContext();
 
 export const AvatarConfigProvider = ({ children }) => {
   const [avatarConfig, setAvatarConfig] = useState({
-    hairColor: "#00ff00",
-    topColor: "#ff00ff",
-    bottomColor: "#a52a2a",
+    hairColor: "#ffffff",
+    topColor: "#ffffff",
+    bottomColor: "#ffffff",
   });
 
-  const [saveAvatar, setSaveAvatar] = useState(false);
-
   return (
-    <AvatarConfigContext.Provider
-      value={{ avatarConfig, setAvatarConfig, saveAvatar, setSaveAvatar }}
-    >
+    <AvatarConfigContext.Provider value={{ avatarConfig, setAvatarConfig }}>
       {children}
     </AvatarConfigContext.Provider>
   );
