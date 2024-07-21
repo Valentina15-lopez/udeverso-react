@@ -65,10 +65,10 @@ const chats = {};
 const generateRandomPosition = () => {
   return [Math.random() * 3, 0, Math.random() * 3];
 };
+const usersList = [];
 
 const roomHandler = (socket) => {
   const createRoom = () => {
-    const usersList = [];
     const roomId = uuidV4();
     rooms[roomId] = {};
     socket.emit("room-created", { roomId });
