@@ -206,8 +206,7 @@ router.post("/api/updateAvatar/:userName", (req, res) => {
     bottomColor: bottomColor,
   });
   console.log(usersList);
-  io.emit("usersList", usersList);
-  res.status(200).json({ message: "Avatar actualizado" });
+  res.status(200).json({ usersList });
 });
 
 export default router;
