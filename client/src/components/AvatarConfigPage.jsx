@@ -50,7 +50,7 @@ export const AvatarConfigPage = () => {
   const fetchAvatarConfig = async () => {
     try {
       await axios.post(
-        `https://metaversoude2.ddns.net:3001/api/updateAvatar/${userName}/${users}`,
+        `https://metaversoude2.ddns.net:3001/api/updateAvatar/${userName}`,
         avatarConfig
       );
     } catch (error) {

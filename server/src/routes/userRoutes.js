@@ -189,6 +189,7 @@ router.delete("/api/users/:usuario", deleteUser);
 router.post("/api/updateAvatar/:userName/:usersList", (req, res) => {
   const { userName, usersList } = req.params;
   const { hairColor, topColor, bottomColor } = req.body;
+  console.log(req, res);
   const user = usersList.find((user) => user.userName === userName);
   if (user) {
     user.hairColor = hairColor;
