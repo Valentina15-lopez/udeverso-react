@@ -37,6 +37,8 @@ const colors = {
 export const AvatarConfigPage = () => {
   const { avatarConfig, setAvatarConfig, setSaveAvatar } =
     useContext(AvatarConfigContext);
+  const [mensaje, setMensaje] = useState("");
+
   const { userName } = useContext(UserContext);
   const [users] = useAtom(userAtom);
 
@@ -63,6 +65,7 @@ export const AvatarConfigPage = () => {
     const newAvatarConfig = { hairColor, topColor, bottomColor };
     setAvatarConfig(newAvatarConfig);
     setSaveAvatar(true);
+    setMensaje("El avatar se guardo correctamente");
     fetchAvatarConfig();
     console.log("newAvatarConfig", newAvatarConfig);
     // Emit the updated avatar config to the server
@@ -122,8 +125,10 @@ export const AvatarConfigPage = () => {
               ))}
             </select>
           </label>
+          {mensaje && <p className="text-green-500 text-center">{mensaje}</p>}
         </div>
         <Button onClick={handleSave}>Guardar Avatar</Button>
+
         <div className="mt-8" style={{ width: "500px", height: "500px" }}>
           <Canvas camera={{ position: [0, 2, 5], fov: 50 }}>
             <ambientLight intensity={0.5} />
