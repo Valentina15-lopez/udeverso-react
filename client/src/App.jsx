@@ -27,13 +27,13 @@ export default function Root() {
     <AuthProvider>
       <BrowserRouter>
         <UserProvider>
-          <AvatarConfigProvider>
-            <RoomProvider>
+          <RoomProvider>
+            <AvatarConfigProvider>
               <ChatProvider>
                 <App />
               </ChatProvider>
-            </RoomProvider>
-          </AvatarConfigProvider>
+            </AvatarConfigProvider>
+          </RoomProvider>
         </UserProvider>
       </BrowserRouter>
     </AuthProvider>
