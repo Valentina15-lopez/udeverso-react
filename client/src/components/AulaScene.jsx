@@ -15,7 +15,6 @@ import { Pizarron } from "./Pizarron";
 //esta es la version final
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
-  const { avatarConfig } = useContext(AvatarConfigContext);
 
   const [users] = useAtom(userAtom);
 

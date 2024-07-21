@@ -4,7 +4,8 @@ import { Avatar } from "./Avatar";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Button } from "../common/Button";
-import { socket } from "./../context/ContexProvider";
+import { socket, userAtom } from "./../context/ContexProvider";
+import { useAtom } from "jotai";
 import { UserContext } from "../context/UserContext";
 const colors = {
   hair: [
@@ -34,6 +35,7 @@ const colors = {
 export const AvatarConfigPage = () => {
   const { avatarConfig, setAvatarConfig } = useContext(AvatarConfigContext);
   const { userName } = useContext(UserContext);
+  const [users] = useAtom(userAtom);
 
   const [hairColor, setHairColor] = useState(
     avatarConfig.hairColor || "#ffffff"
@@ -48,7 +50,7 @@ export const AvatarConfigPage = () => {
     const fetchAvatarConfig = async () => {
       try {
         const response = await fetch(
-          `https://metaversoude2.ddns.net:3001/api/getAvatar/${userName}`
+          `https://metaversoude2.ddns.net:3001/api/getAvatar/${userName}/${users}`
         );
         const data = await response.json();
         setHairColor(data.hairColor);
