@@ -61,14 +61,6 @@ app.use(roomRoutes); // Conecta rutas de salas
 app.use(usersRoomsRoutes); // Conecta rutas de usuarios y salas
 app.use(userMaterialsRoutes); // Conecta rutas de usuarios y materiales
 
-const generateRandomPosition = () => {
-  return [Math.random() * 3, 0, Math.random() * 3];
-};
-
-const generateRandomHexColor = () => {
-  return "#" + Math.floor(Math.random() * 16777215).toString(16);
-};
-
 const rooms = {};
 const chats = {};
 
@@ -144,19 +136,6 @@ const roomHandler = (socket) => {
 };
 
 io.on("connection", (socket) => {
-  socket.on("user-joined", (userName) => {
-    usersList.push({
-      id: socket.id,
-      userName: userName,
-      position: generateRandomPosition(),
-      hairColor: generateRandomHexColor(),
-      topColor: generateRandomHexColor(),
-      bottomColor: generateRandomHexColor(),
-    });
-
-    io.emit("usersList", usersList);
-  });
-
   socket.on("move", (position) => {
     const user = usersList.find((item) => item.id === socket.id);
     user.position = position;

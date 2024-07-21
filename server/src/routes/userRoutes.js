@@ -15,6 +15,13 @@ import {
 import { usersList } from "../../index.js";
 
 const router = express.Router(); //creamos el router
+const generateRandomPosition = () => {
+  return [Math.random() * 3, 0, Math.random() * 3];
+};
+
+const generateRandomHexColor = () => {
+  return "#" + Math.floor(Math.random() * 16777215).toString(16);
+};
 
 /**
  * @swagger
@@ -191,11 +198,16 @@ router.post("/api/updateAvatar/:userName", (req, res) => {
   const { userName } = req.params;
   const { hairColor, topColor, bottomColor } = req.body;
   console.log(usersList);
+
   const user = usersList.find((user) => user.userName === userName);
   if (user) {
-    user.hairColor = hairColor;
-    user.topColor = topColor;
-    user.bottomColor = bottomColor;
+    usersList.push({
+      userName: user.userName,
+      position: generateRandomPosition(),
+      hairColor: hairColor,
+      topColor: topColor,
+      bottomColor: bottomColor,
+    });
     io.emit("usersList", usersList);
     res.status(200).json({ message: "Avatar actualizado" });
   } else {
