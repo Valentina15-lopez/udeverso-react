@@ -158,8 +158,10 @@ io.on("connection", (socket) => {
   console.log("usersList", usersList);
   socket.on("move", (position) => {
     const user = usersList.find((item) => item.id === socket.id);
-    user.position = position;
-    io.emit("usersList", usersList);
+    if (user) {
+      user.position = position;
+      io.emit("usersList", usersList);
+    }
   });
   socket.on("update-avatar-config", ({ userName, newAvatarConfig }) => {
     const user = usersList.find((user) => user.userName === userName);
