@@ -45,45 +45,27 @@ export const AvatarConfigPage = () => {
     avatarConfig.bottomColor || "#ffffff"
   );
 
-  useEffect(() => {
-    // Fetch initial avatar config for the user
-    const fetchAvatarConfig = async () => {
-      try {
-        const response = await fetch(
-          `https://metaversoude2.ddns.net:3001/api/updateAvatar/${userName}/${users}`
-        );
-        const data = await response.json();
-        setHairColor(data.hairColor);
-        setTopColor(data.topColor);
-        setBottomColor(data.bottomColor);
-      } catch (error) {
-        console.error("Error fetching avatar config:", error);
-      }
-    };
-
-    fetchAvatarConfig();
-  }, [userName]);
+  const fetchAvatarConfig = async () => {
+    try {
+      const response = await fetch(
+        `https://metaversoude2.ddns.net:3001/api/updateAvatar/${userName}/${users}`
+      );
+      const data = await response.json();
+      setHairColor(data.hairColor);
+      setTopColor(data.topColor);
+      setBottomColor(data.bottomColor);
+    } catch (error) {
+      console.error("Error fetching avatar config:", error);
+    }
+  };
 
   const handleSave = () => {
+    fetchAvatarConfig();
     const newAvatarConfig = { hairColor, topColor, bottomColor };
     setAvatarConfig(newAvatarConfig);
 
     // Emit the updated avatar config to the server
     socket.emit("update-avatar-config", { userName, newAvatarConfig });
-
-    // Optionally, send the new config to the server to update the user list
-    fetch(
-      `https://metaversoude2.ddns.net:3001/api/updateAvatar/${userName}/${users}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newAvatarConfig),
-      }
-    ).catch((error) => {
-      console.error("Error updating avatar config:", error);
-    });
   };
 
   return (
