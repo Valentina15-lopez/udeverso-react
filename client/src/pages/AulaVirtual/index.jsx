@@ -40,7 +40,6 @@ const AulaVirtual = () => {
     socket.emit("user-disconnected", {
       peerId: userId,
     });
-    socket.emit("disconnect");
     navigate(-1); // Redirige a la página anterior en el historial
   };
 
