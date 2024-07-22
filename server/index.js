@@ -103,10 +103,10 @@ const roomHandler = (socket) => {
 
   const leaveRoom = ({ peerId, roomId }) => {
     socket.to(roomId).emit("user-disconnected", peerId);
-    usersList.splice(
-      usersList.findIndex((item) => item.id === socket.id),
-      1
-    );
+    const userIndex = usersList.findIndex((item) => item.id === socket.id);
+    if (userIndex !== -1) {
+      usersList.splice(userIndex, 1);
+    }
     io.emit("usersList", usersList);
   };
 
