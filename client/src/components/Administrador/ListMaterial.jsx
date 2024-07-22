@@ -79,7 +79,7 @@ const ListMaterial = () => {
   const navigate = useNavigate();
 
   const handleBackToHome = () => {
-    navigate("/abm");
+    navigate("/MenuDocente");
   };
 
   return (

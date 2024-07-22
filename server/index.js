@@ -100,10 +100,19 @@ const roomHandler = (socket) => {
       console.log("user left the room", peerId);
       leaveRoom({ roomId, peerId });
     });
+    socket.on("user-disconnected", () => {
+      console.log("user-disconnected", peerId);
+      leaveRoom({ roomId, peerId });
+    });
   };
 
   const leaveRoom = ({ peerId, roomId }) => {
     socket.to(roomId).emit("user-disconnected", peerId);
+    usersList.splice(
+      usersList.findIndex((item) => item.id === socket.id),
+      1
+    );
+    io.emit("usersList", usersList);
   };
 
   const startSharing = ({ peerId, roomId }) => {
@@ -164,11 +173,6 @@ io.on("connection", (socket) => {
   roomHandler(socket);
   socket.on("disconnect", () => {
     console.log("user disconnected");
-    usersList.splice(
-      usersList.findIndex((item) => item.id === socket.id),
-      1
-    );
-    io.emit("usersList", usersList);
   });
 });
 

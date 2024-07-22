@@ -64,6 +64,11 @@ const CreateMaterial = () => {
       console.error("Error al enviar el material:", error);
     }
   };
+  const navigate = useNavigate();
+
+  const handleBackToHome = () => {
+    navigate("/MenuDocente");
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen">
