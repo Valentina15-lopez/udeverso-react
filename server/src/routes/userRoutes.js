@@ -1,13 +1,16 @@
 // src/routes/userRoutes.js
 import express from "express"; //importamos express
 import {
-    checkAuth,
-    login,
-    createUser,
-    getAllUsers,
-    getUser,
-    updateUser,
-    deleteUser
+  checkAuth,
+  login,
+  createUser,
+  getAllUsers,
+  getUser,
+  updateUser,
+  deleteUser,
+  verifyToken,
+  getAvatar,
+  postAvatar,
 } from "../controllers/userController.js"; //importamos los controladores
 
 const router = express.Router(); //creamos el router
@@ -135,7 +138,7 @@ router.get("/api/users", getAllUsers);
  *      404:
  *        description: Usuario no encontrado
  */
-router.get("/api/users/:id", getUser);
+router.get("/api/users/:usuario", getUser);
 /**
  * @swagger
  * /api/users/{usuario}:
@@ -161,7 +164,7 @@ router.get("/api/users/:id", getUser);
  *      404:
  *        description: Usuario no encontrado
  */
-router.put("/api/users/:usuario",updateUser);
+router.put("/api/users/:usuario", updateUser);
 /**
  * @swagger
  * /api/users/{usuario}:
@@ -181,6 +184,35 @@ router.put("/api/users/:usuario",updateUser);
  *      404:
  *        description: Usuario no encontrado
  */
-router.delete("/api/users/:usuario",deleteUser);
+router.delete("/api/users/:usuario", deleteUser);
 
+router.get("/api/users/:usuario/avatar", verifyToken, async (req, res) => {
+  try {
+    const { usuario } = req.params; // Obtener el ID del usuario a eliminar
+
+    const user = await User.findById(usuario);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    res.json(user.avatarConfig);
+  } catch (error) {
+    console.error("Error al obtener la configuración del avatar:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+});
+router.post("/api/users/:usuario/avatar", verifyToken, async (req, res) => {
+  try {
+    const userId = req.params.usuario;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    user.avatarConfig = req.body;
+    await user.save();
+    res.json({ message: "Configuración del avatar guardada con éxito" });
+  } catch (error) {
+    console.error("Error al guardar la configuración del avatar:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+});
 export default router;

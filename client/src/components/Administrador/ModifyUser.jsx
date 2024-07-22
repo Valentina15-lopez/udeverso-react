@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 const ModifyUser = () => {
   const [usuarios, setUsuarios] = useState([]);
+  const [mensaje, setMensaje] = useState("");
+
   const [formData, setFormData] = useState({
     usuario: "",
     contrasenia: "",
@@ -82,6 +84,8 @@ const ModifyUser = () => {
         `https://metaversoude2.ddns.net:3001/api/users/${formData.usuario}`,
         formData
       );
+      setMensaje(`Usuario ${formData.usuario} actualizado exitosamente `);
+
       console.log("Usuarios.js modificado exitosamente");
     } catch (error) {
       console.error("Error al modificar el usuario:", error);
@@ -165,6 +169,7 @@ const ModifyUser = () => {
             Volver al inicio
           </button>
         </form>
+        {mensaje && <p className="text-green-500 text-center">{mensaje}</p>}
       </div>
     </div>
   );
