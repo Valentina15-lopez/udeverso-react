@@ -38,6 +38,7 @@ const AulaVirtual = () => {
   // Función para manejar la redirección a la página anterior
   const handleGoBack = () => {
     socket.emit("user-disconnected", {
+      roomId,
       peerId: userId,
     });
     navigate(-1); // Redirige a la página anterior en el historial
