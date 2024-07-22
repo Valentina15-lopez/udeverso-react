@@ -100,7 +100,7 @@ const roomHandler = (socket) => {
       console.log("user left the room", peerId);
       leaveRoom({ roomId, peerId });
     });
-    socket.on("disconnected-user", () => {
+    socket.on("user-disconnected", () => {
       console.log("user-disconnected", peerId);
       leaveRoom({ roomId, peerId });
     });
