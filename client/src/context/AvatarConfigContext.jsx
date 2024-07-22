@@ -10,6 +10,7 @@ export const AvatarConfigProvider = ({ children }) => {
   });
 
   const [saveAvatar, setSaveAvatar] = useState(false);
+
   return (
     <AvatarConfigContext.Provider
       value={{ avatarConfig, setAvatarConfig, saveAvatar, setSaveAvatar }}

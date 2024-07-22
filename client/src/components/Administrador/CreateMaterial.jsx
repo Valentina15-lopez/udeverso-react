@@ -11,6 +11,11 @@ const CreateMaterial = () => {
     ext: "",
     archivo: null, // Modificamos el estado para almacenar el archivo
   });
+  const navigate = useNavigate();
+
+  const handleBackToHome = () => {
+    navigate("/abm");
+  };
 
   useEffect(() => {
     const loadUsers = async () => {

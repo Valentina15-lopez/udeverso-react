@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const DeleteUser = () => {
   const [usuarios, setUsuarios] = useState([]);
+  const [mensaje, setMensaje] = useState("");
   const [formData, setFormData] = useState({
     usuario: "",
     contrasenia: "",
@@ -38,12 +39,10 @@ const DeleteUser = () => {
         // Solo cargar si hay un usuario seleccionado
         console.log("Usuarios.js seleccionado:", formData.usuario); // Añadir este console.log
         try {
-          // const response = await axios.get(
-          //   `http://localhost:3001/api/users/${formData.usuario}`
-          // );
           const response = await axios.get(
             `https://metaversoude2.ddns.net:3001/api/users/${formData.usuario}`
           );
+
           const userData = response.data;
           // Actualizar formData con los datos del usuario
           setFormData({
@@ -79,6 +78,7 @@ const DeleteUser = () => {
       await axios.delete(
         `https://metaversoude2.ddns.net:3001/api/users/${formData.usuario}`
       );
+      setMensaje(`Usuario ${formData.usuario} borrado exitosamente `);
 
       console.log("Usuarios.js borrado exitosamente");
     } catch (error) {
@@ -172,6 +172,7 @@ const DeleteUser = () => {
             Volver al inicio
           </button>
         </form>
+        {mensaje && <p className="text-green-500 text-center">{mensaje}</p>}
       </div>
     </div>
   );

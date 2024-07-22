@@ -21,7 +21,7 @@ const AulaScene = () => {
 
   const { screenStream, peers, screenSharingId, fileTexture } =
     useContext(RoomContext);
-  const { userId } = useContext(UserContext);
+  const { userId, userName } = useContext(UserContext);
 
   const [onFloor, setOnFloor] = useState(false);
   useCursor(onFloor);
@@ -29,6 +29,7 @@ const AulaScene = () => {
     const newPosition = [e.point.x, 0, e.point.z];
     socket.emit("move", newPosition);
   };
+
   const applyAvatarConfig = (user) => {
     if (avatarConfig) {
       user.hairColor = avatarConfig.hairColor;
@@ -81,7 +82,7 @@ const AulaScene = () => {
         </CubeCamera>
         <Pizarron />
         {users.map((user) => {
-          const isCurrentUser = user.id === userId;
+          const isCurrentUser = userName === avatarConfig.userId;
 
           return (
             <Avatar
@@ -93,9 +94,17 @@ const AulaScene = () => {
                   user.position[2]
                 )
               }
-              hairColor={avatarConfig.hairColor}
-              topColor={avatarConfig.topColor}
-              bottomColor={avatarConfig.bottomColor}
+              hairColor={
+                isCurrentUser ? avatarConfig.hairColor : avatarConfig.hairColor
+              }
+              topColor={
+                isCurrentUser ? avatarConfig.topColor : avatarConfig.topColor
+              }
+              bottomColor={
+                isCurrentUser
+                  ? avatarConfig.bottomColor
+                  : avatarConfig.bottomColor
+              }
             />
           );
         })}

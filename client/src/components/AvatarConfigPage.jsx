@@ -1,10 +1,10 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { AvatarConfigContext } from "../context/AvatarConfigContext";
 import { Avatar } from "./Avatar";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Button } from "../common/Button";
+import { UserContext } from "../context/UserContext";
 
 const colors = {
   hair: [
@@ -34,7 +34,7 @@ const colors = {
 export const AvatarConfigPage = () => {
   const { avatarConfig, setAvatarConfig, setSaveAvatar } =
     useContext(AvatarConfigContext);
-
+  const { userName } = useContext(UserContext);
   const [hairColor, setHairColor] = useState(avatarConfig.hairColor);
   const [topColor, setTopColor] = useState(avatarConfig.topColor);
   const [bottomColor, setBottomColor] = useState(avatarConfig.bottomColor);
