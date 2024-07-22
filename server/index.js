@@ -179,15 +179,6 @@ io.on("connection", (socket) => {
 
   console.log("a user connected");
   roomHandler(socket);
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
-    usersList.splice(
-      usersList.findIndex((item) => item.id === socket.id),
-      1
-    );
-
-    io.emit("usersList", usersList);
-  });
 });
 
 // Autenticar la conexión a la base de datos antes de iniciar el servidor
