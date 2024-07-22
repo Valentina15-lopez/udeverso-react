@@ -1,11 +1,14 @@
-import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
 import { AvatarConfigContext } from "../context/AvatarConfigContext";
 import { Avatar } from "./Avatar";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Button } from "../common/Button";
+import { socket, userAtom } from "./../context/ContexProvider";
+import { useAtom } from "jotai";
+import axios from "axios";
 
+import { UserContext } from "../context/UserContext";
 const colors = {
   hair: [
     { value: "#ffffff", label: "Blanco" },
@@ -34,14 +37,39 @@ const colors = {
 export const AvatarConfigPage = () => {
   const { avatarConfig, setAvatarConfig, setSaveAvatar } =
     useContext(AvatarConfigContext);
+  const [mensaje, setMensaje] = useState("");
 
-  const [hairColor, setHairColor] = useState(avatarConfig.hairColor);
-  const [topColor, setTopColor] = useState(avatarConfig.topColor);
-  const [bottomColor, setBottomColor] = useState(avatarConfig.bottomColor);
+  const { userName } = useContext(UserContext);
+  const [users] = useAtom(userAtom);
+
+  const [hairColor, setHairColor] = useState(
+    avatarConfig.hairColor || "#ffffff"
+  );
+  const [topColor, setTopColor] = useState(avatarConfig.topColor || "#ffffff");
+  const [bottomColor, setBottomColor] = useState(
+    avatarConfig.bottomColor || "#ffffff"
+  );
+
+  const fetchAvatarConfig = async () => {
+    try {
+      await axios.post(
+        `https://metaversoude2.ddns.net:3001/api/updateAvatar/${userName}`,
+        avatarConfig
+      );
+    } catch (error) {
+      console.error("Error fetching avatar config:", error);
+    }
+  };
 
   const handleSave = () => {
-    setAvatarConfig({ hairColor, topColor, bottomColor });
+    const newAvatarConfig = { hairColor, topColor, bottomColor };
+    setAvatarConfig(newAvatarConfig);
     setSaveAvatar(true);
+    setMensaje("El avatar se guardo correctamente");
+    fetchAvatarConfig();
+    console.log("newAvatarConfig", newAvatarConfig);
+    // Emit the updated avatar config to the server
+    socket.emit("update-avatar-config", { userName, newAvatarConfig });
   };
 
   return (
@@ -97,8 +125,10 @@ export const AvatarConfigPage = () => {
               ))}
             </select>
           </label>
+          {mensaje && <p className="text-green-500 text-center">{mensaje}</p>}
         </div>
         <Button onClick={handleSave}>Guardar Avatar</Button>
+
         <div className="mt-8" style={{ width: "500px", height: "500px" }}>
           <Canvas camera={{ position: [0, 2, 5], fov: 50 }}>
             <ambientLight intensity={0.5} />

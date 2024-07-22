@@ -32,7 +32,7 @@ const server = https.createServer(credentials, app);
 export const io = new Server(server, {
   cors: {
     origin: "*",
-    methods: ["GET", "POST", "PUT"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true, // Habilitar el intercambio de cookies y otros datos de autenticación
   },
 });
@@ -42,13 +42,12 @@ app.use(
   cors({
     //origin: "http://localhost:3000",
     origin: "https://metaversoude2.ddns.net:3000",
-    methods: ["GET", "POST", "PUT"], // Métodos HTTP permitidos
+    methods: ["GET", "POST", "PUT", "DELETE"], // Métodos HTTP permitidos
     credentials: true,
   })
 );
 
 app.use(cookieParser());
-const usersList = [];
 
 app.use(express.json());
 
@@ -61,16 +60,12 @@ app.use(roomRoutes); // Conecta rutas de salas
 app.use(usersRoomsRoutes); // Conecta rutas de usuarios y salas
 app.use(userMaterialsRoutes); // Conecta rutas de usuarios y materiales
 
+const rooms = {};
+const chats = {};
 const generateRandomPosition = () => {
   return [Math.random() * 3, 0, Math.random() * 3];
 };
-
-const generateRandomHexColor = () => {
-  return "#" + Math.floor(Math.random() * 16777215).toString(16);
-};
-
-const rooms = {};
-const chats = {};
+const usersList = [];
 
 const roomHandler = (socket) => {
   const createRoom = () => {
@@ -151,28 +146,47 @@ const roomHandler = (socket) => {
   socket.on("send-message", addMessage);
   socket.on("change-name", changeName);
 };
+app.post("/api/updateAvatar/:userName", (req, res) => {
+  const { userName } = req.params;
+  const { hairColor, topColor, bottomColor } = req.body;
+  const newAvatarConfig = { hairColor, topColor, bottomColor };
+  io.emit("update-avatar-config", userName, newAvatarConfig);
+  console.log(usersList);
+  res.status(200).json({ usersList });
+});
 
 io.on("connection", (socket) => {
-  usersList.push({
-    id: socket.id,
-    position: generateRandomPosition(),
-    hairColor: generateRandomHexColor(),
-    topColor: generateRandomHexColor(),
-    bottomColor: generateRandomHexColor(),
+  console.log("usersList", usersList);
+  socket.on("update-avatar-config", ({ userName, newAvatarConfig }) => {
+    const user = {
+      id: socket.id,
+      position: generateRandomPosition(),
+      userName: userName,
+      hairColor: newAvatarConfig.hairColor,
+      topColor: newAvatarConfig.topColor,
+      bottomColor: newAvatarConfig.bottomColor,
+    };
+    usersList.push(user);
+    io.emit("usersList", usersList);
   });
-
-  io.emit("usersList", usersList);
-
   socket.on("move", (position) => {
     const user = usersList.find((item) => item.id === socket.id);
-    user.position = position;
-    io.emit("usersList", usersList);
+    if (user) {
+      user.position = position;
+      io.emit("usersList", usersList);
+    }
   });
 
   console.log("a user connected");
   roomHandler(socket);
   socket.on("disconnect", () => {
     console.log("user disconnected");
+    usersList.splice(
+      usersList.findIndex((item) => item.id === socket.id),
+      1
+    );
+
+    io.emit("usersList", usersList);
   });
 });
 

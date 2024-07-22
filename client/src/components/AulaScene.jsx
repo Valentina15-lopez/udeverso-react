@@ -15,27 +15,14 @@ import { Pizarron } from "./Pizarron";
 //esta es la version final
 const AulaScene = () => {
   const gltf = useLoader(GLTFLoader, modeloGlb);
-  const { avatarConfig } = useContext(AvatarConfigContext);
 
   const [users] = useAtom(userAtom);
-
-  const { screenStream, peers, screenSharingId, fileTexture } =
-    useContext(RoomContext);
-  const { userId } = useContext(UserContext);
 
   const [onFloor, setOnFloor] = useState(false);
   useCursor(onFloor);
   const handleFloorClick = (e) => {
     const newPosition = [e.point.x, 0, e.point.z];
     socket.emit("move", newPosition);
-  };
-  const applyAvatarConfig = (user) => {
-    if (avatarConfig) {
-      user.hairColor = avatarConfig.hairColor;
-      user.topColor = avatarConfig.topColor;
-      user.bottomColor = avatarConfig.bottomColor;
-    }
-    return user;
   };
 
   return (
@@ -81,8 +68,6 @@ const AulaScene = () => {
         </CubeCamera>
         <Pizarron />
         {users.map((user) => {
-          const isCurrentUser = user.id === userId;
-
           return (
             <Avatar
               key={user.id}
@@ -93,9 +78,9 @@ const AulaScene = () => {
                   user.position[2]
                 )
               }
-              hairColor={avatarConfig.hairColor}
-              topColor={avatarConfig.topColor}
-              bottomColor={avatarConfig.bottomColor}
+              hairColor={user.hairColor}
+              topColor={user.topColor}
+              bottomColor={user.bottomColor}
             />
           );
         })}
