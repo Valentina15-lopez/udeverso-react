@@ -26,15 +26,15 @@ export default function Root() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <UserProvider>
-          <AvatarConfigProvider>
+        <AvatarConfigProvider>
+          <UserProvider>
             <RoomProvider>
               <ChatProvider>
                 <App />
               </ChatProvider>
             </RoomProvider>
-          </AvatarConfigProvider>
-        </UserProvider>
+          </UserProvider>
+        </AvatarConfigProvider>
       </BrowserRouter>
     </AuthProvider>
   );
