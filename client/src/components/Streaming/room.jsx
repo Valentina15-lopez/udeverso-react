@@ -41,16 +41,16 @@ export const Room = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex grow">
-        {screenSharingVideo && (
-          <div className="w-full pr-4">
-            <VideoPlayer stream={screenSharingVideo} />
-          </div>
-        )}
         <div
           className={`grid gap-4 ${
             screenSharingVideo ? "grid-cols-1" : "grid-cols-3"
           }`}
         >
+          {screenSharingVideo && (
+            <div className="w-full pr-4">
+              <VideoPlayer stream={screenSharingVideo} />
+            </div>
+          )}
           {screenSharingId !== userId && (
             <div>
               <VideoPlayer stream={stream} isOwnStream={true} />
